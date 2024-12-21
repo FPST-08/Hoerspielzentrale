@@ -1,0 +1,87 @@
+{
+  "originHash" : "0f06f8f12ab6ae64d99b260b6c20a7381299e2e3468ed9d13ebd366ef62d1a42",
+  "pins" : [
+    {
+      "identity" : "acknowlist",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/vtourraine/AcknowList",
+      "state" : {
+        "revision" : "125ff1915a639bf7d97471a4d5ae16765d0c50f2",
+        "version" : "3.2.0"
+      }
+    },
+    {
+      "identity" : "cloudkitsyncmonitor",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/ggruen/CloudKitSyncMonitor",
+      "state" : {
+        "revision" : "c14a433b284526e29e0021f343bae9e61779164b",
+        "version" : "3.0.0"
+      }
+    },
+    {
+      "identity" : "connectivity",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/rwbutler/Connectivity",
+      "state" : {
+        "revision" : "ac5a98af6564f6000f01e9c4cf0b89c7e8282513",
+        "version" : "7.0.0"
+      }
+    },
+    {
+      "identity" : "defaults",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/sindresorhus/Defaults",
+      "state" : {
+        "revision" : "ef1b2318fb549002bb533bec3a8ad98ae09f2cb6",
+        "version" : "9.0.0"
+      }
+    },
+    {
+      "identity" : "roadmap",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/AvdLee/Roadmap",
+      "state" : {
+        "branch" : "main",
+        "revision" : "04cca0ceec2dda141421b88c7f789ac24000010e"
+      }
+    },
+    {
+      "identity" : "swift-syntax",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/swiftlang/swift-syntax",
+      "state" : {
+        "revision" : "0687f71944021d616d34d922343dcef086855920",
+        "version" : "600.0.1"
+      }
+    },
+    {
+      "identity" : "swiftlintplugins",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/SimplyDanny/SwiftLintPlugins",
+      "state" : {
+        "revision" : "f9731bef175c3eea3a0ca960f1be78fcc2bc7853",
+        "version" : "0.57.1"
+      }
+    },
+    {
+      "identity" : "swiftsdk",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/TelemetryDeck/SwiftSDK",
+      "state" : {
+        "revision" : "e1a5f4ea47888e7e40cb2d40bea43ed4f1f5bfff",
+        "version" : "2.6.1"
+      }
+    },
+    {
+      "identity" : "whatsnewkit",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/FPST-08/WhatsNewKit",
+      "state" : {
+        "branch" : "main",
+        "revision" : "81b71b021be29687b51ae54c4f8935afc15cbe69"
+      }
+    }
+  ],
+  "version" : 3
+}

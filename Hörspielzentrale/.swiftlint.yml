@@ -1,0 +1,5 @@
+opt_in_rules:
+    - sorted_imports
+    - missing_docs
+disabled_rules:
+    - trailing_whitespace

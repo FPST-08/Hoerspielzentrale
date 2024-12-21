@@ -1,0 +1,404 @@
+[
+  {
+    "artworkURL" : "https://is1-ssl.mzstatic.com/image/thumb/Music113/v4/61/01/cc/6101ccc0-04bc-d90f-8bdc-aebd1aa32436/pr_source.png/1024x1024bb.jpg",
+    "id" : "1008761063",
+    "name" : "Die größten Fälle von Scotland Yard",
+    "url" : "https://raw.githubusercontent.com/FPST-08/H-rspielzentraleJSON/refs/heads/main/HoerspielData/Data/1008761063.json"
+  },
+  {
+    "artworkURL" : "https://is1-ssl.mzstatic.com/image/thumb/Music71/v4/17/88/6e/17886e0a-1ace-c3de-83a7-88c825811cec/4260147779542_1448.jpg/1024x1024ac.jpg",
+    "id" : "1025837598",
+    "name" : "Danger",
+    "url" : "https://raw.githubusercontent.com/FPST-08/H-rspielzentraleJSON/refs/heads/main/HoerspielData/Data/1025837598.json"
+  },
+  {
+    "artworkURL" : "https://is1-ssl.mzstatic.com/image/thumb/Music123/v4/fe/10/a1/fe10a1d8-f6c9-8c73-1e76-501ea4aa758a/pr_source.png/1024x1024bb.jpg",
+    "id" : "1032712133",
+    "name" : "NYPDead - Medical Report",
+    "url" : "https://raw.githubusercontent.com/FPST-08/H-rspielzentraleJSON/refs/heads/main/HoerspielData/Data/1032712133.json"
+  },
+  {
+    "artworkURL" : "https://is1-ssl.mzstatic.com/image/thumb/Music124/v4/b0/0b/38/b00b3801-bf57-86fa-1ef8-727c0e59e034/mzm.utlqekck.jpg/1024x1024ac.jpg",
+    "id" : "1034806501",
+    "name" : "Planet Eden",
+    "url" : "https://raw.githubusercontent.com/FPST-08/H-rspielzentraleJSON/refs/heads/main/HoerspielData/Data/1034806501.json"
+  },
+  {
+    "artworkURL" : "https://is1-ssl.mzstatic.com/image/thumb/Features124/v4/54/83/44/548344ee-8f66-5265-a3dd-2ea3e3699b56/pr_source.png/1024x1024bb.jpg",
+    "id" : "1066243862",
+    "name" : "Oscar Wilde & Mycroft Holmes",
+    "url" : "https://raw.githubusercontent.com/FPST-08/H-rspielzentraleJSON/refs/heads/main/HoerspielData/Data/1066243862.json"
+  },
+  {
+    "artworkURL" : "https://is1-ssl.mzstatic.com/image/thumb/Music124/v4/c4/05/8b/c4058be7-b71d-3132-3b72-81c3dc0f3fa3/4260147779719_1448.jpg/1024x1024ac.jpg",
+    "id" : "1169487121",
+    "name" : "Die PSI-Akten",
+    "url" : "https://raw.githubusercontent.com/FPST-08/H-rspielzentraleJSON/refs/heads/main/HoerspielData/Data/1169487121.json"
+  },
+  {
+    "artworkURL" : "https://is1-ssl.mzstatic.com/image/thumb/Music116/v4/43/fe/44/43fe449f-b126-3eb1-95d8-d6fe76219d21/cover.jpg/1024x1024ac.jpg",
+    "id" : "1227494324",
+    "name" : "Neue Welten",
+    "url" : "https://raw.githubusercontent.com/FPST-08/H-rspielzentraleJSON/refs/heads/main/HoerspielData/Data/1227494324.json"
+  },
+  {
+    "artworkURL" : "https://is1-ssl.mzstatic.com/image/thumb/Music211/v4/c7/a3/88/c7a38800-dd4e-2fd9-c5d7-e2352560f6a6/cover.jpg/1024x1024ac.jpg",
+    "id" : "1228633477",
+    "name" : "Insel-Krimi",
+    "url" : "https://raw.githubusercontent.com/FPST-08/H-rspielzentraleJSON/refs/heads/main/HoerspielData/Data/1228633477.json"
+  },
+  {
+    "artworkURL" : "https://is1-ssl.mzstatic.com/image/thumb/Music116/v4/0b/71/c1/0b71c195-a72c-01ec-91ed-39ccba83256c/cover.jpg/1024x1024ac.jpg",
+    "id" : "1333781604",
+    "name" : "Inspector Lestrade",
+    "url" : "https://raw.githubusercontent.com/FPST-08/H-rspielzentraleJSON/refs/heads/main/HoerspielData/Data/1333781604.json"
+  },
+  {
+    "artworkURL" : "https://is1-ssl.mzstatic.com/image/thumb/Music112/v4/37/08/db/3708db5f-8245-0384-61d5-6af443fb4081/4066339236028_cover.jpg/1024x1024ac.jpg",
+    "id" : "1397496585",
+    "name" : "Jules Verne",
+    "url" : "https://raw.githubusercontent.com/FPST-08/H-rspielzentraleJSON/refs/heads/main/HoerspielData/Data/1397496585.json"
+  },
+  {
+    "artworkURL" : "https://is1-ssl.mzstatic.com/image/thumb/Music114/v4/e6/94/63/e6946399-8111-d594-3d68-9180156272c5/4260507141552_3000.jpg/1024x1024ac.jpg",
+    "id" : "1397878902",
+    "name" : "Edgar Allan Poe & Auguste Dupin",
+    "url" : "https://raw.githubusercontent.com/FPST-08/H-rspielzentraleJSON/refs/heads/main/HoerspielData/Data/1397878902.json"
+  },
+  {
+    "artworkURL" : "https://is1-ssl.mzstatic.com/image/thumb/Music116/v4/b4/c6/69/b4c6696d-f956-77f1-f04c-9e642c375f70/4260507172822_3000.jpg/1024x1024ac.jpg",
+    "id" : "1397886561",
+    "name" : "Macabros - Classics",
+    "url" : "https://raw.githubusercontent.com/FPST-08/H-rspielzentraleJSON/refs/heads/main/HoerspielData/Data/1397886561.json"
+  },
+  {
+    "artworkURL" : "https://is1-ssl.mzstatic.com/image/thumb/Features124/v4/5a/81/13/5a811315-06d8-6af6-0f1f-bec885ff3823/pr_source.png/1024x1024bb.jpg",
+    "id" : "1400668275",
+    "name" : "TKKG Junior",
+    "url" : "https://raw.githubusercontent.com/FPST-08/H-rspielzentraleJSON/refs/heads/main/HoerspielData/Data/1400668275.json"
+  },
+  {
+    "artworkURL" : "https://is1-ssl.mzstatic.com/image/thumb/Music211/v4/c9/51/2a/c9512a79-ee98-d5ce-8006-46d657131325/9783689841300.jpg/1024x1024ac.jpg",
+    "id" : "1464160881",
+    "name" : "Irene Adler",
+    "url" : "https://raw.githubusercontent.com/FPST-08/H-rspielzentraleJSON/refs/heads/main/HoerspielData/Data/1464160881.json"
+  },
+  {
+    "artworkURL" : "https://is1-ssl.mzstatic.com/image/thumb/Music221/v4/ac/9f/ce/ac9fced3-f251-16c7-dd0d-89974ea109aa/4260434321782_3000.jpg/1024x1024ac.jpg",
+    "id" : "1519969938",
+    "name" : "Honigsüß und Mausetot",
+    "url" : "https://raw.githubusercontent.com/FPST-08/H-rspielzentraleJSON/refs/heads/main/HoerspielData/Data/1519969938.json"
+  },
+  {
+    "artworkURL" : "https://is1-ssl.mzstatic.com/image/thumb/Music221/v4/43/a5/60/43a56038-fbc8-a4ab-5b6f-2ffe8b674558/cover.jpg/1024x1024ac.jpg",
+    "id" : "1524042123",
+    "name" : "Küsten-Krimi",
+    "url" : "https://raw.githubusercontent.com/FPST-08/H-rspielzentraleJSON/refs/heads/main/HoerspielData/Data/1524042123.json"
+  },
+  {
+    "artworkURL" : "https://is1-ssl.mzstatic.com/image/thumb/Music211/v4/d3/4c/17/d34c1763-d6a6-3772-2343-8280fd05b46e/4260507198723_3000.jpg/1024x1024ac.jpg",
+    "id" : "1530805738",
+    "name" : "Dracula und der Zirkel der Sieben",
+    "url" : "https://raw.githubusercontent.com/FPST-08/H-rspielzentraleJSON/refs/heads/main/HoerspielData/Data/1530805738.json"
+  },
+  {
+    "artworkURL" : "https://is1-ssl.mzstatic.com/image/thumb/Music124/v4/27/84/54/2784545f-f11e-5a0e-98e8-bd1464d38add/4260507161529_3000.jpg/1024x1024ac.jpg",
+    "id" : "1531742949",
+    "name" : "Frankenstein und der Zirkel der Sieben",
+    "url" : "https://raw.githubusercontent.com/FPST-08/H-rspielzentraleJSON/refs/heads/main/HoerspielData/Data/1531742949.json"
+  },
+  {
+    "artworkURL" : "https://is1-ssl.mzstatic.com/image/thumb/Music116/v4/b0/e1/e7/b0e1e727-ea18-2470-5a38-17afa682e40e/4260507180872_3000.jpg/1024x1024ac.jpg",
+    "id" : "1540197406",
+    "name" : "Akte Witz",
+    "url" : "https://raw.githubusercontent.com/FPST-08/H-rspielzentraleJSON/refs/heads/main/HoerspielData/Data/1540197406.json"
+  },
+  {
+    "artworkURL" : "https://is1-ssl.mzstatic.com/image/thumb/AMCArtistImages126/v4/03/03/78/03037820-10bf-9a1b-1011-49f09c68b5b9/8c09c594-50ed-4afd-b120-a9f4de36e7c3_ami-identity-989880ff06d62bb0ca5611d446a056df-2023-11-08T08-03-32.392Z_cropped.png/1024x1024bb.jpg",
+    "id" : "1540736878",
+    "name" : "Und auf Erden Stille",
+    "url" : "https://raw.githubusercontent.com/FPST-08/H-rspielzentraleJSON/refs/heads/main/HoerspielData/Data/1540736878.json"
+  },
+  {
+    "artworkURL" : "https://is1-ssl.mzstatic.com/image/thumb/Music221/v4/c5/ba/45/c5ba450c-fb21-cb48-469b-38a1f9db5454/cover.jpg/1024x1024ac.jpg",
+    "id" : "1550307090",
+    "name" : "Die 3 Senioren",
+    "url" : "https://raw.githubusercontent.com/FPST-08/H-rspielzentraleJSON/refs/heads/main/HoerspielData/Data/1550307090.json"
+  },
+  {
+    "artworkURL" : "https://is1-ssl.mzstatic.com/image/thumb/Features115/v4/66/63/b5/6663b573-341a-cbe9-587a-c81bff93e7df/mzl.wnbnobae.jpg/1024x1024bb.jpg",
+    "id" : "1553809713",
+    "name" : "Sherlock Holmes - Die neuen Fälle",
+    "url" : "https://raw.githubusercontent.com/FPST-08/H-rspielzentraleJSON/refs/heads/main/HoerspielData/Data/1553809713.json"
+  },
+  {
+    "artworkURL" : "https://is1-ssl.mzstatic.com/image/thumb/Features125/v4/f2/39/66/f2396677-2e8d-3a87-1cc2-a25311293c34/mzl.iudlnkvq.jpg/1024x1024bb.jpg",
+    "id" : "1553810039",
+    "name" : "Der junge Sherlock Holmes",
+    "url" : "https://raw.githubusercontent.com/FPST-08/H-rspielzentraleJSON/refs/heads/main/HoerspielData/Data/1553810039.json"
+  },
+  {
+    "artworkURL" : "https://is1-ssl.mzstatic.com/image/thumb/Music115/v4/43/68/f7/4368f7b2-4c67-b47f-d04b-c5f92a094abf/4260507165015_3000.jpg/1024x1024ac.jpg",
+    "id" : "1567969655",
+    "name" : "Die Denkmaschine",
+    "url" : "https://raw.githubusercontent.com/FPST-08/H-rspielzentraleJSON/refs/heads/main/HoerspielData/Data/1567969655.json"
+  },
+  {
+    "artworkURL" : "https://is1-ssl.mzstatic.com/image/thumb/Music126/v4/76/8e/b3/768eb3d7-0c0b-e226-8650-72df07941145/4066339210776.jpg/1024x1024ac.jpg",
+    "id" : "1576901991",
+    "name" : "Die schwarze Stadt",
+    "url" : "https://raw.githubusercontent.com/FPST-08/H-rspielzentraleJSON/refs/heads/main/HoerspielData/Data/1576901991.json"
+  },
+  {
+    "artworkURL" : "https://is1-ssl.mzstatic.com/image/thumb/Music126/v4/ac/e3/4c/ace34c97-a0db-1f12-7067-4a273c583f89/4260507172808_3000.jpg/1024x1024ac.jpg",
+    "id" : "1578682459",
+    "name" : "Moriarty",
+    "url" : "https://raw.githubusercontent.com/FPST-08/H-rspielzentraleJSON/refs/heads/main/HoerspielData/Data/1578682459.json"
+  },
+  {
+    "artworkURL" : "https://is1-ssl.mzstatic.com/image/thumb/AMCArtistImages221/v4/bc/b9/e2/bcb9e2d5-0d5b-2185-6ced-7ce3fd1e52bd/a95158d6-ccd5-4afd-a671-722279674666_ami-identity-9eef236546957d3a3e10f0517240d25b-2024-10-03T02-38-35.344Z_cropped.png/1024x1024bb.jpg",
+    "id" : "1618789792",
+    "name" : "Hurricane",
+    "url" : "https://raw.githubusercontent.com/FPST-08/H-rspielzentraleJSON/refs/heads/main/HoerspielData/Data/1618789792.json"
+  },
+  {
+    "artworkURL" : "https://is1-ssl.mzstatic.com/image/thumb/Music211/v4/61/0f/98/610f988d-6853-31cb-2583-5be1b65330fb/4260434323915_3000.jpg/1024x1024ac.jpg",
+    "id" : "1625324182",
+    "name" : "Der Sohn des Hades",
+    "url" : "https://raw.githubusercontent.com/FPST-08/H-rspielzentraleJSON/refs/heads/main/HoerspielData/Data/1625324182.json"
+  },
+  {
+    "artworkURL" : "https://is1-ssl.mzstatic.com/image/thumb/Music221/v4/27/f6/9b/27f69be1-86d0-a1fb-7395-375d9eb202e7/4260507199591_3000.jpg/1024x1024ac.jpg",
+    "id" : "1640502543",
+    "name" : "Die größten Fälle des BND",
+    "url" : "https://raw.githubusercontent.com/FPST-08/H-rspielzentraleJSON/refs/heads/main/HoerspielData/Data/1640502543.json"
+  },
+  {
+    "artworkURL" : "https://is1-ssl.mzstatic.com/image/thumb/Music126/v4/c7/80/aa/c780aacc-e80f-f8ee-f84a-2e694fabeed9/cover.jpg/1024x1024ac.jpg",
+    "id" : "1685239044",
+    "name" : "Kommissar Tacheles",
+    "url" : "https://raw.githubusercontent.com/FPST-08/H-rspielzentraleJSON/refs/heads/main/HoerspielData/Data/1685239044.json"
+  },
+  {
+    "artworkURL" : "https://is1-ssl.mzstatic.com/image/thumb/Features116/v4/99/69/ca/9969ca79-a570-7b67-9a74-6ca0c03f66ea/mzl.zccvksgl.jpg/1024x1024bb.jpg",
+    "id" : "1689109274",
+    "name" : "Sherlock Holmes Legends",
+    "url" : "https://raw.githubusercontent.com/FPST-08/H-rspielzentraleJSON/refs/heads/main/HoerspielData/Data/1689109274.json"
+  },
+  {
+    "artworkURL" : "https://is1-ssl.mzstatic.com/image/thumb/Features124/v4/30/90/56/3090569a-54fc-eb89-e29f-493f04ddd994/pr_source.png/1024x1024bb.jpg",
+    "id" : "175056246",
+    "name" : "Macabros",
+    "url" : "https://raw.githubusercontent.com/FPST-08/H-rspielzentraleJSON/refs/heads/main/HoerspielData/Data/175056246.json"
+  },
+  {
+    "artworkURL" : "https://is1-ssl.mzstatic.com/image/thumb/AMCArtistImages116/v4/79/17/04/7917047d-a242-f263-8d2f-3ca62cd919cd/029cfd05-64d9-48f0-9aaf-75937e1551a8_ami-identity-ea3b3f6825f7a9b7c8542151a001c881-2023-09-08T06-30-49.489Z_cropped.png/1024x1024bb.jpg",
+    "id" : "191548811",
+    "name" : "TKKG",
+    "url" : "https://raw.githubusercontent.com/FPST-08/H-rspielzentraleJSON/refs/heads/main/HoerspielData/Data/191548811.json"
+  },
+  {
+    "artworkURL" : "https://is1-ssl.mzstatic.com/image/thumb/AMCArtistImages122/v4/bf/3f/67/bf3f67e1-32b2-176d-3fc8-9a51bc9b4632/432cd90d-1897-4205-84b0-c392f6da7a89_ami-identity-dfa2574417b199adea25e766b93afcb0-2022-10-20T09-48-07.284Z_cropped.png/1024x1024bb.jpg",
+    "id" : "201306317",
+    "name" : "Die drei ???",
+    "url" : "https://raw.githubusercontent.com/FPST-08/H-rspielzentraleJSON/refs/heads/main/HoerspielData/Data/201306317.json"
+  },
+  {
+    "artworkURL" : "https://is1-ssl.mzstatic.com/image/thumb/Features114/v4/c2/26/69/c2266981-28ff-cd5f-5cc1-fc37d02bd098/pr_source.png/1024x1024bb.jpg",
+    "id" : "201348770",
+    "name" : "Larry Brent",
+    "url" : "https://raw.githubusercontent.com/FPST-08/H-rspielzentraleJSON/refs/heads/main/HoerspielData/Data/201348770.json"
+  },
+  {
+    "artworkURL" : "https://is1-ssl.mzstatic.com/image/thumb/Music/v4/41/a1/8e/41a18e2c-76d6-7cc8-9c91-b62404fec710/cover.jpg/1024x1024ac.jpg",
+    "id" : "203251327",
+    "name" : "Dorian Hunter",
+    "url" : "https://raw.githubusercontent.com/FPST-08/H-rspielzentraleJSON/refs/heads/main/HoerspielData/Data/203251327.json"
+  },
+  {
+    "artworkURL" : "https://is1-ssl.mzstatic.com/image/thumb/Features116/v4/bc/45/b2/bc45b23a-cafd-2317-19d7-314f36d6cc83/mza_13271712291229953045.jpg/1024x1024bb.jpg",
+    "id" : "215716521",
+    "name" : "Benjamin Blümchen",
+    "url" : "https://raw.githubusercontent.com/FPST-08/H-rspielzentraleJSON/refs/heads/main/HoerspielData/Data/215716521.json"
+  },
+  {
+    "artworkURL" : "https://is1-ssl.mzstatic.com/image/thumb/Features114/v4/13/b0/3d/13b03d8e-db82-c15c-33ec-82c4e951a79e/pr_source.png/1024x1024bb.jpg",
+    "id" : "216347875",
+    "name" : "Fünf Freunde",
+    "url" : "https://raw.githubusercontent.com/FPST-08/H-rspielzentraleJSON/refs/heads/main/HoerspielData/Data/216347875.json"
+  },
+  {
+    "artworkURL" : "https://is1-ssl.mzstatic.com/image/thumb/Features116/v4/04/8c/43/048c43b8-5f44-fb43-8317-1a0b19acf11e/mza_1781206241369287591.jpg/1024x1024bb.jpg",
+    "id" : "220152697",
+    "name" : "Bibi und Tina",
+    "url" : "https://raw.githubusercontent.com/FPST-08/H-rspielzentraleJSON/refs/heads/main/HoerspielData/Data/220152697.json"
+  },
+  {
+    "artworkURL" : "https://is1-ssl.mzstatic.com/image/thumb/Music/23/e1/bf/mzi.rixiluzc.jpg/1024x1024ac.jpg",
+    "id" : "251279544",
+    "name" : "Jason Dark",
+    "url" : "https://raw.githubusercontent.com/FPST-08/H-rspielzentraleJSON/refs/heads/main/HoerspielData/Data/251279544.json"
+  },
+  {
+    "artworkURL" : "https://is1-ssl.mzstatic.com/image/thumb/Features125/v4/a3/e1/b5/a3e1b57d-5a8d-9044-61e6-2407c3c79461/mzl.tyyddlus.jpg/1024x1024bb.jpg",
+    "id" : "267092844",
+    "name" : "Die Playmos",
+    "url" : "https://raw.githubusercontent.com/FPST-08/H-rspielzentraleJSON/refs/heads/main/HoerspielData/Data/267092844.json"
+  },
+  {
+    "artworkURL" : "https://is1-ssl.mzstatic.com/image/thumb/Features114/v4/4c/90/29/4c9029f6-cd14-1201-d1d0-36e14bfbd21e/pr_source.png/1024x1024bb.jpg",
+    "id" : "270313904",
+    "name" : "Gruselserie",
+    "url" : "https://raw.githubusercontent.com/FPST-08/H-rspielzentraleJSON/refs/heads/main/HoerspielData/Data/270313904.json"
+  },
+  {
+    "artworkURL" : "https://is1-ssl.mzstatic.com/image/thumb/Music221/v4/a1/3d/4a/a13d4ae0-a700-884d-a083-137512eeb27c/4260507199461_3000.jpg/1024x1024ac.jpg",
+    "id" : "291456784",
+    "name" : "Tony Ballard",
+    "url" : "https://raw.githubusercontent.com/FPST-08/H-rspielzentraleJSON/refs/heads/main/HoerspielData/Data/291456784.json"
+  },
+  {
+    "artworkURL" : "https://is1-ssl.mzstatic.com/image/thumb/Features112/v4/50/d1/40/50d14094-46aa-845f-c410-32637362d92b/mzl.yxqjysgj.jpg/1024x1024bb.jpg",
+    "id" : "293364446",
+    "name" : "Gruselkabinett",
+    "url" : "https://raw.githubusercontent.com/FPST-08/H-rspielzentraleJSON/refs/heads/main/HoerspielData/Data/293364446.json"
+  },
+  {
+    "artworkURL" : "https://is1-ssl.mzstatic.com/image/thumb/Music123/v4/38/93/b1/3893b1c4-18b3-f52d-7086-8bfda0f3cb74/4260507152091_3000.jpg/1024x1024ac.jpg",
+    "id" : "294596568",
+    "name" : "Dreamland Grusel",
+    "url" : "https://raw.githubusercontent.com/FPST-08/H-rspielzentraleJSON/refs/heads/main/HoerspielData/Data/294596568.json"
+  },
+  {
+    "artworkURL" : "https://is1-ssl.mzstatic.com/image/thumb/AMCArtistImages116/v4/cc/fe/ef/ccfeeff6-f7bb-4b47-52ef-bf5c384a6c01/cf9ac1bf-ae95-45ef-8072-3d2b9aacbc47_ami-identity-d85bc19b1eca24f3e76f5543ee507483-2023-11-08T11-18-58.017Z_cropped.png/1024x1024bb.jpg",
+    "id" : "305761269",
+    "name" : "Die drei ??? Kids",
+    "url" : "https://raw.githubusercontent.com/FPST-08/H-rspielzentraleJSON/refs/heads/main/HoerspielData/Data/305761269.json"
+  },
+  {
+    "artworkURL" : "https://is1-ssl.mzstatic.com/image/thumb/Music124/v4/83/6c/b1/836cb149-4c1a-ab5f-abea-81fa7d2dc6e0/4260147772901_1448.jpg/1024x1024ac.jpg",
+    "id" : "310377836",
+    "name" : "Fraktal",
+    "url" : "https://raw.githubusercontent.com/FPST-08/H-rspielzentraleJSON/refs/heads/main/HoerspielData/Data/310377836.json"
+  },
+  {
+    "artworkURL" : "https://is1-ssl.mzstatic.com/image/thumb/Music122/v4/69/78/1e/69781e5a-d77d-45e9-2dd3-fa5a9eaac6d5/pr_source.png/1024x1024bb.jpg",
+    "id" : "329049924",
+    "name" : "Die drei !!!",
+    "url" : "https://raw.githubusercontent.com/FPST-08/H-rspielzentraleJSON/refs/heads/main/HoerspielData/Data/329049924.json"
+  },
+  {
+    "artworkURL" : "https://is1-ssl.mzstatic.com/image/thumb/Features116/v4/22/ad/31/22ad3130-31a8-ab2a-261d-24a5d74f606b/mzl.zetpmddu.png/1024x1024bb.jpg",
+    "id" : "341829716",
+    "name" : "Offenbarung 23",
+    "url" : "https://raw.githubusercontent.com/FPST-08/H-rspielzentraleJSON/refs/heads/main/HoerspielData/Data/341829716.json"
+  },
+  {
+    "artworkURL" : "https://is1-ssl.mzstatic.com/image/thumb/AMCArtistImages221/v4/ae/d0/1b/aed01bd7-0a1f-fd26-a922-dcc6b2714063/ae217184-c2ee-40e3-b9a9-0fc0c60d204e_ami-identity-d284b095048a1f3768f8dcac033e1afe-2024-06-11T11-29-52.334Z_cropped.png/1024x1024bb.jpg",
+    "id" : "374902873",
+    "name" : "Teufelskicker",
+    "url" : "https://raw.githubusercontent.com/FPST-08/H-rspielzentraleJSON/refs/heads/main/HoerspielData/Data/374902873.json"
+  },
+  {
+    "artworkURL" : "https://is1-ssl.mzstatic.com/image/thumb/Music118/v4/6b/15/bb/6b15bb92-5e0b-3d79-119f-c5a407420d89/9783941082311_1448.jpg/1024x1024ac.jpg",
+    "id" : "375978916",
+    "name" : "Die Ferienbande",
+    "url" : "https://raw.githubusercontent.com/FPST-08/H-rspielzentraleJSON/refs/heads/main/HoerspielData/Data/375978916.json"
+  },
+  {
+    "artworkURL" : "https://is1-ssl.mzstatic.com/image/thumb/Features114/v4/5e/d8/15/5ed81589-0bb2-c318-6a98-f2958e03bc85/pr_source.png/1024x1024bb.jpg",
+    "id" : "392295539",
+    "name" : "Detektiv Kolumbus & Sohn",
+    "url" : "https://raw.githubusercontent.com/FPST-08/H-rspielzentraleJSON/refs/heads/main/HoerspielData/Data/392295539.json"
+  },
+  {
+    "artworkURL" : "https://is1-ssl.mzstatic.com/image/thumb/Music126/v4/cd/f2/e2/cdf2e2e7-29e5-429b-a6bb-bcf969802d6d/859771569243_cover.jpg/1024x1024ac.jpg",
+    "id" : "395691370",
+    "name" : "Lady Bedfort",
+    "url" : "https://raw.githubusercontent.com/FPST-08/H-rspielzentraleJSON/refs/heads/main/HoerspielData/Data/395691370.json"
+  },
+  {
+    "artworkURL" : "https://is1-ssl.mzstatic.com/image/thumb/Music60/v4/58/47/ac/5847acf3-a1f3-ca4d-7688-92102fc0963e/4260147779122_1448.jpg/1024x1024ac.jpg",
+    "id" : "404571576",
+    "name" : "Butler Parker",
+    "url" : "https://raw.githubusercontent.com/FPST-08/H-rspielzentraleJSON/refs/heads/main/HoerspielData/Data/404571576.json"
+  },
+  {
+    "artworkURL" : "https://is1-ssl.mzstatic.com/image/thumb/Features124/v4/b0/8b/99/b08b9916-db25-9fc0-90ee-10228604f313/pr_source.png/1024x1024bb.jpg",
+    "id" : "4088486",
+    "name" : "Scotland Yard",
+    "url" : "https://raw.githubusercontent.com/FPST-08/H-rspielzentraleJSON/refs/heads/main/HoerspielData/Data/4088486.json"
+  },
+  {
+    "artworkURL" : "https://is1-ssl.mzstatic.com/image/thumb/Music115/v4/8a/41/5b/8a415b4d-a806-c78c-413e-94c25428d162/4260507167330_3000.jpg/1024x1024ac.jpg",
+    "id" : "413476253",
+    "name" : "Heff Der Chef",
+    "url" : "https://raw.githubusercontent.com/FPST-08/H-rspielzentraleJSON/refs/heads/main/HoerspielData/Data/413476253.json"
+  },
+  {
+    "artworkURL" : "https://is1-ssl.mzstatic.com/image/thumb/Features126/v4/01/4a/b1/014ab175-867e-f925-805a-c80e88e3084c/mza_7082555692696879542.jpg/1024x1024bb.jpg",
+    "id" : "41480004",
+    "name" : "Bibi Blocksberg",
+    "url" : "https://raw.githubusercontent.com/FPST-08/H-rspielzentraleJSON/refs/heads/main/HoerspielData/Data/41480004.json"
+  },
+  {
+    "artworkURL" : "https://is1-ssl.mzstatic.com/image/thumb/Features116/v4/28/36/65/283665df-c0df-6127-29b9-93c4c56ad11b/mzl.cevsghjg.jpg/1024x1024bb.jpg",
+    "id" : "4597171",
+    "name" : "John Sinclair",
+    "url" : "https://raw.githubusercontent.com/FPST-08/H-rspielzentraleJSON/refs/heads/main/HoerspielData/Data/4597171.json"
+  },
+  {
+    "artworkURL" : "https://is1-ssl.mzstatic.com/image/thumb/Music113/v4/13/b0/a5/13b0a51e-5497-cc94-716d-1af8935f92cc/4260507157522_3000.jpg/1024x1024ac.jpg",
+    "id" : "548847081",
+    "name" : "Geister-Schocker",
+    "url" : "https://raw.githubusercontent.com/FPST-08/H-rspielzentraleJSON/refs/heads/main/HoerspielData/Data/548847081.json"
+  },
+  {
+    "artworkURL" : "https://is1-ssl.mzstatic.com/image/thumb/Features115/v4/3a/c1/dc/3ac1dc48-46c9-7616-8de7-b2de5ec1e2eb/mzl.rnluiogq.jpg/1024x1024bb.jpg",
+    "id" : "553186332",
+    "name" : "Sherlock Holmes & Co",
+    "url" : "https://raw.githubusercontent.com/FPST-08/H-rspielzentraleJSON/refs/heads/main/HoerspielData/Data/553186332.json"
+  },
+  {
+    "artworkURL" : "https://is1-ssl.mzstatic.com/image/thumb/Features115/v4/78/68/6b/78686bdc-c180-efbf-7aba-a848de594053/pr_source.png/1024x1024bb.jpg",
+    "id" : "626774221",
+    "name" : "Professor van Dusen",
+    "url" : "https://raw.githubusercontent.com/FPST-08/H-rspielzentraleJSON/refs/heads/main/HoerspielData/Data/626774221.json"
+  },
+  {
+    "artworkURL" : "https://is1-ssl.mzstatic.com/image/thumb/AMCArtistImages116/v4/3b/8d/f6/3b8df672-8db7-c4e5-0a76-912725d52712/7a7305b4-efdd-4e53-9392-16cee759d2a1_ami-identity-78ff2ea7d15788f29900464411a3ff39-2023-09-29T13-07-37.472Z_cropped.png/1024x1024bb.jpg",
+    "id" : "706388519",
+    "name" : "VIDAN",
+    "url" : "https://raw.githubusercontent.com/FPST-08/H-rspielzentraleJSON/refs/heads/main/HoerspielData/Data/706388519.json"
+  },
+  {
+    "artworkURL" : "https://is1-ssl.mzstatic.com/image/thumb/Features114/v4/39/57/c0/3957c078-da6e-c3b8-bd9b-42c5d47e5cd8/pr_source.png/1024x1024bb.jpg",
+    "id" : "876466527",
+    "name" : "Pater Brown",
+    "url" : "https://raw.githubusercontent.com/FPST-08/H-rspielzentraleJSON/refs/heads/main/HoerspielData/Data/876466527.json"
+  },
+  {
+    "artworkURL" : "https://is1-ssl.mzstatic.com/image/thumb/Features124/v4/15/fa/89/15fa891c-53ec-fc8c-2329-c255bdf911f6/pr_source.png/1024x1024bb.jpg",
+    "id" : "895394127",
+    "name" : "Mimi Rutherfurt",
+    "url" : "https://raw.githubusercontent.com/FPST-08/H-rspielzentraleJSON/refs/heads/main/HoerspielData/Data/895394127.json"
+  },
+  {
+    "artworkURL" : "https://is1-ssl.mzstatic.com/image/thumb/Features124/v4/cc/45/7e/cc457eaa-3524-4a3c-5f42-1ffadb6602bb/pr_source.png/1024x1024bb.jpg",
+    "id" : "934803895",
+    "name" : "Heliosphere 2265",
+    "url" : "https://raw.githubusercontent.com/FPST-08/H-rspielzentraleJSON/refs/heads/main/HoerspielData/Data/934803895.json"
+  },
+  {
+    "artworkURL" : "https://is1-ssl.mzstatic.com/image/thumb/Features125/v4/ae/0b/f2/ae0bf2a5-9a7c-261a-1551-4cfb7a916019/mzl.snzmfhuy.jpg/1024x1024bb.jpg",
+    "id" : "970177710",
+    "name" : "Sherlock Holmes Chronicles",
+    "url" : "https://raw.githubusercontent.com/FPST-08/H-rspielzentraleJSON/refs/heads/main/HoerspielData/Data/970177710.json"
+  },
+  {
+    "artworkURL" : "https://is1-ssl.mzstatic.com/image/thumb/Music221/v4/7b/42/e6/7b42e616-37fb-d38a-94d9-d22d4e6a43fe/4260507196972_3000.jpg/1024x1024ac.jpg",
+    "id" : "970663958",
+    "name" : "Die rätselhaften Fälle des Pater Brown",
+    "url" : "https://raw.githubusercontent.com/FPST-08/H-rspielzentraleJSON/refs/heads/main/HoerspielData/Data/970663958.json"
+  }
+]

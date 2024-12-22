@@ -51,7 +51,7 @@ struct SpeicherView: View {
             Section {
                 Picker("Cover-Größe", selection: $coversize) {
                     ForEach(CoverSize.allSizes, id: \.self) { size in
-                        Text("\(size.description) (\(size.width.formatted())px)")
+                        Text("\(size.description) (\(size.width, format: .number.grouping(.never))px)")
                             .tag(size.description)
                     }
                 }

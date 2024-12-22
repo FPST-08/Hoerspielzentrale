@@ -262,11 +262,11 @@ enum CoverSize: Hashable {
     var width: Double {
         switch self {
         case .small:
-            256
-        case .normal:
             512
-        case .big:
+        case .normal:
             768
+        case .big:
+            1024
         }
     }
     

@@ -70,6 +70,7 @@
 		D04E59F62C762A17005D0132 /* ButtonStyles.swift in Sources */ = {isa = PBXBuildFile; fileRef = D04E59F52C762A17005D0132 /* ButtonStyles.swift */; };
 		D04E59FB2C7656FB005D0132 /* AcknowList in Frameworks */ = {isa = PBXBuildFile; productRef = D04E59FA2C7656FB005D0132 /* AcknowList */; };
 		D04E59FD2C765938005D0132 /* SmartskipSettingsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = D04E59FC2C765938005D0132 /* SmartskipSettingsView.swift */; };
+		D05002F62D18123100D4B563 /* NotificationView.swift in Sources */ = {isa = PBXBuildFile; fileRef = D05002F52D18123100D4B563 /* NotificationView.swift */; };
 		D05254142CC9562500F50F22 /* StoredTrack.swift in Sources */ = {isa = PBXBuildFile; fileRef = D05254132CC9562500F50F22 /* StoredTrack.swift */; };
 		D05254152CC9562500F50F22 /* StoredTrack.swift in Sources */ = {isa = PBXBuildFile; fileRef = D05254132CC9562500F50F22 /* StoredTrack.swift */; };
 		D05254172CC9563A00F50F22 /* SendableStoredTrack.swift in Sources */ = {isa = PBXBuildFile; fileRef = D05254162CC9563A00F50F22 /* SendableStoredTrack.swift */; };
@@ -84,6 +85,7 @@
 		D083C52D2CC3C6FF0041CFC8 /* LibrarySectionView.swift in Sources */ = {isa = PBXBuildFile; fileRef = D083C52C2CC3C6FF0041CFC8 /* LibrarySectionView.swift */; };
 		D08CDE0E2C5CD43000AF1D59 /* Connectivity in Frameworks */ = {isa = PBXBuildFile; productRef = D08CDE0D2C5CD43000AF1D59 /* Connectivity */; };
 		D09B2C672CC7A6E9003448FF /* NetworkUnavailable.swift in Sources */ = {isa = PBXBuildFile; fileRef = D09B2C662CC7A6E9003448FF /* NetworkUnavailable.swift */; };
+		D09ED0142D1883B5008DC4C2 /* NotificationSeriesView.swift in Sources */ = {isa = PBXBuildFile; fileRef = D09ED0132D1883B5008DC4C2 /* NotificationSeriesView.swift */; };
 		D0A3A7DC2C26A9FF00F029B0 /* ProgressCapsuleView.swift in Sources */ = {isa = PBXBuildFile; fileRef = D0A3A7DB2C26A9FF00F029B0 /* ProgressCapsuleView.swift */; };
 		D0A3A7DF2C26B2E900F029B0 /* Shortcuts.swift in Sources */ = {isa = PBXBuildFile; fileRef = D05E092E2C25A5EE0091E552 /* Shortcuts.swift */; };
 		D0A68B2A2C319C1000E03B5D /* NavigationManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = D0A68B292C319C1000E03B5D /* NavigationManager.swift */; };
@@ -206,6 +208,7 @@
 		D044E6462CF320DF00DD65BC /* Series.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Series.swift; sourceTree = "<group>"; };
 		D04E59F52C762A17005D0132 /* ButtonStyles.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ButtonStyles.swift; sourceTree = "<group>"; };
 		D04E59FC2C765938005D0132 /* SmartskipSettingsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SmartskipSettingsView.swift; sourceTree = "<group>"; };
+		D05002F52D18123100D4B563 /* NotificationView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NotificationView.swift; sourceTree = "<group>"; };
 		D05254132CC9562500F50F22 /* StoredTrack.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StoredTrack.swift; sourceTree = "<group>"; };
 		D05254162CC9563A00F50F22 /* SendableStoredTrack.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SendableStoredTrack.swift; sourceTree = "<group>"; };
 		D05E09252C25A5EE0091E552 /* WidgetKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = WidgetKit.framework; path = /System/Library/Frameworks/WidgetKit.framework; sourceTree = "<absolute>"; };
@@ -220,6 +223,7 @@
 		D083C52A2CC2F8700041CFC8 /* ListView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ListView.swift; sourceTree = "<group>"; };
 		D083C52C2CC3C6FF0041CFC8 /* LibrarySectionView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LibrarySectionView.swift; sourceTree = "<group>"; };
 		D09B2C662CC7A6E9003448FF /* NetworkUnavailable.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NetworkUnavailable.swift; sourceTree = "<group>"; };
+		D09ED0132D1883B5008DC4C2 /* NotificationSeriesView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NotificationSeriesView.swift; sourceTree = "<group>"; };
 		D0A3A7DB2C26A9FF00F029B0 /* ProgressCapsuleView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProgressCapsuleView.swift; sourceTree = "<group>"; };
 		D0A68B292C319C1000E03B5D /* NavigationManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NavigationManager.swift; sourceTree = "<group>"; };
 		D0A68B2B2C32DC6000E03B5D /* HoerspielDetailView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HoerspielDetailView.swift; sourceTree = "<group>"; };
@@ -388,6 +392,8 @@
 				17AA974F2C037BEF005F7010 /* SettingsView.swift */,
 				D044E63F2CF0E96A00DD65BC /* ChooseSeries */,
 				177F4EDD2C1DF292006346EE /* Acknowledgements.swift */,
+				D05002F52D18123100D4B563 /* NotificationView.swift */,
+				D09ED0132D1883B5008DC4C2 /* NotificationSeriesView.swift */,
 				D0BE77512CD55F80007244AD /* SpeicherView.swift */,
 				D04E59FC2C765938005D0132 /* SmartskipSettingsView.swift */,
 			);
@@ -712,6 +718,7 @@
 				17AA976A2C037BF0005F7010 /* VolumeSlider.swift in Sources */,
 				D044E6472CF320DF00DD65BC /* Series.swift in Sources */,
 				D04E59F62C762A17005D0132 /* ButtonStyles.swift in Sources */,
+				D09ED0142D1883B5008DC4C2 /* NotificationSeriesView.swift in Sources */,
 				17026C9E2C1B70D200AE7E0A /* DebugView.swift in Sources */,
 				D0A68B2E2C32E00400E03B5D /* MetaDataCodable.swift in Sources */,
 				D044E6402CF0E96A00DD65BC /* SeriesSelectionCircleView.swift in Sources */,
@@ -727,6 +734,7 @@
 				D0192C062CE93FF30094C86F /* RotationModifier.swift in Sources */,
 				D0A68B2C2C32DC6000E03B5D /* HoerspielDetailView.swift in Sources */,
 				D0192C042CE93FDF0094C86F /* SafeAreaInsets.swift in Sources */,
+				D05002F62D18123100D4B563 /* NotificationView.swift in Sources */,
 				D0192C022CE93FCC0094C86F /* CoverSizeModifier.swift in Sources */,
 				D023A2652C21F0CC00F812BA /* HoerspielExtensions.swift in Sources */,
 				17AA975B2C037BF0005F7010 /* ContentView.swift in Sources */,

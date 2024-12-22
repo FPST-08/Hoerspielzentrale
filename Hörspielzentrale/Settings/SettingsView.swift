@@ -63,6 +63,11 @@ struct SettingsView: View {
                                   systemName: "plus.square.fill.on.square.fill",
                                   backgroundColor: Color.indigo)
                     }
+                    NavigationLink {
+                        NotificationView()
+                    } label: {
+                        CuteLabel(title: "Benachrichtigungen", systemName: "bell.badge", backgroundColor: .red)
+                    }
                 }
                 .fullScreenCover(isPresented: $showSeriesCover) {
                     NavigationStack {

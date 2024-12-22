@@ -11,4 +11,10 @@ extension Defaults.Keys {
     static let sortFilter = Key<SortingType>("SortFilter", default: SortingType.releaseDate)
     
     static let displayedSortArtists = Key<[SendableSeries]>("DisplayedSortArtists", default: [])
+    
+    static let sendNotificationsForPreRelease = Key<Bool>("SendNotificationsForPreRelease", default: true)
+    
+    static let seriesWithDiabledNotifications = Key<[SendableSeries]>("SeriesWithDisabledNotifications", default: [])
+    
+    static let notificationsEnabled = Key<Bool>("NotificationsEnabled", default: true)
 }

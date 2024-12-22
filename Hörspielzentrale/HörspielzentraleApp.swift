@@ -9,6 +9,7 @@ import AppIntents
 import BackgroundTasks
 import CloudKitSyncMonitor
 import Connectivity
+import Defaults
 import MediaPlayer
 import MusicKit
 import OSLog
@@ -50,6 +51,9 @@ struct Hörspielzentrale: App {
     
     /// The current scenephase of the app
     @Environment(\.scenePhase) private var phase
+    
+    /// An app delegate to handle deeplinks on notifications
+    @UIApplicationDelegateAdaptor(AppDelegate.self) private var delegate
 
     // MARK: - View
     var body: some Scene {
@@ -102,37 +106,7 @@ struct Hörspielzentrale: App {
             }
         }
         .backgroundTask(.appRefresh("newReleasesBackgroundTask")) { _ in
-            #if DEBUG
-            do {
-                do {
-                    let content = UNMutableNotificationContent()
-                    content.title = "Background-Check started"
-                    content.subtitle = "Let's see how it goes"
-                    content.sound = UNNotificationSound.default
-                    let trigger = UNTimeIntervalNotificationTrigger(timeInterval: 1, repeats: false)
-                    let request = UNNotificationRequest(identifier: UUID().uuidString,
-                                                        content: content,
-                                                        trigger: trigger)
-                    try await UNUserNotificationCenter.current().add(request)
-                }
-                
-                let added = try await seriesManager.checkForNewReleases()
-                
-                do {
-                    let content = UNMutableNotificationContent()
-                    content.title = "Background-Check finished"
-                    content.subtitle = "\(added.count) new hoerspiels were found"
-                    content.sound = UNNotificationSound.default
-                    let trigger = UNTimeIntervalNotificationTrigger(timeInterval: 1, repeats: false)
-                    let request = UNNotificationRequest(identifier: UUID().uuidString,
-                                                        content: content,
-                                                        trigger: trigger)
-                    try await UNUserNotificationCenter.current().add(request)
-                }
-            } catch {
-                Logger.data.fullError(error, sendToTelemetryDeck: true)
-            }
-            #endif
+            await runBackgroundTask()
         }
     }
     
@@ -143,9 +117,9 @@ struct Hörspielzentrale: App {
         let request = BGAppRefreshTaskRequest(identifier: "newReleasesBackgroundTask")
         do {
             try BGTaskScheduler.shared.submit(request)
-            Logger.data.info("Requested app refresh")
+            Logger.backgroundRefresh.info("Requested app refresh")
         } catch {
-            Logger.data.fullError(error, sendToTelemetryDeck: true)
+            Logger.backgroundRefresh.fullError(error, sendToTelemetryDeck: true)
         }
     }
     
@@ -266,4 +240,22 @@ struct Hörspielzentrale: App {
         }
     }
     // swiftlint:enable function_body_length
+}
+
+
+final class AppDelegate: NSObject, UIApplicationDelegate {
+    func application(_ application: UIApplication, willFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey : Any]? = nil) -> Bool {
+        UNUserNotificationCenter.current().delegate = self
+        return true
+    }
+}
+
+extension AppDelegate: UNUserNotificationCenterDelegate {
+    func userNotificationCenter(_ center: UNUserNotificationCenter, didReceive response: UNNotificationResponse) async {
+        guard
+            let urlString = response.notification.request.content.userInfo["url"] as? String,
+            let url = URL(string: urlString)
+        else { return }
+        await UIApplication.shared.open(url)
+    }
 }

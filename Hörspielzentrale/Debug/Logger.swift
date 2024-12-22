@@ -56,6 +56,9 @@ extension Logger {
     /// Used by the imageCache class
     static let imageCache = Logger(subsystem: subsystem, category: "ImageCache")
     
+    /// Used by background tasks
+    static let backgroundRefresh = Logger(subsystem: subsystem, category: "BackgroundRefresh")
+    
     /// A function to convienently log all errors
     ///
     ///  This function will log the error to the console but also send this data to TelemetryDeck.

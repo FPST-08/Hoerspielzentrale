@@ -86,6 +86,7 @@
 		D08CDE0E2C5CD43000AF1D59 /* Connectivity in Frameworks */ = {isa = PBXBuildFile; productRef = D08CDE0D2C5CD43000AF1D59 /* Connectivity */; };
 		D09B2C672CC7A6E9003448FF /* NetworkUnavailable.swift in Sources */ = {isa = PBXBuildFile; fileRef = D09B2C662CC7A6E9003448FF /* NetworkUnavailable.swift */; };
 		D09ED0142D1883B5008DC4C2 /* NotificationSeriesView.swift in Sources */ = {isa = PBXBuildFile; fileRef = D09ED0132D1883B5008DC4C2 /* NotificationSeriesView.swift */; };
+		D09ED0182D18AE20008DC4C2 /* BackgroundTasks.swift in Sources */ = {isa = PBXBuildFile; fileRef = D09ED0172D18AE20008DC4C2 /* BackgroundTasks.swift */; };
 		D0A3A7DC2C26A9FF00F029B0 /* ProgressCapsuleView.swift in Sources */ = {isa = PBXBuildFile; fileRef = D0A3A7DB2C26A9FF00F029B0 /* ProgressCapsuleView.swift */; };
 		D0A3A7DF2C26B2E900F029B0 /* Shortcuts.swift in Sources */ = {isa = PBXBuildFile; fileRef = D05E092E2C25A5EE0091E552 /* Shortcuts.swift */; };
 		D0A68B2A2C319C1000E03B5D /* NavigationManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = D0A68B292C319C1000E03B5D /* NavigationManager.swift */; };
@@ -224,6 +225,7 @@
 		D083C52C2CC3C6FF0041CFC8 /* LibrarySectionView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LibrarySectionView.swift; sourceTree = "<group>"; };
 		D09B2C662CC7A6E9003448FF /* NetworkUnavailable.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NetworkUnavailable.swift; sourceTree = "<group>"; };
 		D09ED0132D1883B5008DC4C2 /* NotificationSeriesView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NotificationSeriesView.swift; sourceTree = "<group>"; };
+		D09ED0172D18AE20008DC4C2 /* BackgroundTasks.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BackgroundTasks.swift; sourceTree = "<group>"; };
 		D0A3A7DB2C26A9FF00F029B0 /* ProgressCapsuleView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProgressCapsuleView.swift; sourceTree = "<group>"; };
 		D0A68B292C319C1000E03B5D /* NavigationManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NavigationManager.swift; sourceTree = "<group>"; };
 		D0A68B2B2C32DC6000E03B5D /* HoerspielDetailView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HoerspielDetailView.swift; sourceTree = "<group>"; };
@@ -427,6 +429,7 @@
 				17026C9F2C1B745000AE7E0A /* Ho-rspielzentrale-Info.plist */,
 				D0027B022CC439AF00309B82 /* .swiftlint.yml */,
 				17AA97332C037B55005F7010 /* HörspielzentraleApp.swift */,
+				D09ED0172D18AE20008DC4C2 /* BackgroundTasks.swift */,
 				17AA97472C037BEF005F7010 /* ContentView.swift */,
 				D0A68B292C319C1000E03B5D /* NavigationManager.swift */,
 				D01067CD2D0C825A00EE4126 /* Defaults.swift */,
@@ -790,6 +793,7 @@
 				D05E09412C25C7AF0091E552 /* DataManager.swift in Sources */,
 				17AA97572C037BF0005F7010 /* CodableHoerspiel.swift in Sources */,
 				D0A3A7DF2C26B2E900F029B0 /* Shortcuts.swift in Sources */,
+				D09ED0182D18AE20008DC4C2 /* BackgroundTasks.swift in Sources */,
 				17AA97622C037BF0005F7010 /* PlayPauseButton.swift in Sources */,
 				D0F902BF2D0973D500874C8A /* SectionHeader.swift in Sources */,
 				17AA975C2C037BF0005F7010 /* HoerspielListView.swift in Sources */,

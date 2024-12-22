@@ -171,12 +171,16 @@ struct Hörspielzentrale: App {
             }
             navigationManager.search(for: searchTerm)
         } else if action == "open-hoerspiel" {
-            guard let id = components.queryItems?.first(where: { $0.name == "id" })?.value else {
-                Logger.url.error("Hoerspiel id not found")
-                return
-            }
-            Task {
-                await navigationManager.openHoerspiel(albumID: id)
+            if let id = components.queryItems?.first(where: { $0.name == "id" })?.value {
+                Task {
+                    await navigationManager.openHoerspiel(albumID: id)
+                }
+            } else if let upc = components.queryItems?.first(where: { $0.name == "upc" })?.value {
+                Task {
+                    await navigationManager.openHoerspiel(upc: upc)
+                }
+            } else {
+                Logger.url.error("Failed to open url, missing id or upc")
             }
         }
     }

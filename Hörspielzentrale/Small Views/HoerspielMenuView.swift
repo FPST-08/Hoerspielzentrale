@@ -75,7 +75,7 @@ struct HoerspielMenuView<Content: View>: View {
                     Label("Von Anfang an", systemImage: "arrow.uturn.left")
                 }
                 
-                ShareLink(item: URL(string: "hoerspielzentrale://open-hoerspiel?id=\(hoerspiel.albumID)")!) {
+                ShareLink(item: URL(string: "hoerspielzentrale://open-hoerspiel?upc=\(hoerspiel.upc)")!) {
                     Label("Teilen", systemImage: "square.and.arrow.up")
                 }
                 

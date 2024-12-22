@@ -53,6 +53,9 @@ extension Logger {
     /// Used by the series manager
     static let seriesManager = Logger(subsystem: subsystem, category: "SeriesManager")
     
+    /// Used by the imageCache class
+    static let imageCache = Logger(subsystem: subsystem, category: "ImageCache")
+    
     /// A function to convienently log all errors
     ///
     ///  This function will log the error to the console but also send this data to TelemetryDeck.

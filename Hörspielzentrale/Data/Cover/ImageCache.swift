@@ -154,6 +154,91 @@ Deleting image with upc \(upc) since its size of \(size) is not equal to the sto
         }
     }
     
+    ///  Provides the cover for a specified ``SendableSeries``
+    /// - Parameter hoerspiel: The ``SendableSeries`` used to find the corresponding Cover
+    /// - Returns: Returns an `Image`if the cover was successfully retrieved
+    ///
+    /// This function is building on top of ``uiimage(for:)``and converts its result to an `Image`
+    ///
+    /// - Note: If the cover is needed as an UIImage, call ``uiimage(for:)`` directly
+    func image(for sendableSeries: SendableSeries) async -> Image? {
+        if let uiimage = await uiimage(for: sendableSeries) {
+            return Image(uiImage: uiimage)
+        } else {
+            return nil
+        }
+    }
+    
+    /// Loades the UIImage for a ``SendableSeries``
+    /// - Parameter sendableSeries: The sendableseries
+    /// - Returns: Returns the `UIImage` if possible, otherwise nil
+    func uiimage(for sendableSeries: SendableSeries) async -> UIImage? {
+        do {
+            if sendableSeries.musicItemID == "" {
+                return nil
+            }
+            #if DEBUG
+            if sendableSeries.musicItemID == "DEBUG" {
+                return UIImage(color: UIColor.random)
+            }
+            #endif
+            let musicItemID = sendableSeries.musicItemID
+            if let uiimage = cache.object(forKey: musicItemID as NSString) {
+                Logger.data.info("Image for \(musicItemID) was read from Cache")
+                return uiimage
+            } else {
+                let fileURL = documentsDirectoryPath.appendingPathComponent("\(musicItemID).jpg")
+                
+                if let imageData = try? Data(contentsOf: fileURL) {
+                    guard let uiimage = UIImage(data: imageData) else {
+                        return nil
+                    }
+                    cache.setObject(uiimage, forKey: musicItemID as NSString)
+                    Logger.data.info("Image for \(musicItemID) was read from disk")
+                    return uiimage
+                } else {
+                    Logger.data.info("Image for \(musicItemID) is not locally available")
+                    return await loadImageFromRemote(for: sendableSeries)
+                }
+            }
+        }
+    }
+    
+    /// Loads the artist image from Apple Music
+    /// - Parameter series: The corresponding series
+    /// - Returns: Returns the `UIImage`if possible, otherwise nil
+    func loadImageFromRemote(for series: SendableSeries) async -> UIImage? {
+        do {
+            var request = MusicCatalogResourceRequest<Artist>(matching: \.id, equalTo: MusicItemID(series.musicItemID))
+            request.limit = 1
+            
+            guard let artist = try await request.response().items.first else {
+                Logger.imageCache.error("Unable to get first item of ressource request response")
+                return nil
+            }
+            
+            guard let url = artist.artwork?.url(width: 1024, height: 1024) else {
+                Logger.imageCache.error("Unable to get artwork url")
+                return nil
+            }
+            let (data, _) = try await URLSession.shared.data(from: url)
+            
+            guard let uiimage = UIImage(data: data) else {
+                Logger.imageCache.error("Cannot convert data to uiimage")
+                return nil
+            }
+            if let data = uiimage.jpegData(compressionQuality: 0.8) {
+                let filename = documentsDirectoryPath
+                    .appendingPathComponent("\(series.musicItemID).jpg")
+                try? data.write(to: filename, options: .atomic)
+                Logger.imageCache.info("Image for \(series.musicItemID) was fetched from Apple Music")
+                return uiimage
+            }
+        } catch {
+            Logger.imageCache.fullError(error, sendToTelemetryDeck: true)
+        }
+        return nil
+    }
 }
 
 /// The Size of all Covers saved locally

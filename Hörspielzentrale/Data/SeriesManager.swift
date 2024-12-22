@@ -251,7 +251,7 @@ Fetching batch of \(currentBadge.first?.title ?? "N/A") by \(currentBadge.first?
 Daten für \(response.items.first?.title ?? "N/A") und \(chunk.count - 1) \ 
 weitere wurde geladen
 """
-                currentProgressValue += 0.6 / Double((albumsWithoutTracks.count / 25))
+                currentProgressValue += (1 / (Double(albumsWithoutTracks.count) / 25)) * 0.6
             }
         }
         

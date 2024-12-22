@@ -247,6 +247,11 @@ Fetching batch of \(currentBadge.first?.title ?? "N/A") by \(currentBadge.first?
             requst.properties.append(.tracks)
             if let response = try? await requst.response() {
                 albums.append(contentsOf: response.items)
+                currentProgressLabel = """
+Daten für \(response.items.first?.title ?? "N/A") und \(chunk.count - 1) \ 
+weitere wurde geladen
+"""
+                currentProgressValue += 0.6 / Double((albumsWithoutTracks.count / 25))
             }
         }
         

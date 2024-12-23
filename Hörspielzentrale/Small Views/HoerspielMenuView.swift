@@ -86,6 +86,10 @@ struct HoerspielMenuView<Content: View>: View {
                                 persistentIdentifier,
                                 keypath: \.showInUpNext,
                                 to: !hoerspiel.showInUpNext)
+                            try await dataManager.manager.update(
+                                persistentIdentifier,
+                                keypath: \.addedToUpNext,
+                                to: Date.now)
                         } catch {
                             Logger.data.fullError(error, sendToTelemetryDeck: true)
                         }

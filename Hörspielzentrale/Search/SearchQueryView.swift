@@ -84,6 +84,7 @@ struct SearchQueryView: View {
                                 }
                                 Button("Zu als Nächstes hinzufügen", systemImage: "plus.circle") {
                                     updateAll(keypath: \.showInUpNext, to: true)
+                                    updateAll(keypath: \.addedToUpNext, to: Date.now)
                                 }
                                 Button("Von als Nächstes entfernen", systemImage: "minus.circle") {
                                     updateAll(keypath: \.showInUpNext, to: false)

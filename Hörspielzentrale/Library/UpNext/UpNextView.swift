@@ -26,7 +26,10 @@ struct UpNextView: View {
     /// The hoerspiele will be sorted using their last played date in reverse order
     @Query(filter: #Predicate<Hoerspiel> { hoerspiel in
         hoerspiel.showInUpNext
-    }, sort: [SortDescriptor(\Hoerspiel.lastPlayed, order: .reverse)]) var hoerspiele: [Hoerspiel]
+    }, sort: [
+        SortDescriptor(\Hoerspiel.addedToUpNext, order: .reverse),
+        SortDescriptor(\Hoerspiel.lastPlayed, order: .reverse)
+    ]) var hoerspiele: [Hoerspiel]
     
     // MARK: - View
     var body: some View {

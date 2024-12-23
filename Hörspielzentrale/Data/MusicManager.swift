@@ -141,6 +141,7 @@ import WidgetKit
                 try await dataManager.update(persistentIdentifier, keypath: \.showInUpNext, to: true)
             }
             try? await dataManager.update(persistentIdentifier, keypath: \.lastPlayed, to: Date.now)
+            try? await dataManager.update(persistentIdentifier, keypath: \.addedToUpNext, to: Date.now)
             
             let startPoint = try await persistentIdentifier.calculateStartingPoint(dataManager)
             musicplayer.stop()

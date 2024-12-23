@@ -35,6 +35,11 @@ struct SendableHoerspiel: Sendable, Hashable, Codable, Identifiable {
     /// - Note: Initiating a playback always sets this to `true`
     var showInUpNext: Bool = false
     
+    /// The date this ``Hoerspiel`` was added to up next
+    ///
+    /// This is used to set the order for up next
+    var addedToUpNext: Date = Date.distantPast
+    
     /// A timeinterval that represents the total duration of the hoerspiel in seconds
     var duration: TimeInterval
     
@@ -84,6 +89,7 @@ struct SendableHoerspiel: Sendable, Hashable, Codable, Identifiable {
          lastPlayed: Date,
          playedUpTo: Int,
          showInUpNext: Bool,
+         addedToUpNext: Date = Date.distantPast,
          duration: TimeInterval,
          releaseDate: Date,
          artist: String,
@@ -98,6 +104,7 @@ struct SendableHoerspiel: Sendable, Hashable, Codable, Identifiable {
         self.lastPlayed = lastPlayed
         self.playedUpTo = playedUpTo
         self.showInUpNext = showInUpNext
+        self.addedToUpNext = addedToUpNext
         self.duration = duration
         self.releaseDate = releaseDate
         self.artist = artist
@@ -115,6 +122,7 @@ struct SendableHoerspiel: Sendable, Hashable, Codable, Identifiable {
         self.lastPlayed = hoerspiel.lastPlayed
         self.playedUpTo = hoerspiel.playedUpTo
         self.showInUpNext = hoerspiel.showInUpNext
+        self.addedToUpNext = hoerspiel.addedToUpNext
         self.duration = hoerspiel.duration
         self.releaseDate = hoerspiel.releaseDate
         self.artist = hoerspiel.artist

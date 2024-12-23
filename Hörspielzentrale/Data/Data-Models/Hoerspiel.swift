@@ -37,6 +37,11 @@ final class Hoerspiel: Hashable, Identifiable {
     /// - Note: Initiating a playback always sets this to `true`
     var showInUpNext: Bool = false
     
+    /// The date this ``Hoerspiel`` was added to up next
+    ///
+    /// This is used to set the order for up next
+    var addedToUpNext: Date = Date.distantPast
+    
     /// A timeinterval that represents the total duration of the hoerspiel in seconds
     var duration: TimeInterval = 0
     
@@ -63,6 +68,7 @@ final class Hoerspiel: Hashable, Identifiable {
          lastPlayed: Date = Date.now,
          playedUpTo: Int = 0,
          showInUpNext: Bool = false,
+         addedToUpNext: Date = Date.distantPast,
          duration: TimeInterval = 0,
          releaseDate: Date = Date.now,
          artist: String = "",
@@ -76,6 +82,7 @@ final class Hoerspiel: Hashable, Identifiable {
         self.lastPlayed = lastPlayed
         self.playedUpTo = playedUpTo
         self.showInUpNext = showInUpNext
+        self.addedToUpNext = addedToUpNext
         self.duration = duration
         self.releaseDate = releaseDate
         self.artist = artist
@@ -92,6 +99,7 @@ final class Hoerspiel: Hashable, Identifiable {
         self.lastPlayed = sendable.lastPlayed
         self.playedUpTo = sendable.playedUpTo
         self.showInUpNext = sendable.showInUpNext
+        self.addedToUpNext = sendable.addedToUpNext
         self.duration = sendable.duration
         self.releaseDate = sendable.releaseDate
         self.artist = sendable.artist
@@ -107,6 +115,7 @@ final class Hoerspiel: Hashable, Identifiable {
         self.lastPlayed = codableHoerspiel.lastPlayedDate
         self.playedUpTo = codableHoerspiel.playedUpTo
         self.showInUpNext = false
+        self.addedToUpNext = Date.distantPast
         self.duration = codableHoerspiel.duration
         self.releaseDate = codableHoerspiel.releaseDate
         self.artist = codableHoerspiel.artist

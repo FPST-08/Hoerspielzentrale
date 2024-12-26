@@ -148,24 +148,21 @@ Fetching batch of \(currentBadge.first?.title ?? "N/A") by \(currentBadge.first?
     ) async throws -> [CodableHoerspiel] {
         
         let allSeries = try await dataManager.fetch({FetchDescriptor<Series>()})
-        // swiftlint:disable:next line_length
-        var request = MusicCatalogResourceRequest<Artist>(matching: \.id, memberOf: allSeries.map { MusicItemID($0.musicItemID) })
-        request.properties.append(.latestRelease)
-        let response = try await request.response()
         
-        var items = response.items
-        var currentbadge = response.items
+        var responseItems = [Artist]()
         
-        while currentbadge.hasNextBatch {
-            if let nextBatch = try await currentbadge.nextBatch() {
-                currentbadge = nextBatch
-                items += nextBatch
-            }
+        let chunked = allSeries.chunked(into: 50)
+        for chunk in chunked {
+            let ids = chunk.map { MusicItemID($0.musicItemID) }
+            var request = MusicCatalogResourceRequest<Artist>(matching: \.id, memberOf: ids)
+            request.properties.append(.latestRelease)
+            let response = try await request.response()
+            responseItems.append(contentsOf: response.items)
         }
         
         var addedHoerspiels = [CodableHoerspiel]()
         
-        for item in response.items {
+        for item in responseItems {
             Logger.seriesManager.debug("Checking for \(item.name), latestRelease: \(item.latestRelease?.description ?? "N/A")") // swiftlint:disable:this line_length
             if let upc = item.latestRelease?.upc {
                 Logger.seriesManager.debug("UPC of latest release is \(upc)")

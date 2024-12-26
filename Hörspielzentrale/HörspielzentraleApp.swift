@@ -18,6 +18,7 @@ import SwiftData
 import SwiftUI
 import TelemetryDeck
 import WhatsNewKit
+import WidgetKit
 
 /// Start point of app
 @main
@@ -101,7 +102,9 @@ struct Hörspielzentrale: App {
         }
         .onChange(of: phase) { _, newPhase in
             switch newPhase {
-            case .background: scheduleAppRefresh()
+            case .background:
+                scheduleAppRefresh()
+                WidgetCenter.shared.reloadAllTimelines()
             default: break
             }
         }

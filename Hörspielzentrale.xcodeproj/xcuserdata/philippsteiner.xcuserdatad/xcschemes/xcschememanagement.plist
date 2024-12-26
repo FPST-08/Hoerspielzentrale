@@ -7,7 +7,7 @@
 		<key>HoerspielWidgetsExtension.xcscheme_^#shared#^_</key>
 		<dict>
 			<key>orderHint</key>
-			<integer>1</integer>
+			<integer>3</integer>
 		</dict>
 		<key>Hörspielzentrale-Release.xcscheme_^#shared#^_</key>
 		<dict>
@@ -18,6 +18,16 @@
 		<dict>
 			<key>orderHint</key>
 			<integer>0</integer>
+		</dict>
+		<key>Hörspielzentrale-Release.xcscheme_^#shared#^_</key>
+		<dict>
+			<key>orderHint</key>
+			<integer>2</integer>
+		</dict>
+		<key>Hörspielzentrale.xcscheme_^#shared#^_</key>
+		<dict>
+			<key>orderHint</key>
+			<integer>1</integer>
 		</dict>
 		<key>HörspielzentraleWidgetExtensionExtension 1.xcscheme_^#shared#^_</key>
 		<dict>

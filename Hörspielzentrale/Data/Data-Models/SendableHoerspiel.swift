@@ -66,6 +66,8 @@ struct SendableHoerspiel: Sendable, Hashable, Codable, Identifiable {
     /// The tracks for the Hoerspiel
     var tracks: [SendableStoredTrack]
     
+    var series: SendableSeries?
+    
     /// Creates a ``SendableHoerspiel``manually using standard data types and a `persistentIdentifier`
     /// - Parameters:
     ///   - title: The title of the hoerspiel
@@ -96,7 +98,7 @@ struct SendableHoerspiel: Sendable, Hashable, Codable, Identifiable {
          persistentModelID: PersistentIdentifier,
          upc: String,
          tracks: [SendableStoredTrack],
-         series: CodableSeries
+         series: SendableSeries?
     ) {
         self.title = title
         self.albumID = albumID
@@ -111,6 +113,7 @@ struct SendableHoerspiel: Sendable, Hashable, Codable, Identifiable {
         self.persistentModelID = persistentModelID
         self.upc = upc
         self.tracks = tracks
+        self.series = series
     }
     
     /// Creates a ``SendableHoerspiel`` from a ``Hoerspiel`` that can safely be passed around.
@@ -129,6 +132,7 @@ struct SendableHoerspiel: Sendable, Hashable, Codable, Identifiable {
         self.persistentModelID = hoerspiel.persistentModelID
         self.upc = hoerspiel.upc
         self.tracks = hoerspiel.tracks?.compactMap( { SendableStoredTrack($0)}) ?? []
+        self.series = SendableSeries(hoerspiel.series)
     }
     
     func hash(into hasher: inout Hasher) {

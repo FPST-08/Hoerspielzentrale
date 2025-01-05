@@ -200,8 +200,15 @@ struct Hörspielzentrale: App {
                     let fetchCount = try cloudModelContainer.mainContext.fetchCount(FetchDescriptor<Hoerspiel>())
                     Logger.data.debug("\(fetchCount)")
                 }
+                let allSeries = try cloudModelContainer.mainContext.fetch(FetchDescriptor<Series>())
+                
                 for index in jsonLocal {
-                    cloudModelContainer.mainContext.insert(Hoerspiel(from: index))
+                    var series: Series?
+                    if let persistentModelID = index.series?.persistentModelID {
+                        series = cloudModelContainer.mainContext.model(for: persistentModelID) as? Series
+                    }
+                    let hoerspiel = Hoerspiel(from: index, series: series)
+                    cloudModelContainer.mainContext.insert(hoerspiel)
                 }
                 do {
                     let fetchCount = try cloudModelContainer.mainContext.fetchCount(FetchDescriptor<Hoerspiel>())

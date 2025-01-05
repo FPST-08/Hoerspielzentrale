@@ -4,13 +4,11 @@
 //
 //  Created by Philipp Steiner on 29.11.24.
 //
-
-import Defaults
 import Foundation
 import SwiftData
 
 /// A struct that is used to safely pass around a ``Series``
-struct SendableSeries: Codable, Sendable, Identifiable, Defaults.Serializable {
+struct SendableSeries: Codable, Sendable, Identifiable {
     /// A rebranded instance of `musicItemID`to conform to `Identifable`
     var id: String {
         musicItemID

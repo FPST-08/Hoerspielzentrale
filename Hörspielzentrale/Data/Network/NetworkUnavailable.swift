@@ -12,6 +12,9 @@ struct NetworkUnavailableViewModifier: ViewModifier {
     
     @Environment(MusicManager.self) var musicmanager
     
+    /// An Observable Class responsible for navigation
+    @Environment(NavigationManager.self) var navigationManager
+    
     func body(content: Content) -> some View {
         switch networkhelper.connectionStatus {
         case .working:
@@ -29,6 +32,7 @@ struct NetworkUnavailableViewModifier: ViewModifier {
             }
             .onAppear {
                 musicmanager.musicplayer.stop()
+                navigationManager.presentMediaSheet = false
             }
             .task {
                 await musicmanager.saveListeningProgressAsync()

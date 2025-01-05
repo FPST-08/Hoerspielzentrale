@@ -32,23 +32,27 @@ struct MusicPermissionView: View {
                                     endPoint: .bottom)
     
     /// The current musicAuthorization status
-    @State var musicAuthorizationStatus: MusicAuthorization.Status = .notDetermined
+    @State var musicAuthorizationStatus: MusicAuthorizationStatus = .notDetermined
     
     /// The appropriate title for the button
     var buttonTitle: String {
         if musicAuthorizationStatus == .denied || musicAuthorizationStatus == .restricted {
             return "Zu den Einstellungen"
+        } else if musicAuthorizationStatus == .privacyAcknowRequired {
+            return "Zu Apple Music"
         } else {
             return "Weiter"
         }
     }
-
+    
     /// The appropriate title for the current musicAuthorization
     var title: String {
         if musicAuthorizationStatus == .restricted {
             return "Zugriff auf Apple Music eingeschränkt"
         } else if musicAuthorizationStatus == .denied {
             return "Kein Zugriff auf Apple Music möglich"
+        } else if musicAuthorizationStatus == .privacyAcknowRequired {
+            return "Datenschutzbestätigung erforderlich"
         } else {
             return "Zugriff auf Apple Music benötigt"
         }
@@ -66,6 +70,21 @@ struct MusicPermissionView: View {
             .foregroundStyle(blankColor)
             .frame(width: 55, height: 55)
         
+    }
+    
+    var explanatoryText: String {
+        if musicAuthorizationStatus == .privacyAcknowRequired {
+            return """
+Die Zustimmung der Datenschutzerklärung für Apple Music ist \ 
+notwendig um die Hörspielzentrale nutzen zu können
+"""
+        } else {
+            return """
+Um die Hörspiele abspielen zu können und die Cover zu laden, \ 
+ist Zugriff auf Apple Music. \ 
+Dabei werden keine Daten aus deiner Mediathek verändert
+"""
+        }
     }
     
     // MARK: - View
@@ -140,11 +159,7 @@ struct MusicPermissionView: View {
                         .font(.largeTitle.bold())
                         .padding(.top, 30)
                         .multilineTextAlignment(.center)
-                    Text("""
-                         Um die Hörspiele abspielen zu können und die Cover zu laden, \ 
-                         ist Zugriff auf Apple Music erforderlich. \ 
-                         Dabei werden keine Daten aus deiner Mediathek abgerufen oder verändert
-                         """)
+                    Text(explanatoryText)
                         .font(.body)
                         .foregroundStyle(Color.secondary)
                         .multilineTextAlignment(.center)
@@ -156,16 +171,42 @@ struct MusicPermissionView: View {
                         Task {
                             if musicAuthorizationStatus == .notDetermined {
                                 loading = true
-                                musicAuthorizationStatus = await MusicAuthorization.request()
+                                musicAuthorizationStatus = MusicAuthorizationStatus(await MusicAuthorization.request())
+                                
                                 TelemetryDeck.signal(
                                     "Onboarding.Authorization",
                                     parameters: ["Auth": musicAuthorizationStatus.description])
                                 loading = false
                                 if MusicAuthorization.currentStatus == .authorized {
-                                    navpath.append(OnboardingNavigation.seriesPicker)
+                                    do {
+                                        _ = try await MusicSubscription.current.canPlayCatalogContent
+                                        navpath.append(OnboardingNavigation.seriesPicker)
+                                    } catch {
+#if targetEnvironment(simulator)
+                                        musicAuthorizationStatus = .authorized
+                                        navpath.append(OnboardingNavigation.seriesPicker)
+#else
+                                    musicAuthorizationStatus = .privacyAcknowRequired
+#endif
+                                    }
                                 }
                             } else if musicAuthorizationStatus == .authorized {
-                                navpath.append(OnboardingNavigation.seriesPicker)
+                                do {
+                                    _ = try await MusicSubscription.current.canPlayCatalogContent
+                                    navpath.append(OnboardingNavigation.seriesPicker)
+                                } catch {
+#if targetEnvironment(simulator)
+                                    musicAuthorizationStatus = .authorized
+                                    navpath.append(OnboardingNavigation.seriesPicker)
+#else
+                                    musicAuthorizationStatus = .privacyAcknowRequired
+#endif
+                                }
+                            } else if musicAuthorizationStatus == .privacyAcknowRequired {
+                                if let musicURL = URL(string: "music://music.apple.com/library") {
+                                    TelemetryDeck.signal("Onboarding.OpeningMusicForPrivacyAcknow")
+                                    openURL(musicURL)
+                                }
                             } else {
                                 if let settingsURL = URL(string: UIApplication.openSettingsURLString) {
                                     TelemetryDeck.signal("Onboarding.OpeningSettings")
@@ -196,7 +237,35 @@ struct MusicPermissionView: View {
         navpath: Binding<NavigationPath>
     ) {
         self.loading = loading
-        self.musicAuthorizationStatus = MusicAuthorization.currentStatus
+        self.musicAuthorizationStatus = MusicAuthorizationStatus(MusicAuthorization.currentStatus)
         _navpath = navpath
+    }
+}
+
+/// An enum to represent the current Authorization Status
+enum MusicAuthorizationStatus {
+    case notDetermined, denied, restricted, authorized, privacyAcknowRequired
+    
+    /// Initialize from `MusicAuthorization.Status`
+    /// - Parameter status: The authorization status
+    init(_ status: MusicAuthorization.Status) {
+        switch status {
+        case .notDetermined: self = .notDetermined
+        case .denied: self = .denied
+        case .restricted: self = .restricted
+        case .authorized: self = .authorized
+        @unknown default: self = .notDetermined
+        }
+    }
+    
+    /// A textual representation of the authorization status
+    var description: String {
+        switch self {
+        case .notDetermined: return "Not Determined"
+        case .denied: return "Denied"
+        case .restricted: return "Restricted"
+        case .authorized: return "Authorized"
+        case .privacyAcknowRequired: return "Privacy Acknow Required"
+        }
     }
 }

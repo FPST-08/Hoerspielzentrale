@@ -355,6 +355,40 @@ und die Cover sind beim Scrollen sofort sichtbar
                     title: .init("Weiter"),
                     hapticFeedback: .notification(.success)
                 )
+            ),
+            WhatsNew(
+                version: "1.2.0",
+                title: .init(
+                    text: .init(
+                        "Was ist neu in der "
+                        + AttributedString(
+                            "Hörspielzentrale",
+                            attributes: .foregroundColor(.accent)
+                        )
+                    )
+                ),
+                features: [
+                    WhatsNew.Feature(image: .init(systemName: "bell.badge",
+                                                  foregroundColor: Color.red),
+                                     title: "Benachrichtigungen",
+                                     subtitle: """
+                        Erhalte eine Benachrichtigung, wenn ein neues Hörspiel verfügbar ist.
+                        """),
+                    WhatsNew.Feature(image: .init(systemName: "widget.small",
+                                                  foregroundColor: Color.green),
+                                     title: "Widgets",
+                                     subtitle: """
+                                            Sehe die Hörspiele in Als Nächstes direkt auf deinem Homescreen
+                                            """),
+                    WhatsNew.Feature(image: .init(systemName: "ladybug",
+                                                  foregroundColor: Color.blue),
+                                     title: "Kleine Fehlerbehebungen",
+                                     subtitle: "Viele kleine Layout-Fehler und Crashes behoben")
+                ], primaryAction: .init(
+                    title: .init("Weiter"),
+                    backgroundColor: Color.accent,
+                    hapticFeedback: .notification(.success)
+                )
             )
             
         ]

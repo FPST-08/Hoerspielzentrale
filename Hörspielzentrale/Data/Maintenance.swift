@@ -10,6 +10,7 @@ import OSLog
 import SwiftData
 import SwiftUI
 import TelemetryDeck
+@preconcurrency import MusicKit
 
 @MainActor
 @Observable
@@ -130,6 +131,7 @@ class Maintenance {
             let startdate = Date.now
             await self.handleDuplicateSeries()
             await self.handleDuplicateHoerspiels()
+            await self.addMissingSeries()
             Logger.metadata.info("Finished maintenance after \(Date() - startdate)")
         }
     }
@@ -167,6 +169,38 @@ class Maintenance {
                 Logger.data.fault("Count of hoerspiels for \(series.name) is \(series.hoerspiels?.count ?? 0)")
             }
             try context.save()
+        }
+    }
+    
+    /// Adds correct ``Series`` to all ``Hoerspiel`` that lack one
+    private func addMissingSeries() async {
+        do {
+            let context = ModelContext(manager.modelContainer)
+            let withMissingSeries = try context.fetch(FetchDescriptor<Hoerspiel>(predicate: #Predicate { hoerspiel in
+                hoerspiel.series == nil
+            }))
+            
+            for hoerspiel in withMissingSeries {
+                Logger.maintenance.info("\(hoerspiel.title) has no associated series")
+                let artist = hoerspiel.artist
+                if let series = try context.fetch(FetchDescriptor<Series>(predicate: #Predicate { series in
+                    return series.name == artist
+                })).first {
+                    hoerspiel.series = series
+                    Logger.maintenance.info("Added series for \(hoerspiel.title) from storage: \(series.name)")
+                } else {
+                    let request = MusicCatalogSearchRequest(term: hoerspiel.artist, types: [Artist.self])
+                    let response = try await request.response()
+                    if let artist = response.artists.first(where: { $0.name == hoerspiel.artist }) {
+                        let series = Series(name: artist.name, musicItemID: artist.id.rawValue)
+                        hoerspiel.series = series
+                        Logger.maintenance.info("Added series for \(hoerspiel.title) from apple music: \(series.name)")
+                    }
+                }
+            }
+            try context.save()
+        } catch {
+            Logger.maintenance.fullError(error, sendToTelemetryDeck: true)
         }
     }
     

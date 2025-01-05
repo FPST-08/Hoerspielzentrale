@@ -5,6 +5,7 @@
 //  Created by Philipp Steiner on 01.07.24.
 //
 
+import Defaults
 import MusicKit
 import OSLog
 import SwiftData
@@ -66,6 +67,7 @@ struct HoerspielDetailView: View {
                         Button {
                             Task {
                                 await musicplayer.startPlayback(for: hoerspiel.persistentModelID)
+                                requestReviewIfAppropriate()
                             }
                         } label: {
                             Label("Wiedergeben", systemImage: "play.fill")
@@ -79,6 +81,7 @@ struct HoerspielDetailView: View {
                                     keypath: \.playedUpTo,
                                     to: 0)
                                 await musicplayer.startPlayback(for: hoerspiel.persistentModelID)
+                                requestReviewIfAppropriate()
                             }
                         } label: {
                             Label("Ab Anfang", systemImage: "arrow.circlepath")

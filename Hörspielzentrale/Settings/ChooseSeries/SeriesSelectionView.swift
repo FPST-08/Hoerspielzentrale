@@ -133,6 +133,7 @@ struct SeriesSelectionView: View {
                         if !seriesManager.seriesToDownload.isEmpty {
                             buttonPressed = true
                         } else {
+                            requestReviewIfAppropriate()
                             onFinished()
                         }
                     } label: {

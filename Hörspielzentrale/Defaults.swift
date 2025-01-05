@@ -17,4 +17,6 @@ extension Defaults.Keys {
     static let seriesWithDiabledNotifications = Key<[SendableSeries]>("SeriesWithDisabledNotifications", default: [])
     
     static let notificationsEnabled = Key<Bool>("NotificationsEnabled", default: true)
+    
+    static let timesPlaybackStarted = Key<Int>("TimesPlaybackStarted", default: 0)
 }

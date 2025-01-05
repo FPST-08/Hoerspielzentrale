@@ -6,12 +6,14 @@
 //
 
 import Combine
+import Defaults
 import MediaPlayer
 import MusicKit
 import OSLog
 import SwiftData
 import SwiftUI
 import UIKit
+import StoreKit
 
 /// The documents directory used to save files
 let documentsDirectoryPath: URL = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask).first!
@@ -195,6 +197,16 @@ extension MPMusicPlaybackState {
             return "Seeking Backward"
         @unknown default:
             return "Unknown"
+        }
+    }
+}
+
+/// Requests a review if appropriate
+func requestReviewIfAppropriate() {
+    if Defaults[.timesPlaybackStarted] > 10 {
+        if let scene = UIApplication.shared.connectedScenes
+            .first(where: { $0.activationState == .foregroundActive }) as? UIWindowScene {
+            SKStoreReviewController.requestReview(in: scene)
         }
     }
 }

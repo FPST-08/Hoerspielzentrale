@@ -112,6 +112,7 @@ struct HoerspielMusicDetailsView: View { // swiftlint:disable:this type_body_len
                                                                                  keypath: \.playedUpTo,
                                                                                  to: Int(chapter.start))
                                             await musicManager.startPlayback(for: hoerspiel.persistentModelID)
+                                            requestReviewIfAppropriate()
                                         } catch {
                                             Logger.playback.fullError(error, sendToTelemetryDeck: true)
                                         }

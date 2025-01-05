@@ -5,6 +5,7 @@
 //  Created by Philipp Steiner on 03.04.24.
 //
 
+import Defaults
 @preconcurrency import MediaPlayer
 import MusicKit
 import OSLog
@@ -157,7 +158,7 @@ import WidgetKit
             if let musicItemID = startPoint.tracks.first?.musicItemID {
                 startedTrackID = MusicItemID(musicItemID)
             }
-            
+            Defaults[.timesPlaybackStarted] += 1
             let series = try? await dataManager.series(for: hoerspiel)
             TelemetryDeck.signal("Playback.starting", parameters: [
                 "Hoerspiel": hoerspiel.title,

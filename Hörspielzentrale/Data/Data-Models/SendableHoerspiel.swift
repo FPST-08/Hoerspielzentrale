@@ -132,7 +132,12 @@ struct SendableHoerspiel: Sendable, Hashable, Codable, Identifiable {
         self.persistentModelID = hoerspiel.persistentModelID
         self.upc = hoerspiel.upc
         self.tracks = hoerspiel.tracks?.compactMap( { SendableStoredTrack($0)}) ?? []
-        self.series = SendableSeries(hoerspiel.series)
+        if let series = hoerspiel.series {
+            self.series = SendableSeries(series)
+        } else {
+            assertionFailure()
+            self.series = nil
+        }
     }
     
     func hash(into hasher: inout Hasher) {

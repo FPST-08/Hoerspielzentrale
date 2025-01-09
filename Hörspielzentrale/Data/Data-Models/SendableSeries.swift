@@ -33,13 +33,4 @@ struct SendableSeries: Codable, Sendable, Identifiable {
         self.musicItemID = series.musicItemID
         self.persistentModelID = series.persistentModelID
     }
-    
-    init?(_ series: Series?) {
-        if let series {
-            self.name = series.name
-            self.musicItemID = series.musicItemID
-            self.persistentModelID = series.persistentModelID
-        }
-        return nil
-    }
 }

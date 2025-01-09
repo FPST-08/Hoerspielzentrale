@@ -41,6 +41,9 @@ struct Hörspielzentrale: App {
     
     /// Creation of ``seriesManager``
     @State  var seriesManager: SeriesManager
+    
+    /// Creation of ``BackgroundActivities``
+    @State var backgroundActivities: BackgroundActivities
 
     /// The current playback state
     @ObservedObject var state = ApplicationMusicPlayer.shared.state
@@ -73,6 +76,7 @@ struct Hörspielzentrale: App {
                 .environment(imageCache)
                 .environment(maintenanceManager)
                 .environment(seriesManager)
+                .environment(backgroundActivities)
                 .environment(
                     \.whatsNew,
                      WhatsNewEnvironment(
@@ -109,7 +113,7 @@ struct Hörspielzentrale: App {
             }
         }
         .backgroundTask(.appRefresh("newReleasesBackgroundTask")) { _ in
-            await runBackgroundTask()
+            await backgroundActivities.runBackgroundTask()
         }
     }
     
@@ -233,9 +237,14 @@ struct Hörspielzentrale: App {
         let musicplayer = MusicManager(dataManager: dataManager, navigation: navigationManager, imageCache: imageCache)
         self.musicmanager = musicplayer
         
-        self.seriesManager = SeriesManager(dataManager: dataManager)
+        let seriesManager = SeriesManager(dataManager: dataManager)
+        self.seriesManager = seriesManager
         
         self.maintenanceManager = Maintenance(manager: dataManager)
+        
+        self.backgroundActivities = BackgroundActivities(seriesManager: seriesManager,
+                                                         dataManager: dataManager,
+                                                         imageCache: imageCache)
         
         AppDependencyManager.shared.add(dependency: dataManager)
         AppDependencyManager.shared.add(dependency: navigationManager)

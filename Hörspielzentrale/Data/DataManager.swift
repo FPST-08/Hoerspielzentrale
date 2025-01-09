@@ -119,17 +119,21 @@ actor DataManager {
     
     /// Inserts an array of codables into the modelContext
     /// - Parameter codables: The array of codables to insert
-    public func insert(_ codables: [CodableHoerspiel], artist: Artist) throws {
+    /// - Parameter artist: The artist of all the codables
+    /// - Returns: Returns the ``SendableHoerspiel`` that were added to disk
+    public func insert(_ codables: [CodableHoerspiel], artist: Artist) throws -> [SendableHoerspiel] {
+        var addedEntities = [SendableHoerspiel]()
         try modelContext.transaction {
             if let series = try modelContext.fetch(FetchDescriptor<Series>(predicate: #Predicate { series in
                 series.musicItemID == artist.id.rawValue
             })).first {
                 Logger.data.debug("Series currently has a count of \(series.hoerspiels?.count ?? 0)")
-                for codable in codables {
-                    let hoerspiel = Hoerspiel(codable)
+                let hoerspiele = codables.map { Hoerspiel($0) }
+                for hoerspiel in hoerspiele {
                     modelContext.insert(hoerspiel)
                 }
-                series.hoerspiels?.append(contentsOf: codables.map { Hoerspiel($0)})
+                series.hoerspiels?.append(contentsOf: hoerspiele)
+                addedEntities = hoerspiele.map { SendableHoerspiel(hoerspiel: $0)}
                 try modelContext.save()
             } else {
                 let series = Series(name: artist.name, musicItemID: artist.id.rawValue)
@@ -138,6 +142,7 @@ actor DataManager {
                 try modelContext.save()
             }
         }
+        return addedEntities
     }
     
 #if DEBUG

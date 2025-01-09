@@ -112,7 +112,7 @@ struct HoerspielDetailView: View {
                 image = await imagecache.image(for: hoerspiel)
                 TelemetryDeck.signal("Navigation.Detail", parameters: ["Hoerspiel": hoerspiel.title])
                 let center = UNUserNotificationCenter.current()
-                center.removeDeliveredNotifications(withIdentifiers: [hoerspiel.upc])
+                center.removeDeliveredNotifications(withIdentifiers: [hoerspiel.upc, "PR\(hoerspiel.upc)"])
             }
             .safeAreaPadding(.bottom, 60)
         }

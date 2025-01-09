@@ -136,7 +136,7 @@ import WidgetKit
             let hoerspiel = try await dataManager.batchRead(persistentIdentifier)
             
             let center = UNUserNotificationCenter.current()
-            center.removeDeliveredNotifications(withIdentifiers: [hoerspiel.upc])
+            center.removeDeliveredNotifications(withIdentifiers: [hoerspiel.upc, "PR\(hoerspiel.upc)"])
             
             if !hoerspiel.showInUpNext {
                 try await dataManager.update(persistentIdentifier, keypath: \.showInUpNext, to: true)

@@ -143,13 +143,11 @@ Fetching batch of \(currentBadge.first?.title ?? "N/A") by \(currentBadge.first?
     }
     
     /// Checks if all Hoerspiele are currently loaded and adds them if needed
-    public func checkForNewReleases( // swiftlint:disable:this function_body_length
-        _ continueInBackground: Bool = true
-    ) async throws -> [CodableHoerspiel] {
+    public func checkForNewReleases() async throws {
         
         let allSeries = try await dataManager.fetch({FetchDescriptor<Series>()})
         
-        var responseItems = [Artist]()
+        var responseArtists = [Artist]()
         
         let chunked = allSeries.chunked(into: 50)
         for chunk in chunked {
@@ -157,75 +155,84 @@ Fetching batch of \(currentBadge.first?.title ?? "N/A") by \(currentBadge.first?
             var request = MusicCatalogResourceRequest<Artist>(matching: \.id, memberOf: ids)
             request.properties.append(.latestRelease)
             let response = try await request.response()
-            responseItems.append(contentsOf: response.items)
+            responseArtists.append(contentsOf: response.items)
         }
         
-        var addedHoerspiels = [CodableHoerspiel]()
-        
-        for item in responseItems {
-            Logger.seriesManager.debug("Checking for \(item.name), latestRelease: \(item.latestRelease?.description ?? "N/A")") // swiftlint:disable:this line_length
-            if let upc = item.latestRelease?.upc {
+        for artist in responseArtists {
+            Logger.seriesManager.debug("Checking for \(artist.name), latestRelease: \(artist.latestRelease?.description ?? "N/A")") // swiftlint:disable:this line_length
+            if let upc = artist.latestRelease?.upc {
                 Logger.seriesManager.debug("UPC of latest release is \(upc)")
                 let count = try await dataManager.fetchCount({FetchDescriptor<Hoerspiel>(predicate: #Predicate { hoerspiel in // swiftlint:disable:this line_length
                     hoerspiel.upc == upc
                 })})
                 if count == 0 {
-                    let withTracks = try await item.latestRelease?.with(.tracks)
+                    let withTracks = try await artist.latestRelease?.with(.tracks)
                     guard let withTracks else {
                         break
                     }
-                    let duration = withTracks.tracks?.reduce(0, { $0 + ($1.duration ?? 0) }) ?? 0
                     Logger.seriesManager.info("Found new Hoerspiel: \(withTracks.title)")
-                    try await dataManager.insert(title: withTracks.title,
-                                                 albumID: withTracks.id.rawValue,
-                                                 duration: duration,
-                                                 releaseDate: withTracks.releaseDate ?? Date.distantPast,
-                                                 artist: withTracks.artistName,
-                                                 upc: upc,
-                                                 seriesID: item.id.rawValue)
-                    addedHoerspiels.append(CodableHoerspiel(title: withTracks.title,
-                                                            albumID: withTracks.id.rawValue,
-                                                            duration: duration,
-                                                            releaseDate: withTracks.releaseDate ?? Date.distantPast,
-                                                            artist: withTracks.artistName,
-                                                            upc: upc,
-                                                            lastPlayedDate: Date.distantPast,
-                                                            playedUpTo: 0,
-                                                            played: false
-                                                           ))
+                    
+                    let hoerspiel = await createCodableHoerspiel(from: [withTracks])
+                    _ = try await dataManager.insert(hoerspiel, artist: artist)
+                    
                     try await dataManager.save()
-                    if continueInBackground {
-                        Task {
-                            _ = try await checkForExistenceOfAllAlbums(artist: item)
-                            try await dataManager.save()
-                        }
-                    } else {
-                        let added = try await checkForExistenceOfAllAlbums(artist: item)
-                        addedHoerspiels.append(contentsOf: added)
+                    Task {
+                        _ = try await checkForExistenceOfAllAlbums(artist: artist)
                         try await dataManager.save()
                     }
                 }
             }
         }
-        return addedHoerspiels
+    }
+    
+    /// Checks if new releases are available
+    /// 
+    /// This function might take a while to complete
+    /// - Returns: Returns all of the added ``SendableHoerspiel``
+    public func checkForNewReleasesInBackground() async throws -> [SendableHoerspiel] {
+        let allSeries = try await dataManager.fetch({FetchDescriptor<Series>()})
         
+        var responseArtists = [Artist]()
+        
+        let chunked = allSeries.chunked(into: 50)
+        for chunk in chunked {
+            let ids = chunk.map { MusicItemID($0.musicItemID) }
+            var request = MusicCatalogResourceRequest<Artist>(matching: \.id, memberOf: ids)
+            request.properties.append(.latestRelease)
+            let response = try await request.response()
+            responseArtists.append(contentsOf: response.items)
+        }
+        
+        var addedHoerspiels = [SendableHoerspiel]()
+        
+        for artist in responseArtists {
+            Logger.seriesManager.debug("Checking for \(artist.name), latestRelease: \(artist.latestRelease?.description ?? "N/A")") // swiftlint:disable:this line_length
+            if let upc = artist.latestRelease?.upc {
+                Logger.seriesManager.debug("UPC of latest release is \(upc)")
+                let count = try await dataManager.fetchCount({FetchDescriptor<Hoerspiel>(predicate: #Predicate { hoerspiel in // swiftlint:disable:this line_length
+                    hoerspiel.upc == upc
+                })})
+                if count == 0 {
+                    let added = try await checkForExistenceOfAllAlbums(artist: artist)
+                    Logger.data.debug("Series of hoerspiels: \(added.map { $0.series?.name ?? "N/A"})")
+                    addedHoerspiels.append(contentsOf: added)
+                    try await dataManager.save()
+                }
+            }
+        }
+        return addedHoerspiels
     }
     
     /// Checks if all albums from an Artist exist and adds the missing ones
     /// - Parameter artist: The artist to check
     /// - Returns: Returns the added Hoerspiels
-    public func checkForExistenceOfAllAlbums(artist: Artist) async throws -> [CodableHoerspiel] {
+    public func checkForExistenceOfAllAlbums(artist: Artist) async throws -> [SendableHoerspiel] {
         let albums = try await fetchAlbumsFor(artist)
         let hoerspiels = try await dataManager.fetchHoerspiels(of: artist)
-        
-        //        let otherDiff = hoerspiels.filter { !albums.map { $0.upc }.contains($0.upc)}
-        
         let diff = albums.filter { !hoerspiels.map { $0.upc }.contains($0.upc) }
         Logger.data.info("Found \(diff.count) albums that are not in the hoerspiel database")
         let codables = await createCodableHoerspiel(from: diff)
-        
-        try await dataManager.insert(codables, artist: artist)
-        return codables
+        return try await dataManager.insert(codables, artist: artist)
     }
     
     /// Creates ``CodableHoerspiel`` from an array of albums

@@ -20,7 +20,7 @@ struct DebugView: View {
     @Environment(\.modelContext) var modelContext
     @Environment(DataManagerClass.self) var dataManager
     @Environment(Maintenance.self) var maintenanceManager
-    
+    @Environment(BackgroundActivities.self) var backgroundActivities
     // MARK: - View
     var body: some View {
         List {
@@ -113,6 +113,30 @@ Count of all artists: \(String(describing: try? modelContext.fetchCount(FetchDes
                 }
             } header: {
                 Text("Data")
+            }
+            
+            Section {
+                Button("Delete 5 Hoerspiels and run background activity") {
+                    Task {
+                        do {
+                            UNUserNotificationCenter.current().removeAllDeliveredNotifications()
+                            var desc = FetchDescriptor<Hoerspiel>(sortBy: [SortDescriptor(\Hoerspiel.releaseDate, order: .reverse)])
+                            desc.fetchLimit = 5
+                            let models = try modelContext.fetch(desc)
+                            for model in models {
+                                modelContext.delete(model)
+                            }
+                            try await Task.sleep(for: .seconds(5))
+
+                            await backgroundActivities.runBackgroundTask()
+                        } catch {
+                            Logger.backgroundRefresh.fullError(error, sendToTelemetryDeck: false)
+                        }
+                        
+                    }
+                }
+            } header: {
+                Text("Background-Activities")
             }
             
             // MARK: - Network

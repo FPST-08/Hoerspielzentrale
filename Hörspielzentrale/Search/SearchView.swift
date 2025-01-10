@@ -39,6 +39,8 @@ struct SearchView: View {
             return SortDescriptor(\Hoerspiel.releaseDate, order: sortAscending ? .forward : .reverse)
         case .title:
             return SortDescriptor(\Hoerspiel.title, order: sortAscending ? .forward : .reverse)
+        case .lastPlayed:
+            return SortDescriptor(\Hoerspiel.lastPlayed, order: sortAscending ? .forward : .reverse)
         }
     }
     
@@ -123,6 +125,8 @@ struct SearchView: View {
                                         .tag(SortingType.duration)
                                     Text("Erscheinungsdatum")
                                         .tag(SortingType.releaseDate)
+                                    Text("Zuletzt gespielt")
+                                        .tag(SortingType.lastPlayed)
                                 } label: {
                                     Text("Sorting by")
                                 }
@@ -193,4 +197,5 @@ enum SortingType: Codable, Defaults.Serializable {
     case duration
     case releaseDate
     case title
+    case lastPlayed
 }

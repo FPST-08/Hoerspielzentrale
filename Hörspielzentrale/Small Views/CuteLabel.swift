@@ -30,13 +30,15 @@ struct CuteLabel: View {
             },
             icon: {
                 ZStack {
-                    RoundedRectangle(cornerRadius: 10)
-                        .foregroundStyle(backgroundColor)
-                        .frame(width: 32, height: 32)
-                        .padding(0)
                     Image(systemName: systemName)
                         .foregroundStyle(backgroundColor.adaptedTextColor())
-                        .font(.system(size: 15))
+                        .font(.body)
+                        .background {
+                            RoundedRectangle(cornerRadius: 10)
+                                .foregroundStyle(backgroundColor)
+                                .frame(minWidth: 32, minHeight: 32)
+//                                .padding(0)
+                        }
                 }
                 .offset(x: -5)
             }

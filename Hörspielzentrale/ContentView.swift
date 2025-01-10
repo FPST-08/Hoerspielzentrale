@@ -48,6 +48,7 @@ struct ContentView: View {
                               animateContent: $animateContent,
                               persistentIdentifier: musicmanager.currentlyPlayingHoerspiel?.persistentModelID)
                 .transition(.asymmetric(insertion: .identity, removal: .offset(y: -5)))
+                .environment(\.dynamicTypeSize, .large)
             }
         }
         .alert(isPresented: Bindable(navigation).searchPresented) {

@@ -62,8 +62,10 @@ struct HoerspielMenuView<Content: View>: View {
                 } label: {
                     if hoerspiel.played {
                         Label("Als ungespielt markieren", systemImage: "rectangle.badge.minus")
+                            .font(.body)
                     } else {
                         Label("Als gespielt markieren", systemImage: "rectangle.badge.checkmark")
+                            .font(.body)
                     }
                 }
                 Button {
@@ -73,10 +75,12 @@ struct HoerspielMenuView<Content: View>: View {
                     }
                 } label: {
                     Label("Von Anfang an", systemImage: "arrow.uturn.left")
+                        .font(.body)
                 }
                 
                 ShareLink(item: URL(string: "hoerspielzentrale://open-hoerspiel?upc=\(hoerspiel.upc)")!) {
                     Label("Teilen", systemImage: "square.and.arrow.up")
+                        .font(.body)
                 }
                 
                 Button(role: hoerspiel.showInUpNext ? .destructive : .none) {
@@ -97,8 +101,10 @@ struct HoerspielMenuView<Content: View>: View {
                 } label: {
                     if hoerspiel.showInUpNext {
                         Label("Von als Nächstes entfernen", systemImage: "minus.circle")
+                            .font(.body)
                     } else {
                         Label("Zu als Nächstes hinzufügen", systemImage: "plus.circle")
+                            .font(.body)
                     }
                 }
                 
@@ -112,6 +118,7 @@ struct HoerspielMenuView<Content: View>: View {
                         }
                     }
                 }
+                .font(.body)
 #endif
             } label: {
                 content

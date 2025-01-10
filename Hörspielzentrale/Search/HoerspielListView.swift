@@ -47,6 +47,7 @@ struct HoerspielListView: View {
                     
                     Text(hoerspiel.title)
                         .foregroundStyle(Color.primary)
+                        .font(.body)
                     HStack {
                         PlayPreView(
                             backgroundColor: .playButtonDefaultBackground,
@@ -61,7 +62,8 @@ struct HoerspielListView: View {
                         }
                     }
                 }
-                .frame(height: 100)
+                .frame(minHeight: 100, maxHeight: 200)
+                .dynamicTypeSize(DynamicTypeSize.xSmall...DynamicTypeSize.accessibility5)
             }
         }
         .task {

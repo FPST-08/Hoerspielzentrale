@@ -385,6 +385,7 @@ Mysteriöse Ereignisse, Misstrauen und ein unheimliches Phantom treiben die Gäs
                     }
                 }
             }
+            .font(.body)
         }
         .navigationTitle("Kapitel")
         .navigationBarTitleDisplayMode(.inline)

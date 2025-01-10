@@ -45,6 +45,7 @@ struct SettingsView: View {
                             .fontWeight(.semibold)
                         Text("Das ist wirklich eine spezialgelagerte Sondereinstellung.")
                             .multilineTextAlignment(.center)
+                            .font(.body)
                         
                     }
                     .frame(maxWidth: .infinity)

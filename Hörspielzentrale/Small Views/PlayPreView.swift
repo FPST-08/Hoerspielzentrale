@@ -61,9 +61,11 @@ struct PlayPreView: View {
                         }
                     }
                     .frame(width: 18, height: 18)
+                    .font(.body)
                     
                     if hoerspiel.releaseDate.isFuture() {
                         Text("Vorschau")
+                            .font(.body)
                     } else {
                         if hoerspiel.playedUpTo != 0 {
                             ProgressCapsuleView(progress: progressValue, color: textColor)
@@ -71,6 +73,7 @@ struct PlayPreView: View {
                         
                         Text(timeString)
                             .lineLimit(1)
+                            .font(.body)
                         
                     }
                     
@@ -85,6 +88,7 @@ struct PlayPreView: View {
             }
             .buttonStyle(PlainButtonStyle())
             .onAppear(perform: updateView)
+            .dynamicTypeSize(DynamicTypeSize.xSmall...DynamicTypeSize.accessibility1)
         }
     }
     

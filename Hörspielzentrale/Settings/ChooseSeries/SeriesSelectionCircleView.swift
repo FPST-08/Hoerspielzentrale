@@ -53,6 +53,7 @@ struct SeriesSelectionCircleView: View {
             }
             Text(series.name)
                 .lineLimit(1)
+                .font(.body)
         }
     }
 }

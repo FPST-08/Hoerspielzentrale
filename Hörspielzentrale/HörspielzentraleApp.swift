@@ -63,6 +63,7 @@ struct Hörspielzentrale: App {
     var body: some Scene {
         WindowGroup {
             ContentView()
+                .dynamicTypeSize(DynamicTypeSize.xSmall...DynamicTypeSize.accessibility1)
                 .tint(.accent)
                 .welcomeSheet()
                 .onboarding()

@@ -137,13 +137,6 @@ extension PersistentIdentifier {
     }
 }
 
-extension Array where Element == SendableStoredTrack {
-    /// Sorts an array of ``SendableStoredTrack`` starting with the lowest index
-    /// - Returns: The sorted array
-    func sorted() -> [SendableStoredTrack] {
-        self.sorted { $0.index < $1.index }
-    }
-}
 
 /// An Error used to communicate Errors when calculating the starting point of a ``Hoerspiel``
 enum CalculatingStartingPointError: Error {

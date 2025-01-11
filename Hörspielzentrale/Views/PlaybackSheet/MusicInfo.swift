@@ -77,7 +77,7 @@ struct MusicInfo: View {
                     Task {
                         do {
                             let hoerspiel = try await dataManager.manager.fetchSuggestedHoerspielForPlaybck()
-                            await musicManager.startPlayback(for: hoerspiel.persistentModelID)
+                            musicManager.startPlayback(for: hoerspiel.persistentModelID)
                         } catch {
                             Logger.data.fullError(error, sendToTelemetryDeck: true)
                         }
@@ -102,7 +102,7 @@ struct MusicInfo: View {
                         persistentIdentifier,
                         keypath: \.playedUpTo,
                         to: playedUpTo + 15)
-                    await musicManager.startPlayback(for: persistentIdentifier)
+                    musicManager.startPlayback(for: persistentIdentifier)
                 }
             } label: {
                 Image(systemName: "goforward.15")

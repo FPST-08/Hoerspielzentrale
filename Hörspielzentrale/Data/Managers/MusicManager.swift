@@ -55,11 +55,10 @@ import WidgetKit
     
     var startedTrackID: MusicItemID?
     
-    // MARK: Functions
+    /// The task starting a playback
+    var currentPlaybackTask: Task<Void, Never>?
     
-    func startPlayback(for persistentIdentifier: PersistentIdentifier) async {
-        await initiatePlayback(for: persistentIdentifier)
-    }
+    // MARK: Functions
     
     /// Retroactively calculates `startDate`, `endDate`and `initiatedDate`
     func calculateDatesWhilePlaying() async {
@@ -100,6 +99,15 @@ import WidgetKit
             initiatedDate = Date.now
         } catch {
             Logger.playback.fullError(error, sendToTelemetryDeck: true)
+        }
+    }
+    
+    /// Starts a playback
+    /// - Parameter persistentIdentifier: The `persistentIdentifier` of the ``Hoerspiel`` to play
+    func startPlayback(for persistentIdentifier: PersistentIdentifier) {
+        currentPlaybackTask?.cancel()
+        currentPlaybackTask = Task {
+            await initiatePlayback(for: persistentIdentifier)
         }
     }
     

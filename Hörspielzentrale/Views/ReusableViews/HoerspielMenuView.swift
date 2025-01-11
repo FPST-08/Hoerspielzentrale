@@ -71,7 +71,7 @@ struct HoerspielMenuView<Content: View>: View {
                 Button {
                     Task {
                         try? await dataManager.manager.update(persistentIdentifier, keypath: \.playedUpTo, to: 0)
-                        await musicplayer.startPlayback(for: persistentIdentifier)
+                        musicplayer.startPlayback(for: persistentIdentifier)
                     }
                 } label: {
                     Label("Von Anfang an", systemImage: "arrow.uturn.left")

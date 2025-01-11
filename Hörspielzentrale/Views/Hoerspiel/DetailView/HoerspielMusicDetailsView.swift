@@ -111,7 +111,7 @@ struct HoerspielMusicDetailsView: View { // swiftlint:disable:this type_body_len
                                             try await dataManager.manager.update(hoerspiel.persistentModelID,
                                                                                  keypath: \.playedUpTo,
                                                                                  to: Int(chapter.start))
-                                            await musicManager.startPlayback(for: hoerspiel.persistentModelID)
+                                            musicManager.startPlayback(for: hoerspiel.persistentModelID)
                                             requestReviewIfAppropriate()
                                         } catch {
                                             Logger.playback.fullError(error, sendToTelemetryDeck: true)
@@ -367,7 +367,7 @@ Mysteriöse Ereignisse, Misstrauen und ein unheimliches Phantom treiben die Gäs
                         try await dataManager.manager.update(hoerspiel.persistentModelID,
                                                              keypath: \.playedUpTo,
                                                              to: Int(chapter.start))
-                        await musicManager.startPlayback(for: hoerspiel.persistentModelID)
+                        musicManager.startPlayback(for: hoerspiel.persistentModelID)
                     } catch {
                         Logger.playback.fullError(error, sendToTelemetryDeck: true)
                     }

@@ -65,10 +65,8 @@ struct HoerspielDetailView: View {
                     HStack {
                         Spacer()
                         Button {
-                            Task {
-                                await musicplayer.startPlayback(for: hoerspiel.persistentModelID)
-                                requestReviewIfAppropriate()
-                            }
+                            musicplayer.startPlayback(for: hoerspiel.persistentModelID)
+                            requestReviewIfAppropriate()
                         } label: {
                             Label("Wiedergeben", systemImage: "play.fill")
                         }
@@ -80,7 +78,7 @@ struct HoerspielDetailView: View {
                                     hoerspiel.persistentModelID,
                                     keypath: \.playedUpTo,
                                     to: 0)
-                                await musicplayer.startPlayback(for: hoerspiel.persistentModelID)
+                                musicplayer.startPlayback(for: hoerspiel.persistentModelID)
                                 requestReviewIfAppropriate()
                             }
                         } label: {

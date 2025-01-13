@@ -20,3 +20,11 @@ extension Defaults.Keys {
     
     static let timesPlaybackStarted = Key<Int>("TimesPlaybackStarted", default: 0)
 }
+
+/// An enum used for communicating the sorting property
+enum SortingType: Codable, Defaults.Serializable {
+    case duration
+    case releaseDate
+    case title
+    case lastPlayed
+}

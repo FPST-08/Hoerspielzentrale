@@ -149,3 +149,7 @@ struct SendableHoerspiel: Sendable, Hashable, Codable, Identifiable {
     }
     
 }
+
+extension SendableHoerspiel {
+    static var example = SendableHoerspiel(hoerspiel: Hoerspiel.example)
+}

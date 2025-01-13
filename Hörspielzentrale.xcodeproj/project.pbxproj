@@ -25,6 +25,13 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
+		D015D0AB2D3408FD00438AF7 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 17AA97282C037B55005F7010 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = 17AA972F2C037B55005F7010;
+			remoteInfo = "Hörspielzentrale";
+		};
 		D0A68B572C3338B900E03B5D /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
 			containerPortal = 17AA97282C037B55005F7010 /* Project object */;
@@ -52,6 +59,7 @@
 		17026C9F2C1B745000AE7E0A /* Ho-rspielzentrale-Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = "Ho-rspielzentrale-Info.plist"; sourceTree = SOURCE_ROOT; };
 		17AA97302C037B55005F7010 /* Hörspielzentrale.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "Hörspielzentrale.app"; sourceTree = BUILT_PRODUCTS_DIR; };
 		D0027B022CC439AF00309B82 /* .swiftlint.yml */ = {isa = PBXFileReference; lastKnownFileType = text.yaml; path = .swiftlint.yml; sourceTree = "<group>"; };
+		D015D0A72D3408FD00438AF7 /* HörspielzentraleTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = "HörspielzentraleTests.xctest"; sourceTree = BUILT_PRODUCTS_DIR; };
 		D05E09252C25A5EE0091E552 /* WidgetKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = WidgetKit.framework; path = /System/Library/Frameworks/WidgetKit.framework; sourceTree = "<absolute>"; };
 		D05E09272C25A5EE0091E552 /* SwiftUI.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = SwiftUI.framework; path = /System/Library/Frameworks/SwiftUI.framework; sourceTree = "<absolute>"; };
 		D0814E9D2D16201100B29A67 /* Secrets.xcconfig */ = {isa = PBXFileReference; lastKnownFileType = text.xcconfig; path = Secrets.xcconfig; sourceTree = "<group>"; };
@@ -66,6 +74,7 @@
 				"Data/Data-Models/Hoerspiel/CodableHoerspiel.swift",
 				"Data/Data-Models/Hoerspiel/Hoerspiel.swift",
 				"Data/Data-Models/Hoerspiel/SendableHoerspiel.swift",
+				"Data/Data-Models/Series/CodableSeries.swift",
 				"Data/Data-Models/Series/SendableSeries.swift",
 				"Data/Data-Models/Series/Series.swift",
 				"Data/Data-Models/Tracks/SendableStoredTrack.swift",
@@ -75,6 +84,36 @@
 				Extensions/Color.swift,
 			);
 			target = D0A68B482C3338B800E03B5D /* HoerspielWidgetsExtension */;
+		};
+		D015D0B12D34092C00438AF7 /* PBXFileSystemSynchronizedBuildFileExceptionSet */ = {
+			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
+			membershipExceptions = (
+				AppIntents/HoerspielEntity.swift,
+				AppIntents/HoerspielEntityQuery.swift,
+				"Data/Data-Models/Hoerspiel/CodableHoerspiel.swift",
+				"Data/Data-Models/Hoerspiel/Hoerspiel.swift",
+				"Data/Data-Models/Hoerspiel/HoerspielTests.swift",
+				"Data/Data-Models/Hoerspiel/SendableHoerspiel.swift",
+				"Data/Data-Models/Series/CodableSeries.swift",
+				"Data/Data-Models/Series/SendableSeries.swift",
+				"Data/Data-Models/Series/Series.swift",
+				"Data/Data-Models/Tracks/SendableStoredTrack.swift",
+				"Data/Data-Models/Tracks/StoredTrack.swift",
+				"Data/Data-Models/Tracks/TrackExtensions.swift",
+				Data/Defaults/Defaults.Serializable.swift,
+				Data/Defaults/DefaultsDeclaration.swift,
+				Data/Logger.swift,
+				Data/Managers/DataManager.swift,
+				Extensions/Extensions.swift,
+			);
+			target = D015D0A62D3408FD00438AF7 /* HörspielzentraleTests */;
+		};
+		D015D1C32D34467700438AF7 /* PBXFileSystemSynchronizedBuildFileExceptionSet */ = {
+			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
+			membershipExceptions = (
+				"Data/Data-Models/Hoerspiel/HoerspielTests.swift",
+			);
+			target = 17AA972F2C037B55005F7010 /* Hörspielzentrale */;
 		};
 		D0E23B812D326316004486A1 /* PBXFileSystemSynchronizedBuildFileExceptionSet */ = {
 			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
@@ -86,7 +125,7 @@
 /* End PBXFileSystemSynchronizedBuildFileExceptionSet section */
 
 /* Begin PBXFileSystemSynchronizedRootGroup section */
-		D009D8EF2D32641100794C0F /* Hörspielzentrale */ = {isa = PBXFileSystemSynchronizedRootGroup; exceptions = (D009D9542D32641100794C0F /* PBXFileSystemSynchronizedBuildFileExceptionSet */, ); explicitFileTypes = {}; explicitFolders = (); path = "Hörspielzentrale"; sourceTree = "<group>"; };
+		D009D8EF2D32641100794C0F /* Hörspielzentrale */ = {isa = PBXFileSystemSynchronizedRootGroup; exceptions = (D015D1C32D34467700438AF7 /* PBXFileSystemSynchronizedBuildFileExceptionSet */, D009D9542D32641100794C0F /* PBXFileSystemSynchronizedBuildFileExceptionSet */, D015D0B12D34092C00438AF7 /* PBXFileSystemSynchronizedBuildFileExceptionSet */, ); explicitFileTypes = {}; explicitFolders = (); path = "Hörspielzentrale"; sourceTree = "<group>"; };
 		D0E23B7A2D326316004486A1 /* HoerspielWidgets */ = {isa = PBXFileSystemSynchronizedRootGroup; exceptions = (D0E23B812D326316004486A1 /* PBXFileSystemSynchronizedBuildFileExceptionSet */, ); explicitFileTypes = {}; explicitFolders = (); path = HoerspielWidgets; sourceTree = "<group>"; };
 /* End PBXFileSystemSynchronizedRootGroup section */
 
@@ -104,6 +143,13 @@
 				D010A39C2CFC655300B0AA08 /* CloudKitSyncMonitor in Frameworks */,
 				D043410A2CBD2CF20049DA99 /* TelemetryDeck in Frameworks */,
 				D01067CA2D0C824200EE4126 /* Defaults in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		D015D0A42D3408FD00438AF7 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -138,6 +184,7 @@
 			children = (
 				17AA97302C037B55005F7010 /* Hörspielzentrale.app */,
 				D0A68B492C3338B800E03B5D /* HoerspielWidgetsExtension.appex */,
+				D015D0A72D3408FD00438AF7 /* HörspielzentraleTests.xctest */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -188,6 +235,26 @@
 			productReference = 17AA97302C037B55005F7010 /* Hörspielzentrale.app */;
 			productType = "com.apple.product-type.application";
 		};
+		D015D0A62D3408FD00438AF7 /* HörspielzentraleTests */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = D015D0AF2D3408FD00438AF7 /* Build configuration list for PBXNativeTarget "HörspielzentraleTests" */;
+			buildPhases = (
+				D015D0A32D3408FD00438AF7 /* Sources */,
+				D015D0A42D3408FD00438AF7 /* Frameworks */,
+				D015D0A52D3408FD00438AF7 /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+				D015D0AC2D3408FD00438AF7 /* PBXTargetDependency */,
+			);
+			name = "HörspielzentraleTests";
+			packageProductDependencies = (
+			);
+			productName = "HörspielzentraleTests";
+			productReference = D015D0A72D3408FD00438AF7 /* HörspielzentraleTests.xctest */;
+			productType = "com.apple.product-type.bundle.unit-test";
+		};
 		D0A68B482C3338B800E03B5D /* HoerspielWidgetsExtension */ = {
 			isa = PBXNativeTarget;
 			buildConfigurationList = D0A68B5A2C3338B900E03B5D /* Build configuration list for PBXNativeTarget "HoerspielWidgetsExtension" */;
@@ -216,11 +283,15 @@
 			isa = PBXProject;
 			attributes = {
 				BuildIndependentTargetsInParallel = 1;
-				LastSwiftUpdateCheck = 1540;
+				LastSwiftUpdateCheck = 1610;
 				LastUpgradeCheck = 1600;
 				TargetAttributes = {
 					17AA972F2C037B55005F7010 = {
 						CreatedOnToolsVersion = 15.4;
+					};
+					D015D0A62D3408FD00438AF7 = {
+						CreatedOnToolsVersion = 16.1;
+						TestTargetID = 17AA972F2C037B55005F7010;
 					};
 					D0A68B482C3338B800E03B5D = {
 						CreatedOnToolsVersion = 15.4;
@@ -252,6 +323,7 @@
 			targets = (
 				17AA972F2C037B55005F7010 /* Hörspielzentrale */,
 				D0A68B482C3338B800E03B5D /* HoerspielWidgetsExtension */,
+				D015D0A62D3408FD00438AF7 /* HörspielzentraleTests */,
 			);
 		};
 /* End PBXProject section */
@@ -262,6 +334,13 @@
 			buildActionMask = 2147483647;
 			files = (
 				D0027B032CC439AF00309B82 /* .swiftlint.yml in Resources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		D015D0A52D3408FD00438AF7 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -283,6 +362,13 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
+		D015D0A32D3408FD00438AF7 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 		D0A68B452C3338B800E03B5D /* Sources */ = {
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
@@ -293,6 +379,11 @@
 /* End PBXSourcesBuildPhase section */
 
 /* Begin PBXTargetDependency section */
+		D015D0AC2D3408FD00438AF7 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = 17AA972F2C037B55005F7010 /* Hörspielzentrale */;
+			targetProxy = D015D0AB2D3408FD00438AF7 /* PBXContainerItemProxy */;
+		};
 		D0533A412CC64A7200670FBC /* PBXTargetDependency */ = {
 			isa = PBXTargetDependency;
 			productRef = D0533A402CC64A7200670FBC /* SwiftLintBuildToolPlugin */;
@@ -514,6 +605,44 @@
 			};
 			name = Release;
 		};
+		D015D0AD2D3408FD00438AF7 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				BUNDLE_LOADER = "$(TEST_HOST)";
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = LR2ZR7HMCT;
+				GENERATE_INFOPLIST_FILE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 18.1;
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = "com-n-comm.Ho-rspielzentraleTests";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_EMIT_LOC_STRINGS = NO;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/Hörspielzentrale.app/$(BUNDLE_EXECUTABLE_FOLDER_PATH)/Hörspielzentrale";
+			};
+			name = Debug;
+		};
+		D015D0AE2D3408FD00438AF7 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				BUNDLE_LOADER = "$(TEST_HOST)";
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = LR2ZR7HMCT;
+				GENERATE_INFOPLIST_FILE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 18.1;
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = "com-n-comm.Ho-rspielzentraleTests";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_EMIT_LOC_STRINGS = NO;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/Hörspielzentrale.app/$(BUNDLE_EXECUTABLE_FOLDER_PATH)/Hörspielzentrale";
+			};
+			name = Release;
+		};
 		D0A68B5B2C3338B900E03B5D /* Debug */ = {
 			isa = XCBuildConfiguration;
 			baseConfigurationReference = D0814E9D2D16201100B29A67 /* Secrets.xcconfig */;
@@ -615,6 +744,15 @@
 			buildConfigurations = (
 				17AA97412C037B56005F7010 /* Debug */,
 				17AA97422C037B56005F7010 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		D015D0AF2D3408FD00438AF7 /* Build configuration list for PBXNativeTarget "HörspielzentraleTests" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				D015D0AD2D3408FD00438AF7 /* Debug */,
+				D015D0AE2D3408FD00438AF7 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;

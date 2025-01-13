@@ -191,11 +191,3 @@ struct SearchView: View {
         case loading, loaded, error
     }
 }
-
-/// An enum used for communicating the sorting property
-enum SortingType: Codable, Defaults.Serializable {
-    case duration
-    case releaseDate
-    case title
-    case lastPlayed
-}

@@ -307,7 +307,7 @@ weitere wurde geladen
                                     releaseDate: releaseDate,
                                     artist: album.artistName,
                                     upc: upc,
-                                    lastPlayedDate: Date.distantPast,
+                                    lastPlayed: Date.distantPast,
                                     playedUpTo: 0,
                                     played: false
             )
@@ -336,7 +336,7 @@ weitere wurde geladen
                                 releaseDate: releaseDate,
                                 artist: album.artistName,
                                 upc: upc,
-                                lastPlayedDate: lastPlayedDate,
+                                lastPlayed: lastPlayedDate,
                                 playedUpTo: Int(playedUpTo),
                                 played: played
         )

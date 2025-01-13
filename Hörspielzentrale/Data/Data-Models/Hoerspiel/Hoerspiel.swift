@@ -104,7 +104,7 @@ final class Hoerspiel: Hashable, Identifiable {
         self.duration = sendable.duration
         self.releaseDate = sendable.releaseDate
         self.artist = sendable.artist
-        self.tracks = []
+        self.tracks = sendable.tracks.compactMap { StoredTrack($0) }
         self.series = series
     }
     
@@ -114,7 +114,7 @@ final class Hoerspiel: Hashable, Identifiable {
         self.title = codableHoerspiel.title
         self.albumID = codableHoerspiel.albumID
         self.played = codableHoerspiel.played
-        self.lastPlayed = codableHoerspiel.lastPlayedDate
+        self.lastPlayed = codableHoerspiel.lastPlayed
         self.playedUpTo = codableHoerspiel.playedUpTo
         self.showInUpNext = false
         self.addedToUpNext = Date.distantPast
@@ -126,30 +126,18 @@ final class Hoerspiel: Hashable, Identifiable {
     }
 }
 
-/// A  class used to save Series in SwiftData
-@Model
-class Series: Identifiable {
-    
-    /// The name of the artist
-    var name: String = ""
-    
-    /// The id of the artist
-    var musicItemID: String = ""
-    
-    @Relationship(deleteRule: .cascade, inverse: \Hoerspiel.series) var hoerspiels: [Hoerspiel]? = []
-    
-    init(name: String = "",
-         musicItemID: String = ""
-    ) {
-        self.name = name
-        self.musicItemID = musicItemID
-    }
-    
-    init(name: String,
-         musicItemID: String,
-         hoerspiels: [Hoerspiel]? = nil) {
-        self.name = name
-        self.musicItemID = musicItemID
-        self.hoerspiels = hoerspiels
-    }
+extension Hoerspiel {
+    static var example = Hoerspiel(title: "Folge 17: Rettet Atlantis!",
+                                   albumID: "1092526143",
+                                   played: false,
+                                   lastPlayed: Date.distantPast,
+                                   playedUpTo: 0,
+                                   showInUpNext: false,
+                                   addedToUpNext: Date.distantPast,
+                                   duration: 4725.989000000001,
+                                   releaseDate: Date(timeIntervalSince1970: 1285891200),
+                                   artist: "Die drei ??? Kids",
+                                   upc: "886445747867",
+                                   tracks: [],
+                                   series: Series.example)
 }

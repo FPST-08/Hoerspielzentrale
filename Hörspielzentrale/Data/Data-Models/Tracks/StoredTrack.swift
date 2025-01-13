@@ -56,4 +56,12 @@ class StoredTrack {
         self.isrc = isrc
         self.hoerspiel = hoerspiel
     }
+    
+    init(_ sendable: SendableStoredTrack) {
+        self.index = sendable.index
+        self.title = sendable.title
+        self.duration = sendable.duration
+        self.musicItemID = sendable.musicItemID
+        self.isrc = sendable.isrc
+    }
 }

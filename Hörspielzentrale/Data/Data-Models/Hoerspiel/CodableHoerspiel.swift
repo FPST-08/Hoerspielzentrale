@@ -35,7 +35,7 @@ struct CodableHoerspiel: Codable {
     var upc: String
     
     /// Indicates when the playback for a  ``Hoerspiel`` was initiated
-    var lastPlayedDate: Date
+    var lastPlayed: Date
     
     /// An Integer that indicates how far the hoerspiel was played up to
     var playedUpTo: Int
@@ -53,7 +53,7 @@ struct CodableHoerspiel: Codable {
     ///   - releaseDate: A date that represents the release date of the hoerspiel
     ///   - artist: A string that represents the name of the artist that published that hoerspiel
     ///   - upc: The Universal Product Code for the Hoerspiel
-    ///   - lastPlayedDate: A date that indicates when the playback was last initiated for that hoerspiel
+    ///   - lastPlayed: A date that indicates when the playback was last initiated for that hoerspiel
     ///   - playedUpTo: An Integer that indicates how far the hoerspiel was played to
     ///   - played: A boolean that indicates whether this hoerspiel has previously been played til the end
     init(title: String,
@@ -62,7 +62,7 @@ struct CodableHoerspiel: Codable {
          releaseDate: Date,
          artist: String,
          upc: String,
-         lastPlayedDate: Date,
+         lastPlayed: Date,
          playedUpTo: Int,
          played: Bool
     ) {
@@ -72,7 +72,7 @@ struct CodableHoerspiel: Codable {
         self.releaseDate = releaseDate
         self.artist = artist
         self.upc = upc
-        self.lastPlayedDate = lastPlayedDate
+        self.lastPlayed = lastPlayed
         self.playedUpTo = playedUpTo
         self.played = played
     }
@@ -84,7 +84,7 @@ struct CodableHoerspiel: Codable {
         self.releaseDate = hoerspiel.releaseDate
         self.artist = hoerspiel.artist
         self.upc = hoerspiel.upc
-        self.lastPlayedDate = hoerspiel.lastPlayed
+        self.lastPlayed = hoerspiel.lastPlayed
         self.playedUpTo = hoerspiel.playedUpTo
         self.played = hoerspiel.played
     }
@@ -100,7 +100,7 @@ struct CodableHoerspiel: Codable {
         self.releaseDate = album.releaseDate ?? Date.distantPast
         self.artist = album.artistName
         self.upc = upc
-        self.lastPlayedDate = Date.distantPast
+        self.lastPlayed = Date.distantPast
         self.playedUpTo = 0
         self.played = false
     }
@@ -112,4 +112,16 @@ struct UPCJSON: Codable {
     let title: String
     /// The upc of the ``Hoerspiel``
     let upc: String
+}
+
+extension CodableHoerspiel {
+    static var example = CodableHoerspiel(title: "Folge 17: Rettet Atlantis!",
+                                          albumID: "1092526143",
+                                          duration: 4725.989000000001,
+                                          releaseDate: Date(timeIntervalSince1970: 1285891200),
+                                          artist: "Die drei ??? Kids",
+                                          upc: "886445747867",
+                                          lastPlayed: Date.distantPast,
+                                          playedUpTo: 0,
+                                          played: false)
 }

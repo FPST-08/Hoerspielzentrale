@@ -142,6 +142,54 @@ Fetching batch of \(currentBadge.first?.title ?? "N/A") by \(currentBadge.first?
         return allAlbums
     }
     
+    /// Fetches all Series and returns the corresponding artists
+    /// - Returns: The corresponding artists
+    private func fetchAllArtists() async throws -> [Artist] {
+        let allSeries = try await dataManager.fetchAllSeries()
+        
+        var artists = [Artist]()
+        
+        let chunked = allSeries.chunked(into: 50)
+        for chunk in chunked {
+            let ids = chunk.map { MusicItemID($0.musicItemID) }
+            let request = MusicCatalogResourceRequest<Artist>(matching: \.id, memberOf: ids)
+            let response = try await request.response()
+            artists.append(contentsOf: response.items)
+        }
+        return artists
+    }
+    
+    /// Fetches playback updates from the apple music library
+    func fetchUpdatesFromMusicLibrary() async {
+        do {
+            let artists = try await fetchAllArtists()
+            var albums = [Album]()
+            for artist in artists {
+                let artistAlbums = try await fetchAlbumsFor(artist)
+                albums.append(contentsOf: artistAlbums)
+            }
+            
+            albums = await fetchTracksForAlbums(albums)
+            
+            var codables = [CodableHoerspiel]()
+            
+            for album in albums {
+                Logger.seriesManager.info("Enriching \(album.title)")
+                if let enriched = await enrichFromLibrary(album) {
+                    Logger.seriesManager.info("Retrieved data from \(enriched.title)")
+                    codables.append(enriched)
+                }
+            }
+            for codable in codables {
+                Logger.seriesManager.info("Updating \(codable.title)")
+                try await dataManager.updateHoerspielWhenSuitable(codable)
+            }
+            
+        } catch {
+            Logger.maintenance.fullError(error, sendToTelemetryDeck: true)
+        }
+    }
+    
     /// Checks if all Hoerspiele are currently loaded and adds them if needed
     public func checkForNewReleases() async throws {
         
@@ -264,13 +312,28 @@ weitere wurde geladen
         return codables
     }
     
+    /// Fetches the tracks for all provided albums
+    /// - Parameter albums: The albums to fetch the tracks for
+    /// - Returns: The
+    nonisolated public func fetchTracksForAlbums(_ albums: [Album]) async -> [Album] {
+        var returnAlbums = [Album]()
+        for chunk in albums.chunked(into: 25) {
+            var requst = MusicCatalogResourceRequest<Album>(matching: \.upc, memberOf: chunk.map { $0.upc })
+            requst.properties.append(.tracks)
+            if let response = try? await requst.response() {
+                returnAlbums.append(contentsOf: response.items)
+            }
+        }
+        return returnAlbums
+    }
+    
     /// Creates a ``CodableHoerspiel`` from the provided album and the
     /// data from the Music Library if availabke
     /// - Parameter album: The album to enrich
     /// - Returns: A codable album with all properties set from either the album or the music library
     ///
     /// The tracks of the album have to be loaded beforehand. Otherwise this function returns nil
-    private func enrichFromLibrary(_ album: Album) async -> CodableHoerspiel? {
+    nonisolated private func enrichFromLibrary(_ album: Album) async -> CodableHoerspiel? {
         // swiftlint:disable:previous function_body_length
         guard let upc = album.upc else {
             assertionFailure()

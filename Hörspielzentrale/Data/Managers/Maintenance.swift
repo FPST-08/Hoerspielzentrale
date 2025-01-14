@@ -18,6 +18,9 @@ class Maintenance {
     /// The datamanager to perform changes with
     private let manager: DataManager
     
+    /// The series manager
+    private let seriesManager: SeriesManager
+    
     /// Detects duplicates and merges them into a single entity
     func handleDuplicateHoerspiels() {
         let modelContext = ModelContext(manager.modelContainer)
@@ -132,6 +135,7 @@ class Maintenance {
             await self.handleDuplicateSeries()
             await self.handleDuplicateHoerspiels()
             await self.addMissingSeries()
+            await self.seriesManager.fetchUpdatesFromMusicLibrary()
             Logger.metadata.info("Finished maintenance after \(Date() - startdate)")
         }
     }
@@ -204,8 +208,9 @@ class Maintenance {
         }
     }
     
-    init(manager: DataManager) {
+    init(manager: DataManager, seriesManager: SeriesManager) {
         self.manager = manager
+        self.seriesManager = seriesManager
     }
 }
 

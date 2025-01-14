@@ -309,6 +309,32 @@ actor DataManager {
         try modelContext.delete(model: Hoerspiel.self, where: predicate)
     }
     
+    /// Updates a ``Hoerspiel`` when the provided ``CodableHoerspiel`` has more recent values
+    /// - Parameter codable: The ``CodableHoerspiel`` with possible more dates
+    public func updateHoerspielWhenSuitable(
+        _ codable: CodableHoerspiel
+    ) async throws {
+        let descriptor = FetchDescriptor<Hoerspiel>(predicate: #Predicate { hoerspiel in
+            hoerspiel.upc == codable.upc
+        })
+        
+        guard let model = try modelContext.fetch(descriptor).first else {
+            throw DataBaseError.noEntityMatchingDescriptor
+        }
+        
+        if model.lastPlayed.timeIntervalSince1970 < codable.lastPlayed.timeIntervalSince1970 {
+            // If date from model is older than the codable date
+            model.lastPlayed = codable.lastPlayed
+            if model.playedUpTo == 0 {
+                model.playedUpTo = codable.playedUpTo
+            }
+            if !model.played {
+                model.played = codable.played
+            }
+        }
+        try save()
+    }
+    
     /// Deletes all ``Hoerspiel`` entities and the ``Series`` associated with an artist
     /// - Parameter artist: The artist to delete
     public func deleteArtist(_ artist: Artist) throws {

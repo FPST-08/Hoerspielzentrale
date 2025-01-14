@@ -162,7 +162,9 @@ struct SearchView: View {
                     let hapticGen = UINotificationFeedbackGenerator()
                     hapticGen.notificationOccurred(.error)
                     Logger.data.fullError(error, sendToTelemetryDeck: true)
-                    
+                }
+                Task {
+                    await seriesManager.fetchUpdatesFromMusicLibrary()
                 }
             }
             .task {

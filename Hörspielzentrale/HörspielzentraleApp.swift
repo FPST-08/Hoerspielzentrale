@@ -241,7 +241,7 @@ struct Hörspielzentrale: App {
         let seriesManager = SeriesManager(dataManager: dataManager)
         self.seriesManager = seriesManager
         
-        self.maintenanceManager = Maintenance(manager: dataManager)
+        self.maintenanceManager = Maintenance(manager: dataManager, seriesManager: seriesManager)
         
         self.backgroundActivities = BackgroundActivities(seriesManager: seriesManager,
                                                          dataManager: dataManager,

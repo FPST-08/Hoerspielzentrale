@@ -73,6 +73,9 @@ class SeriesManager {
     
     private var currentDownloadTask: Task<(), Never>?
     
+    /// The currently running task to update contents from the library
+    private var currentLibraryTask: Task<(), Never>?
+    
     /// Initiates the download for a series
     /// - Parameter artist: The series to start the download for
     private func startDownload(_ artist: Artist) {
@@ -144,7 +147,7 @@ Fetching batch of \(currentBadge.first?.title ?? "N/A") by \(currentBadge.first?
     
     /// Fetches all Series and returns the corresponding artists
     /// - Returns: The corresponding artists
-    private func fetchAllArtists() async throws -> [Artist] {
+    nonisolated private func fetchAllArtists() async throws -> [Artist] {
         let allSeries = try await dataManager.fetchAllSeries()
         
         var artists = [Artist]()
@@ -161,32 +164,36 @@ Fetching batch of \(currentBadge.first?.title ?? "N/A") by \(currentBadge.first?
     
     /// Fetches playback updates from the apple music library
     func fetchUpdatesFromMusicLibrary() async {
-        do {
-            let artists = try await fetchAllArtists()
-            var albums = [Album]()
-            for artist in artists {
-                let artistAlbums = try await fetchAlbumsFor(artist)
-                albums.append(contentsOf: artistAlbums)
-            }
-            
-            albums = await fetchTracksForAlbums(albums)
-            
-            var codables = [CodableHoerspiel]()
-            
-            for album in albums {
-                Logger.seriesManager.info("Enriching \(album.title)")
-                if let enriched = await enrichFromLibrary(album) {
-                    Logger.seriesManager.info("Retrieved data from \(enriched.title)")
-                    codables.append(enriched)
-                }
-            }
-            for codable in codables {
-                Logger.seriesManager.info("Updating \(codable.title)")
-                try await dataManager.updateHoerspielWhenSuitable(codable)
-            }
-            
-        } catch {
-            Logger.maintenance.fullError(error, sendToTelemetryDeck: true)
+        currentLibraryTask?.cancel()
+        currentLibraryTask = Task.detached {
+            Logger.seriesManager.info("Fetching Updates from Apple Music")
+                    do {
+                        let artists = try await self.fetchAllArtists()
+                        var albums = [Album]()
+                        for artist in artists {
+                            let artistAlbums = try await self.fetchAlbumsFor(artist)
+                            albums.append(contentsOf: artistAlbums)
+                        }
+                        
+                        albums = await self.fetchTracksForAlbums(albums)
+                        
+                        var codables = [CodableHoerspiel]()
+                        
+                        for album in albums {
+                            Logger.seriesManager.info("Enriching \(album.title)")
+                            if let enriched = await self.enrichFromLibrary(album) {
+                                Logger.seriesManager.info("Retrieved data from \(enriched.title)")
+                                codables.append(enriched)
+                            }
+                        }
+                        for codable in codables {
+                            Logger.seriesManager.info("Updating \(codable.title)")
+                            try await self.dataManager.updateHoerspielWhenSuitable(codable)
+                        }
+                        
+                    } catch {
+                        Logger.maintenance.fullError(error, sendToTelemetryDeck: true)
+                    }
         }
     }
     

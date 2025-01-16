@@ -109,6 +109,9 @@ struct Hörspielzentrale: App {
             switch newPhase {
             case .background:
                 scheduleAppRefresh()
+                Task.detached {
+                    await seriesManager.fetchUpdatesFromMusicLibrary()
+                }
                 WidgetCenter.shared.reloadAllTimelines()
             default: break
             }

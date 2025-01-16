@@ -38,7 +38,7 @@ struct UpNextView: View {
                 ContentUnavailableView {
                     Label("Keine Hörspiele", systemImage: "play.square.stack")
                 } description: {
-                    Text("Hörspiele, die du angefangen hast, erscheinen hier")
+                    Text("Angefangene Hörspiele erscheinen hier")
                 } actions: {
                     Button {
                         navigation.selection = .search

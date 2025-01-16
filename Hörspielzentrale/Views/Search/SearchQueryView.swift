@@ -74,33 +74,39 @@ struct SearchQueryView: View {
                     }
                     .animation(nil, value: editMode?.wrappedValue)
                     .toolbar {
-                        if editMode?.wrappedValue.isEditing == true {
-                            Menu {
-                                Button("Als gespielt markieren", systemImage: "rectangle.badge.checkmark") {
-                                    updateAll(keypath: \.played, to: true)
-                                }
-                                Button("Als ungespielt markieren", systemImage: "rectangle.badge.minus") {
-                                    updateAll(keypath: \.played, to: false)
-                                }
-                                Button("Zu als Nächstes hinzufügen", systemImage: "plus.circle") {
-                                    updateAll(keypath: \.showInUpNext, to: true)
-                                    updateAll(keypath: \.addedToUpNext, to: Date.now)
-                                }
-                                Button("Von als Nächstes entfernen", systemImage: "minus.circle") {
-                                    updateAll(keypath: \.showInUpNext, to: false)
-                                }
-                                Button("Bookmark zum Anfang", systemImage: "arrow.uturn.left") {
-                                    updateAll(keypath: \.playedUpTo, to: 0)
-                                }
+                        
+                        ToolbarItem(placement: .topBarLeading) {
+                            Button {
+                                editMode?.wrappedValue = editMode?.wrappedValue.isEditing == true ? .inactive : .active
                             } label: {
-                                Label("Menü", systemImage: "ellipsis.circle")
+                                Label("Auswählen", systemImage: "checklist")
                             }
-                            
                         }
-                        Button {
-                            editMode?.wrappedValue = editMode?.wrappedValue.isEditing == true ? .inactive : .active
-                        } label: {
-                            Label("Auswählen", systemImage: "checklist")
+                        
+                        ToolbarItem(placement: .topBarLeading) {
+                            if editMode?.wrappedValue.isEditing == true {
+                                Menu {
+                                    Button("Als gespielt markieren", systemImage: "rectangle.badge.checkmark") {
+                                        updateAll(keypath: \.played, to: true)
+                                    }
+                                    Button("Als ungespielt markieren", systemImage: "rectangle.badge.minus") {
+                                        updateAll(keypath: \.played, to: false)
+                                    }
+                                    Button("Zu als Nächstes hinzufügen", systemImage: "plus.circle") {
+                                        updateAll(keypath: \.showInUpNext, to: true)
+                                        updateAll(keypath: \.addedToUpNext, to: Date.now)
+                                    }
+                                    Button("Von als Nächstes entfernen", systemImage: "minus.circle") {
+                                        updateAll(keypath: \.showInUpNext, to: false)
+                                    }
+                                    Button("Bookmark zum Anfang", systemImage: "arrow.uturn.left") {
+                                        updateAll(keypath: \.playedUpTo, to: 0)
+                                    }
+                                } label: {
+                                    Label("Menü", systemImage: "ellipsis.circle")
+                                }
+                                
+                            }
                         }
                     }
                     .listStyle(.plain)

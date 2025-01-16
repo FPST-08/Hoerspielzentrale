@@ -61,7 +61,7 @@ struct PlayPreView: View {
                         }
                     }
                     .frame(width: 18, height: 18)
-                    .font(.body)
+                    .font(.callout)
                     
                     if hoerspiel.releaseDate.isFuture() {
                         Text("Vorschau")
@@ -111,7 +111,7 @@ struct PlayPreView: View {
         }
         if difference >= 3600 {
             timeString = """
-\(difference / 3600)h \((difference % 3600) / 60 == 0 ? "" : " \((difference % 3600) / 60) min")
+\(difference / 3600)h \((difference % 3600) / 60 == 0 ? "" : "\((difference % 3600) / 60) min")
 """
         } else if difference >= 60 {
             timeString = "\(difference / 60) min"

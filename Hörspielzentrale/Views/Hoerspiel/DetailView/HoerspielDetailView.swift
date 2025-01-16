@@ -57,11 +57,13 @@ struct HoerspielDetailView: View {
                     Text(hoerspiel.title)
                         .font(.title3)
                         .fontWeight(.semibold)
+                        .padding(.top, 5)
                     Text(hoerspiel.releaseDate != Date.distantPast ?
                                              hoerspiel.releaseDate.formatted(date: .numeric, time: .omitted) :
                                                 "Veröffentlichundsdatum unbekannt")
                         .foregroundStyle(Color.secondary)
                         .font(.callout)
+                        .padding(.bottom, -5)
                     HStack {
                         Spacer()
                         Button {

@@ -126,7 +126,7 @@ struct HoerspielDisplayView: View {
     
     /// The view used for a rectangular presentation mode
     var rectangular: some View {
-        HStack {
+        HStack(spacing: 0) {
             if let image {
                 image
                     .resizable()

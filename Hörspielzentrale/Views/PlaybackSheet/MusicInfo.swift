@@ -49,21 +49,19 @@ struct MusicInfo: View {
     // MARK: - View
     var body: some View {
         HStack(alignment: .center) {
-            ZStack {
-                if let artwork = artwork {
-                    artwork
-                        .resizable()
-                        .frame(width: 40, height: 40)
-                        .clipShape(RoundedRectangle(
-                            cornerRadius: navigation.presentMediaSheet ? 15 : 5,
-                            style: .continuous))
-                } else {
-                    RoundedRectangle(cornerRadius: !animateContent ? 15 : 5, style: .continuous)
-                        .foregroundStyle(Color.gray)
-                }
+            if let artwork = artwork {
+                artwork
+                    .resizable()
+                    .frame(width: 45, height: 45)
+                    .cornerRadius(10)
+                    .matchedGeometryEffect(id: "ARTWORK", in: animation)
+            } else {
+                RoundedRectangle(cornerRadius: 10)
+                    .foregroundStyle(Color.gray)
+                    .frame(width: 45, height: 45)
+                    .matchedGeometryEffect(id: "ARTWORK", in: animation)
             }
-            .matchedGeometryEffect(id: "ARTWORK", in: animation)
-            .frame(width: 45, height: 45)
+            
             Text(musicManager.currentlyPlayingHoerspiel?.title ?? "Keine Wiedergabe")
                 .fontWeight(.semibold)
                 .lineLimit(1)
@@ -112,12 +110,11 @@ struct MusicInfo: View {
             .foregroundStyle(state.playbackStatus != .paused && state.playbackStatus != .playing
                              ? Color.gray
                              : Color.white)
-            .padding(.leading, 25)
+            .padding(.horizontal, 25)
         }
         
         .foregroundStyle(.primary)
         .padding(.horizontal)
-        .padding(.bottom, 5)
         .frame(height: 70)
         .contentShape(Rectangle())
         .onTapGesture {

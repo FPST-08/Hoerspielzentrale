@@ -34,7 +34,7 @@ struct NavigationSection: View {
             .padding(.leading, 15)
             .fontWeight(.bold)
             .font(.title2)
-            .padding(.top, 5)
+            .padding(.top, 10)
         }
     }
 }

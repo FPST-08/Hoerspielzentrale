@@ -211,9 +211,10 @@ Wenn du eine bessere Datenquelle für dieses Hörspiel kennst, schreibe mir gern
                         .padding(.horizontal)
                     }
                     Link(destination: URL(string: "music://music.apple.com/de/album/\(hoerspiel.albumID)")!) {
-                        Text("In Apple Music öffnen")
+                        Label("In Apple Music öffnen", systemImage: "arrowshape.turn.up.right")
+                            .padding([.horizontal, .bottom])
                     }
-                    .padding(.horizontal)
+                    
                 }
             }
         }

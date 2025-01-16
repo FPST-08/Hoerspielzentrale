@@ -59,12 +59,11 @@ struct LibraryView: View {
                     
                     LibrarySectionView(title: "Neuheiten", fetchDescriptor: {
                         let now = Date.now
-                        let cutOffDate = Date.now.advanced(by: -86400 * 3)
                         
                         var fetchDescriptor = FetchDescriptor<Hoerspiel>(predicate: #Predicate { hoerspiel in
-                            hoerspiel.releaseDate < now && hoerspiel.releaseDate > cutOffDate
+                            hoerspiel.releaseDate < now
                         })
-                        
+                        fetchDescriptor.sortBy = [SortDescriptor(\.releaseDate, order: .reverse)]
                         fetchDescriptor.fetchLimit = 10
                         return fetchDescriptor
                     }, displaymode: .rectangular)

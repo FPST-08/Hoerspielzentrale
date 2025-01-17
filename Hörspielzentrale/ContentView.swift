@@ -80,6 +80,18 @@ struct ContentView: View {
         }
         .matchedGeometryEffect(id: "BGVIEW", in: animation)
         .frame(height: 60)
-        .offset(y: -49)
+        .offset(y: bottomSheetOffset)
+    }
+    
+    /// The offset of the bottomSheet
+    var bottomSheetOffset: CGFloat {
+        if !UIDevice.isIpad {
+            return -49
+        }
+        if UIScreen.safeArea?.bottom == 0 {
+            return -10
+        } else {
+            return 0
+        }
     }
 }

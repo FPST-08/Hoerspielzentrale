@@ -69,6 +69,7 @@ struct MusicPermissionView: View {
         RoundedRectangle(cornerRadius: 10)
             .foregroundStyle(blankColor)
             .frame(width: 55, height: 55)
+            .frame(maxWidth: .infinity, maxHeight: .infinity)
         
     }
     
@@ -87,6 +88,29 @@ Dabei werden keine Daten aus deiner Mediathek verändert
         }
     }
     
+    /// The current device rotation
+    @State private var rotation: UIDeviceOrientation = UIDevice.current.orientation
+    
+    /// Indicates if additional app icons should be presented
+    var showAdditionalAppIcons: Bool {
+        if !UIDevice.isIpad {
+            return false
+        } else if rotation == .landscapeLeft || rotation == .landscapeRight {
+            return true
+        } else {
+            return false
+        }
+    }
+    
+    /// A grid row with dummy app icons
+    var dummyGridRow: some View {
+        GridRow {
+            ForEach(showAdditionalAppIcons ? 0..<6 : 0..<4, id: \.self) { _ in
+                dummyAppIcon
+            }
+        }
+    }
+    
     // MARK: - View
     public var body: some View {
         VStack(spacing: 0) {
@@ -97,60 +121,53 @@ Dabei werden keine Daten aus deiner Mediathek verändert
                     UnevenRoundedRectangle(topLeadingRadius: 40, topTrailingRadius: 40)
                         .foregroundStyle(gradient)
                     
-                    VStack {
-                        Grid(alignment: .center, horizontalSpacing: 20, verticalSpacing: 30) {
-                            GridRow {
-                                dummyAppIcon
-                                dummyAppIcon
-                                dummyAppIcon
+                    Grid(alignment: .center) {
+                        dummyGridRow
+                        GridRow {
+                            if showAdditionalAppIcons {
                                 dummyAppIcon
                             }
-                            GridRow {
-                                Image(.appIconLogo)
-                                    .resizable()
-                                    .frame(width: 55, height: 55)
-                                    .cornerRadius(10)
-                                    .colorInvert(colorScheme == .light)
-                                Image(systemName: "arrowshape.backward.fill")
-                                    .resizable()
-                                    .scaledToFit()
-                                    .foregroundStyle(blankColor)
-                                
-                                Image(systemName: "arrowshape.forward.fill")
-                                    .resizable()
-                                    .scaledToFit()
-                                    .foregroundStyle(blankColor)
-                                
-                                Image(.appleMusicIcon)
-                                    .resizable()
-                                    .frame(width: 55, height: 55)
-                                    .cornerRadius(10)
-                                    .colorInvert(colorScheme == .light)
-                            }
-                            GridRow {
-                                dummyAppIcon
-                                dummyAppIcon
-                                dummyAppIcon
-                                dummyAppIcon
-                            }
-                            GridRow {
-                                dummyAppIcon
-                                dummyAppIcon
-                                dummyAppIcon
+                            
+                            Image(.appIconLogo)
+                                .resizable()
+                                .frame(width: 55, height: 55)
+                                .cornerRadius(10)
+                                .colorInvert(colorScheme == .light)
+                            Image(systemName: "arrowshape.backward.fill")
+                                .resizable()
+                                .scaledToFit()
+                                .frame(width: 55, height: 55)
+                                .frame(maxWidth: .infinity, maxHeight: .infinity)
+                                .foregroundStyle(blankColor)
+                            
+                            Image(systemName: "arrowshape.forward.fill")
+                                .resizable()
+                                .scaledToFit()
+                                .frame(width: 55, height: 55)
+                                .frame(maxWidth: .infinity, maxHeight: .infinity)
+                                .foregroundStyle(blankColor)
+                            
+                            Image(.appleMusicIcon)
+                                .resizable()
+                                .frame(width: 55, height: 55)
+                                .cornerRadius(10)
+                                .colorInvert(colorScheme == .light)
+                            if showAdditionalAppIcons {
                                 dummyAppIcon
                             }
                         }
-                        .frame(maxHeight: .infinity)
-                        .clipped()
-                        .padding(.horizontal, 20)
-                        
+                        dummyGridRow
+                        dummyGridRow
+                            .padding(.bottom)
                     }
-                    .padding(.top, 40)
+                    .frame(maxWidth: .infinity, maxHeight: .infinity)
+                    .clipped()
+                    .padding(.horizontal, 20)
                 }
                 .padding(.top, 35)
                 .padding(.horizontal, 45)
             }
-            .frame(maxHeight: .infinity)
+            .frame(maxWidth: .infinity, maxHeight: .infinity)
             ZStack {
                 Color(UIColor(red: 28/256, green: 28/256, blue: 30/256, alpha: 1))
                     .ignoresSafeArea()
@@ -229,6 +246,9 @@ Dabei werden keine Daten aus deiner Mediathek verändert
         .navigationBarBackButtonHidden()
         .colorScheme(.dark)
         .colorInvert(colorScheme == .light)
+        .onRotate { rotation in
+            self.rotation = rotation
+        }
     }
     // MARK: - Init
     init(

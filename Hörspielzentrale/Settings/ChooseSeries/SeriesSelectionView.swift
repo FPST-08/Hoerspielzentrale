@@ -13,8 +13,6 @@ import TelemetryDeck
 /// A view to let the user slelect series
 struct SeriesSelectionView: View {
     // MARK: - Properties
-    @State private var selectedArtists = [Artist]()
-    
     /// Boolean to present the search sheet
     @State private var showSearchSheet = false
     
@@ -51,7 +49,7 @@ struct SeriesSelectionView: View {
                 ProgressView()
             case .loadingButResults, .finished:
                 ScrollView {
-                    if selectedArtists.isEmpty {
+                    if seriesManager.selectedArtists.isEmpty {
                         ContentUnavailableView {
                             Label("Füge Serien hinzu", systemImage: "rectangle.stack.badge.plus.fill")
                         } description: {
@@ -73,10 +71,10 @@ struct SeriesSelectionView: View {
                         #endif
                     } else {
                         LazyVGrid(columns: colums) {
-                            ForEach(selectedArtists) { artist in
+                            ForEach(seriesManager.selectedArtists) { artist in
                                 SeriesSelectionCircleView(series: artist)
                                     .contextMenu {
-                                        if seriesManager.currentlyDownloadingArtist != artist {
+                                        if !(seriesManager.currentlyDownloadingArtist == artist) {
                                             Button(role: .destructive) {
                                                 seriesToDelete = artist
                                                 showSeriesDeleteAlert.toggle()
@@ -118,7 +116,7 @@ struct SeriesSelectionView: View {
             }
         }
         .safeAreaInset(edge: .bottom) {
-            if !selectedArtists.isEmpty {
+            if !seriesManager.selectedArtists.isEmpty {
                 VStack {
                     if seriesManager.currentlyDownloadingArtist != nil {
                         ProgressView(value: seriesManager.currentProgressValue) {
@@ -142,7 +140,7 @@ struct SeriesSelectionView: View {
                     .onChange(of: seriesManager.seriesToDownload) { oldValue, newValue in
                         if newValue.isEmpty && buttonPressed {
                             onFinished()
-                        } else if oldValue.count > newValue.count {
+                        } else if oldValue.count < newValue.count {
                             buttonPressed = false
                         }
                     }
@@ -153,33 +151,28 @@ struct SeriesSelectionView: View {
             }
         }
         .sheet(isPresented: $showSearchSheet) {
-            SeriesSearchView(selectedSeries: $selectedArtists)
+            SeriesSearchView()
         }
         .task {
             do {
                 let series = try await dataManager.manager.fetchAllSeries()
                 let chunkedSeries = series.chunked(into: 25)
+                var artists = [Artist]()
                 for serie in chunkedSeries {
                     // swiftlint:disable:next line_length
                     let request = MusicCatalogResourceRequest<Artist>(matching: \.id, memberOf: serie.map { MusicItemID($0.musicItemID) })
                     let response = try await request.response()
-                    selectedArtists.append(contentsOf: response.items)
+                    artists.append(contentsOf: response.items)
                 }
+                seriesManager.selectedArtists = artists.sorted { $0.name < $1.name }
                 state = .finished
             } catch {
                 state = .error(error: error)
             }
         }
         .alert("Bist du sicher?", isPresented: $showSeriesDeleteAlert) {
-            Button {
-                
-            } label: {
-                Text("Abbrechen")
-            }
-            
-            Button {
+            Button(role: .destructive) {
                 guard let series = seriesToDelete else { return }
-                selectedArtists.removeAll(where: { $0 == series })
                 seriesManager.removeSeries(series)
                 seriesToDelete = nil
             } label: {

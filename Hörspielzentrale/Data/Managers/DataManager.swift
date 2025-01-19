@@ -137,9 +137,11 @@ actor DataManager {
                 try modelContext.save()
             } else {
                 let series = Series(name: artist.name, musicItemID: artist.id.rawValue)
-                series.hoerspiels = codables.map { Hoerspiel($0) }
+                let hoerspiele = codables.map { Hoerspiel($0) }
+                series.hoerspiels = hoerspiele
                 modelContext.insert(series)
                 try modelContext.save()
+                addedEntities.append(contentsOf: hoerspiele.map { SendableHoerspiel(hoerspiel: $0)})
             }
         }
         return addedEntities

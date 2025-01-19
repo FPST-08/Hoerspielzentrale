@@ -25,9 +25,6 @@ struct SeriesSearchView: View {
     /// The search results
     @State private var searchResults = [Artist]()
     
-    /// The currently selected series
-    @Binding var selectedSeries: [Artist]
-    
     /// A Boolean to present a visible search
     @State private var searchPresented = true
     
@@ -73,8 +70,8 @@ struct SeriesSearchView: View {
                     }
                     ForEach(searchResults) { result in
                         Button {
-                            if !selectedSeries.contains(result) || !seriesManager.seriesToDownload.contains(result) {
-                                selectedSeries.append(result)
+                            if !(seriesManager.selectedArtists.contains(result) || seriesManager.seriesToDownload.contains(result) || seriesManager.selectedArtists.contains(result)) {
+                                seriesManager.selectedArtists.append(result)
                                 seriesManager.downloadSeries(result)
                             }
                             dismiss()

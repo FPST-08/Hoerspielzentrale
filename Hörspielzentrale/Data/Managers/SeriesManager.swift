@@ -43,10 +43,7 @@ class SeriesManager {
     /// Removes a series
     /// - Parameter series: The series to remove
     func removeSeries(_ artist: Artist) {
-        if currentlyDownloadingArtist != artist && seriesToDownload.contains(artist) {
-            seriesToDownload.removeAll(where: { $0 == artist })
-        } else if currentlyDownloadingArtist == artist {
-            seriesToDownload.removeAll(where: { $0 == artist })
+        if currentlyDownloadingArtist == artist {
             currentDownloadTask?.cancel()
             currentProgressValue = 0.0
             currentlyDownloadingArtist = nil
@@ -55,11 +52,12 @@ class SeriesManager {
                 startDownload(first)
             }
             
-        } else {
-            Task {
-                try await dataManager.deleteArtist(artist)
-            }
         }
+        Task {
+            try? await dataManager.deleteArtist(artist)
+        }
+        selectedArtists.removeAll(where: { $0 == artist })
+        seriesToDownload.removeAll(where: { $0 == artist })
     }
     
     /// The current progress value from 0 to 1
@@ -67,6 +65,9 @@ class SeriesManager {
     
     /// The current textual description of the download process
     var currentProgressLabel = ""
+    
+    /// Artists that are already saved to storage
+    var selectedArtists: [Artist] = []
     
     /// The currently downloading series
     var currentlyDownloadingArtist: Artist?

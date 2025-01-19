@@ -44,7 +44,7 @@ struct HoerspielMusicDetailsView: View { // swiftlint:disable:this type_body_len
     /// The currently playing chapter
     var currentlyPlayingChapter: Chapter? {
         guard let startDate = musicManager.startDate,
-                musicManager.currentlyPlayingHoerspiel?.persistentModelID == hoerspiel.persistentModelID else {
+              musicManager.currentlyPlayingHoerspiel?.persistentModelID == hoerspiel.persistentModelID else {
             return nil
         }
         
@@ -69,14 +69,16 @@ struct HoerspielMusicDetailsView: View { // swiftlint:disable:this type_body_len
     
     /// The chapters that should be displayed
     var displayChapters: [Chapter] {
+        var shownChapterCount = UIDevice.isIpad ? 10 : 5
         guard let currentlyPlayingChapter else {
-            return Array(chapters.prefix(5))
+            return Array(chapters.prefix(shownChapterCount))
         }
         let chapterIndex = chapters.firstIndex(of: currentlyPlayingChapter) ?? chapters.startIndex
+        
         if chapterIndex <= 2 {
-            return Array(chapters.prefix(5))
+            return Array(chapters.prefix(shownChapterCount))
         } else {
-            return Array(chapters[chapterIndex - 2..<chapterIndex + min(3, chapters.endIndex - chapterIndex )])
+            return Array(chapters[chapterIndex - 2..<chapterIndex + min(shownChapterCount - 2, chapters.endIndex - chapterIndex )])
         }
     }
     
@@ -93,128 +95,67 @@ struct HoerspielMusicDetailsView: View { // swiftlint:disable:this type_body_len
                     Text("Daten werden geladen")
                 }
             case .finished:
-                VStack(alignment: .leading) {
-                    if chapters.isEmpty {
-                        SectionHeader(title: "Kapitel")
-                        Text("Keine Kapitel verfügbar")
-                            .padding(.horizontal)
-                    } else {
-                        SectionHeaderLink(title: "Kapitel") {
-                            chapterList
+                if UIDevice.isIpad {
+                    VStack {
+                        HStack(alignment: .top) {
+                            chapterView
+                                .frame(maxWidth: .infinity)
+                            VStack(alignment: .leading) {
+                                descriptionView
+                                    .frame(maxWidth: .infinity)
+                                infoView
+                                .frame(maxWidth: .infinity)
+                            }
+                            .frame(maxWidth: .infinity)
+                        }
+                        surroundingHoerspielView
+                        
+                        if let sprechrollen = metadata?.sprechrollen, !sprechrollen.isEmpty {
+                            SectionHeader(title: "Sprecher")
+                            SpeakerView(rollen: sprechrollen)
                         }
                         
-                        ForEach(displayChapters, id: \.self) { chapter in
-                            VStack {
-                                Button {
-                                    Task {
-                                        do {
-                                            try await dataManager.manager.update(hoerspiel.persistentModelID,
-                                                                                 keypath: \.playedUpTo,
-                                                                                 to: Int(chapter.start))
-                                            musicManager.startPlayback(for: hoerspiel.persistentModelID)
-                                            requestReviewIfAppropriate()
-                                        } catch {
-                                            Logger.playback.fullError(error, sendToTelemetryDeck: true)
-                                        }
-                                    }
-                                    
-                                } label: {
-                                    HStack {
-                                        Text(chapter.name)
-                                            .lineLimit(1)
-                                        Spacer()
-                                        if currentlyPlayingChapter == chapter,
-                                           let currentChapterEnding = currentChapterEnding {
-                                            Text(currentChapterEnding, style: .timer)
-                                        } else {
-                                            Text(Int(chapter.start).formatTime())
-                                        }
-                                        
-                                    }
-                                    .foregroundStyle(currentlyPlayingChapter == chapter
-                                                     ? Color.primary
-                                                     : Color.accentColor)
-                                    .lineLimit(1)
-                                }
-                                Divider()
+                        if source == nil && hoerspiel.artist != "Die drei ???" && hoerspiel.artist != "Die drei ??? Kids" {
+                            GroupBox("Mangelnde Daten") {
+                                Text("""
+    Für dieses Hörspiel sind nur Daten über Apple Music bekannt. 
+    Wenn du eine bessere Datenquelle für dieses Hörspiel kennst, schreibe mir gerne über hoerspielzentrale@icloud.com
+    """)
                             }
-                        }
-                        .padding(.vertical, 2)
-                        .padding(.horizontal)
-                        Text("\(chapters.count) Kapitel verfügbar")
                             .padding(.horizontal)
+                        }
+                        Link(destination: URL(string: "music://music.apple.com/de/album/\(hoerspiel.albumID)")!) {
+                            Label("In Apple Music öffnen", systemImage: "arrowshape.turn.up.right")
+                                .padding([.horizontal, .bottom])
+                        }
+                        
                     }
                     
-                    if metadata?.beschreibung != nil || metadata?.kurzbeschreibung != nil {
-                        SectionHeaderLink(title: "Beschreibung") {
-                            List {
-                                Text(metadata?.kurzbeschreibung ?? "")
-                                    .bold()
-                                + Text(metadata?.kurzbeschreibung != nil && metadata?.beschreibung != nil ? " " : "")
-                                + Text(metadata?.beschreibung ?? "")
-                                Text("Die Beschreibung wurde von [dreimetadaten.de](https://dreimetadaten.de) geladen")
+                } else {
+                    VStack(alignment: .leading) {
+                        chapterView
+                        descriptionView
+                        infoView
+                        surroundingHoerspielView
+                        if let sprechrollen = metadata?.sprechrollen, !sprechrollen.isEmpty {
+                            SectionHeader(title: "Sprecher")
+                            SpeakerView(rollen: sprechrollen)
+                        }
+                        
+                        if source == nil && hoerspiel.artist != "Die drei ???" && hoerspiel.artist != "Die drei ??? Kids" {
+                            GroupBox("Mangelnde Daten") {
+                                Text("""
+                            Für dieses Hörspiel sind nur Daten über Apple Music bekannt. 
+                            Wenn du eine bessere Datenquelle für dieses Hörspiel kennst, schreibe mir gerne über hoerspielzentrale@icloud.com
+                            """)
                             }
-                            .listStyle(.plain)
-                            .navigationTitle("Beschreibung")
-                            .navigationBarTitleDisplayMode(.inline)
+                            .padding(.horizontal)
+                        }
+                        Link(destination: URL(string: "music://music.apple.com/de/album/\(hoerspiel.albumID)")!) {
+                            Label("In Apple Music öffnen", systemImage: "arrowshape.turn.up.right")
+                                .padding([.horizontal, .bottom])
                         }
                     }
-                    
-                    Group {
-                        Text(metadata?.kurzbeschreibung ?? "")
-                            .bold()
-                        + Text(metadata?.kurzbeschreibung != nil && metadata?.beschreibung != nil ? " " : "")
-                        + Text(metadata?.beschreibung ?? "")
-                    }
-                    .padding(.horizontal)
-                    .foregroundStyle(.secondary)
-                    .lineLimit(7)
-                    
-                    HoerspielInfoView(hoerspiel: hoerspiel, entries: [
-                        HoerspielInfoDisplay(title: "Kapitel-Quelle",
-                                             value: source?.name ?? "Apple Music",
-                                             type: .link(link: source?.url ?? URL(string: "music://music.apple.com")!))
-                    ])
-                    if !surroundingHoerspiels.isEmpty {
-                        SectionHeader(title: "Weiterhören")
-                        ScrollViewReader { value in
-                            ScrollView(.horizontal) {
-                                HStack {
-                                    ForEach(surroundingHoerspiels) { hoerspiel in
-                                        HoerspielDisplayView(hoerspiel, .rectangular)
-                                            .id(hoerspiel.upc)
-                                    }
-                                    
-                                }
-                                .scrollTargetLayout()
-                            }
-                            .scrollTargetBehavior(.viewAligned)
-                            .scrollIndicators(.never)
-                            .contentMargins(.leading, 20, for: .scrollContent)
-                            .onAppear {
-                                value.scrollTo(hoerspiel.upc, anchor: .leading)
-                            }
-                        }
-                    }
-                    if let sprechrollen = metadata?.sprechrollen, !sprechrollen.isEmpty {
-                        SectionHeader(title: "Sprecher")
-                        SpeakerView(rollen: sprechrollen)
-                    }
-                    
-                    if source == nil && hoerspiel.artist != "Die drei ???" && hoerspiel.artist != "Die drei ??? Kids" {
-                        GroupBox("Mangelnde Daten") {
-                            Text("""
-Für dieses Hörspiel sind nur Daten über Apple Music bekannt. 
-Wenn du eine bessere Datenquelle für dieses Hörspiel kennst, schreibe mir gerne über hoerspielzentrale@icloud.com
-""")
-                        }
-                        .padding(.horizontal)
-                    }
-                    Link(destination: URL(string: "music://music.apple.com/de/album/\(hoerspiel.albumID)")!) {
-                        Label("In Apple Music öffnen", systemImage: "arrowshape.turn.up.right")
-                            .padding([.horizontal, .bottom])
-                    }
-                    
                 }
             }
         }
@@ -325,6 +266,128 @@ Mysteriöse Ereignisse, Misstrauen und ein unheimliches Phantom treiben die Gäs
                 }
             }
         }
+    }
+    
+    /// A view displaying the chapters
+    var chapterView: some View {
+        VStack(alignment: .leading) {
+            if chapters.isEmpty {
+                SectionHeader(title: "Kapitel")
+                Text("Keine Kapitel verfügbar")
+                    .padding(.horizontal)
+            } else {
+                SectionHeaderLink(title: "Kapitel") {
+                    chapterList
+                }
+                
+                ForEach(displayChapters, id: \.self) { chapter in
+                    VStack {
+                        Button {
+                            Task {
+                                do {
+                                    try await dataManager.manager.update(hoerspiel.persistentModelID,
+                                                                         keypath: \.playedUpTo,
+                                                                         to: Int(chapter.start))
+                                    musicManager.startPlayback(for: hoerspiel.persistentModelID)
+                                    requestReviewIfAppropriate()
+                                } catch {
+                                    Logger.playback.fullError(error, sendToTelemetryDeck: true)
+                                }
+                            }
+                            
+                        } label: {
+                            HStack {
+                                Text(chapter.name)
+                                    .lineLimit(1)
+                                Spacer()
+                                if currentlyPlayingChapter == chapter,
+                                   let currentChapterEnding = currentChapterEnding {
+                                    Text(currentChapterEnding, style: .timer)
+                                } else {
+                                    Text(Int(chapter.start).formatTime())
+                                }
+                                
+                            }
+                            .foregroundStyle(currentlyPlayingChapter == chapter
+                                             ? Color.primary
+                                             : Color.accentColor)
+                            .lineLimit(1)
+                        }
+                        Divider()
+                    }
+                }
+                .padding(.vertical, 2)
+                .padding(.horizontal)
+                Text("\(chapters.count) Kapitel verfügbar")
+                    .padding(.horizontal)
+            }
+        }
+    }
+    
+    /// A view displaying the surrounding Hoerspiels
+    var surroundingHoerspielView: some View {
+        Group {
+            if !surroundingHoerspiels.isEmpty {
+                SectionHeader(title: "Weiterhören")
+                ScrollViewReader { value in
+                    ScrollView(.horizontal) {
+                        HStack {
+                            ForEach(surroundingHoerspiels) { hoerspiel in
+                                HoerspielDisplayView(hoerspiel, .rectangular)
+                                    .id(hoerspiel.upc)
+                            }
+                            
+                        }
+                        .scrollTargetLayout()
+                    }
+                    .scrollTargetBehavior(.viewAligned)
+                    .scrollIndicators(.never)
+                    .contentMargins(.leading, 20, for: .scrollContent)
+                    .onAppear {
+                        value.scrollTo(hoerspiel.upc, anchor: .leading)
+                    }
+                }
+            }
+        }
+    }
+    
+    /// A view displaying the description
+    var descriptionView: some View {
+        VStack(alignment: .leading) {
+            if metadata?.beschreibung != nil || metadata?.kurzbeschreibung != nil {
+                SectionHeaderLink(title: "Beschreibung") {
+                    List {
+                        Text(metadata?.kurzbeschreibung ?? "")
+                            .bold()
+                        + Text(metadata?.kurzbeschreibung != nil && metadata?.beschreibung != nil ? " " : "")
+                        + Text(metadata?.beschreibung ?? "")
+                        Text("Die Beschreibung wurde von [dreimetadaten.de](https://dreimetadaten.de) geladen")
+                    }
+                    .listStyle(.plain)
+                    .navigationTitle("Beschreibung")
+                    .navigationBarTitleDisplayMode(.inline)
+                }
+            }
+            
+            Group {
+                Text(metadata?.kurzbeschreibung ?? "")
+                    .bold()
+                + Text(metadata?.kurzbeschreibung != nil && metadata?.beschreibung != nil ? " " : "")
+                + Text(metadata?.beschreibung ?? "")
+            }
+            .padding(.horizontal)
+            .foregroundStyle(.secondary)
+            .lineLimit(7)
+        }
+    }
+    
+    /// A view displaying information
+    var infoView: some View {
+        HoerspielInfoView(hoerspiel: hoerspiel, entries: [
+            HoerspielInfoDisplay(title: "Kapitel-Quelle",
+                                 value: source?.name ?? "Apple Music",
+                                 type: .link(link: source?.url ?? URL(string: "music://music.apple.com")!)),
+        ])
     }
     
     /// Fetches the tracks from local storage or apple music

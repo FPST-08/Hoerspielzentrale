@@ -45,13 +45,13 @@ struct HoerspielDetailView: View {
                             .scaledToFit()
                             .cornerRadius(15)
                             .shadow(radius: 10)
-                            .frame(width: geo.size.width * 0.75, height: geo.size.width * 0.75)
+                            .coverFrame()
                     } else {
                         Rectangle()
                             .foregroundStyle(Color.secondarySystemBackground)
-                            .frame(width: geo.size.width * 0.75, height: geo.size.width * 0.75)
                             .cornerRadius(15)
                             .shadow(radius: 10)
+                            .coverFrame()
                     }
                     
                     Text(hoerspiel.title)

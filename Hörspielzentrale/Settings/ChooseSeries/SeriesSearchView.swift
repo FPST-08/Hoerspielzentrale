@@ -35,8 +35,9 @@ struct SeriesSearchView: View {
     let popularSeries: [String] = [
         "Die drei ???",
         "TKKG",
-        "Pater Brown",
-        "Sherlock Holmes",
+        "Die drei ??? Kids",
+        "John Sinclair",
+        "Sherlock Holmes - Die Originale",
         "Fünf Freunde"
     ]
     // MARK: - View

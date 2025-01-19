@@ -28,9 +28,7 @@ struct SeriesSelectionView: View {
     
     /// Speficies the colums of the grid
     let colums: [GridItem] = [
-        GridItem(.flexible()),
-        GridItem(.flexible()),
-        GridItem(.flexible())
+        GridItem(.adaptive(minimum: 120))
     ]
     
     /// A closure to run to dismiss the view

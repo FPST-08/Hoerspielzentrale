@@ -47,7 +47,16 @@ import WidgetKit
     var volume: Double = 0
     
     var timer = Timer.scheduledTimer(withTimeInterval: 0, repeats: false) { _ in }
-    var sleeptimerDate: Date?
+    private(set) var sleeptimerDate: Date? {
+        didSet {
+            Logger.playback.info("Changed sleeptimerdate to \(self.sleeptimerDate?.formatted() ?? "nil")")
+        }
+    }
+    private(set) var sleepTimerDuration: Int? {
+        didSet {
+            Logger.playback.info("Changed sleeptimerduration to \(self.sleepTimerDuration?.formatted() ?? "nil")")
+        }
+    }
     
     var showSleeptimer: Bool {
         sleeptimerDate != nil
@@ -232,11 +241,14 @@ import WidgetKit
         }
     }
     
+    /// Starts a sleeptimer that stops and saves the playback after the specified time
+    /// - Parameter duration: The duration in minutes
     func startSleepTimer(for duration: Int) {
         TelemetryDeck.signal("Playback.startedSleepTimer", parameters: ["Duration": duration.formatted()])
         timer.invalidate()
         let timeInterval = TimeInterval(duration * 60)
-        sleeptimerDate = Date.now.advanced(by: timeInterval)
+        sleeptimerDate = Date().advanced(by: timeInterval)
+        sleepTimerDuration = duration
         timer = Timer.scheduledTimer(withTimeInterval: timeInterval, repeats: false) { [self] _ in
             Task(priority: .high) {
                 await MainActor.run {
@@ -248,6 +260,15 @@ import WidgetKit
                 
             }
         }
+    }
+    
+    /// Stops a currently running sleeptimer
+    ///
+    /// To start a new timer, this does not need to be called before
+    func stopSleepTimer() {
+        sleeptimerDate = nil
+        sleepTimerDuration = nil
+        timer.invalidate()
     }
     
     /// Toggles the playback when appropriate or initiates a new playback

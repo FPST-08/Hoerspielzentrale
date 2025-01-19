@@ -49,10 +49,7 @@ struct PlaybackSheet: View {
     @State private var durationOfHoerspiel: Double?
     /// Options in minutes to set the sleep timer to
     let sleeptimerDurations = [0, 5, 10, 15, 30, 45, 60]
-    /// The selected sleep timer duration
-    ///
-    /// 0 means none
-    @State private var sleeptimerDuration = Int()
+    
     /// A computet property simplifying an indication to disable the control buttons
     var disableButtons: Bool {
         if musicManager.currentlyPlayingHoerspiel == nil {
@@ -210,20 +207,6 @@ struct PlaybackSheet: View {
                 animateContent = true
             }
         }
-        
-        .onChange(of: sleeptimerDuration) { _, newValue in
-            if newValue != 0 {
-                musicManager.startSleepTimer(for: newValue)
-            } else {
-                musicManager.sleeptimerDate = nil
-                musicManager.timer.invalidate()
-            }
-        }
-        .onChange(of: musicManager.sleeptimerDate) { _, newValue in
-            if newValue == nil {
-                sleeptimerDuration = 0
-            }
-        }
         .trackNavigation(path: "PlaybackSheet")
     }
     
@@ -314,7 +297,18 @@ struct PlaybackSheet: View {
                     HStack(spacing: size.width * 0.18) {
                         Spacer()
                         Menu {
-                            Picker("Schlaftimer", selection: $sleeptimerDuration) {
+                            Picker("Schlaftimer", selection: Binding(
+                                get: {
+                                    return musicManager.sleepTimerDuration ?? 0
+                                },
+                                set: { value in
+                                    if value != 0 {
+                                        musicManager.startSleepTimer(for: value)
+                                    } else {
+                                        musicManager.stopSleepTimer()
+                                    }
+                                }
+                            )) {
                                 ForEach(sleeptimerDurations, id: \.self) { duration in
                                     if duration == 60 {
                                         Text("1 Stunde")
@@ -329,7 +323,7 @@ struct PlaybackSheet: View {
                                 }
                             }
                         } label: {
-                            Image(systemName: "moon.zzz\(sleeptimerDuration == 0 ? "" : ".fill")")
+                            Image(systemName: "moon.zzz\(musicManager.sleepTimerDuration == nil ? "" : ".fill")")
                                 .foregroundStyle(backgroundColor.playbackControlColor(colorScheme: colorScheme))
                                 .font(.headline)
                         }

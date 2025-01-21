@@ -8,10 +8,10 @@
 import SwiftUI
 
 /// A view used to display Information
-struct HoerspielInfoView: View {
+struct DetailsInfoView: View {
     // MARK: - Properties
     /// All info entries
-    var entries = [HoerspielInfoDisplay]()
+    var entries = [DetailsInfoDisplay]()
     
     // MARK: - View
     var body: some View {
@@ -38,26 +38,30 @@ struct HoerspielInfoView: View {
     
     init(
         hoerspiel: SendableHoerspiel,
-        entries: [HoerspielInfoDisplay] = [HoerspielInfoDisplay]()
+        entries: [DetailsInfoDisplay] = [DetailsInfoDisplay]()
     ) {
         self.entries = [
-            HoerspielInfoDisplay(title: "Serie",
+            DetailsInfoDisplay(title: "Serie",
                                  value: hoerspiel.artist),
-            HoerspielInfoDisplay(title: "Erscheinungsdatum",
+            DetailsInfoDisplay(title: "Erscheinungsdatum",
                                  value: hoerspiel.releaseDate.formatted(date: .long, time: .shortened)),
-            HoerspielInfoDisplay(title: "Dauer",
+            DetailsInfoDisplay(title: "Dauer",
                                  value: hoerspiel.duration.formattedDuration()),
-            HoerspielInfoDisplay(title: "Zuletzt gespielt",
+            DetailsInfoDisplay(title: "Zuletzt gespielt",
                                  value: hoerspiel.lastPlayed == Date.distantPast
                                  ? "Nie"
                                  : hoerspiel.lastPlayed.formatted(date: .long, time: .shortened))
         ]
         self.entries.append(contentsOf: entries)
     }
+    
+    init(entries: [DetailsInfoDisplay]) {
+        self.entries = entries
+    }
 }
 
 /// A struct for ``HoerspielInfoView``
-struct HoerspielInfoDisplay: Identifiable {
+struct DetailsInfoDisplay: Identifiable {
     /// The title of the entry
     let title: String
     

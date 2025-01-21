@@ -19,6 +19,17 @@ extension Defaults.Keys {
     static let notificationsEnabled = Key<Bool>("NotificationsEnabled", default: true)
     
     static let timesPlaybackStarted = Key<Int>("TimesPlaybackStarted", default: 0)
+    
+    static let sortAscending = Key<Bool>("sortAscending", default: false)
+    
+    static let onlyUnplayed = Key<Bool>("onlyUnplayed", default: false)
+    
+    static let allHoerspielDisplayMode = Key<AllHoerspielsView.AllHoerspielDisplayMode>("allHoerspielDisplayMode",
+     default: AllHoerspielsView.AllHoerspielDisplayMode.listRows)
+    
+    static let libraryCoverDisplayMode = Key<LibraryView.SeriesDisplayMode>("libraryCoverDisplayMode",
+                                                                            default: LibraryView.SeriesDisplayMode.circle)
+    // swiftlint:disable:previous line_length
 }
 
 /// An enum used for communicating the sorting property

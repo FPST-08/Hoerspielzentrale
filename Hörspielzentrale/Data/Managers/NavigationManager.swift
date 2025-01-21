@@ -21,7 +21,7 @@ import SwiftUI
     let dataManager: DataManager
     
     /// Currently selected tab
-    var selection = Selection.library
+    var selection = Selection.home
     
     /// The search text of the current search
     var searchText = ""
@@ -35,8 +35,14 @@ import SwiftUI
     /// The primary path of navigation in the search tab
     var searchPath = NavigationPath()
     
+    /// The primary path of navigation in the home tab
+    var homePath = NavigationPath()
+    
     /// The primary path of navigation in the library tab
     var libraryPath = NavigationPath()
+    
+    /// A bool to toggle the appearance of the ``SeriesSelectionView`` sheet
+    var showSeriesAddingSheet = false
     
     /// A boolean that indicates if the alert is shown
     ///
@@ -124,6 +130,7 @@ import SwiftUI
 enum Selection: Int {
     case library
     case search
+    case home
 }
 
 extension String {

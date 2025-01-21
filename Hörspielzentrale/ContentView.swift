@@ -30,9 +30,14 @@ struct ContentView: View {
     // MARK: - View
     var body: some View {
         TabView(selection: Bindable(navigation).selection) {
+            HomeView()
+                .tabItem { Label("Startseite", systemImage: "house.fill") }
+                .tag(Selection.home)
+            
             LibraryView()
-                .tabItem { Label("Startseite", systemImage: "play.square.stack") }
+                .tabItem { Label("Mediathek", systemImage: "play.square.stack")}
                 .tag(Selection.library)
+            
             SearchView()
                 .tabItem { Label("Suche", systemImage: "magnifyingglass") }
                 .tag(Selection.search)
@@ -55,6 +60,13 @@ struct ContentView: View {
             Alert(
                 title: Text(navigation.alertTitle),
                 message: navigation.alertDescription != nil ? Text(navigation.alertDescription!) : nil)
+        }
+        .sheet(isPresented: Bindable(navigation).showSeriesAddingSheet) {
+            NavigationStack {
+                SeriesSelectionView {
+                    navigation.showSeriesAddingSheet = false
+                }
+            }
         }
         .musicSubscriptionSheet(isPresented: Bindable(navigation).musicSubscriptionSheetPresented,
                                 itemID: navigation.musicItemID)

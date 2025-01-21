@@ -47,7 +47,7 @@ struct HoerspielDisplayView: View {
             }
             
         case .coverOnly:
-            return 130
+            return 120
         case .big:
             if UIDevice.isIpad {
                 return 300
@@ -55,16 +55,22 @@ struct HoerspielDisplayView: View {
                 return UIScreen.screenWidth * 0.9
             }
             
+        case .rectangularSmall:
+            if UIDevice.isIpad {
+                return 400
+            } else {
+                return UIScreen.screenWidth * 0.8
+            }
         }
     }
     
     /// The height of the view
     var height: CGFloat {
         switch displaymode {
-        case .rectangular:
+        case .rectangular, .rectangularSmall:
             return 140
         case .coverOnly:
-            return 130
+            return 120
         case .big:
             if UIDevice.isIpad {
                 return 300
@@ -87,7 +93,7 @@ struct HoerspielDisplayView: View {
                     .foregroundStyle(dominantColor)
                     .padding(1)
                 switch displaymode {
-                case .rectangular:
+                case .rectangular, .rectangularSmall:
                     rectangular
                 case .coverOnly:
                     if let image {
@@ -197,5 +203,5 @@ struct HoerspielDisplayView: View {
 }
 
 enum DisplayMode {
-    case rectangular, coverOnly, big
+    case rectangular, coverOnly, big, rectangularSmall
 }

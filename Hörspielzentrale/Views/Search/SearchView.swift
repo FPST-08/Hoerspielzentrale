@@ -93,7 +93,9 @@ struct SearchView: View {
                                                      ])
                                 Task {
                                     disableDice = true
-                                    await musicplayer.playRandom()
+                                    let displayedArtists = UserDefaults.standard[.displayedSortArtists]
+                                    let seriesNames = displayedArtists.map { $0.name }
+                                    await musicplayer.playRandom(seriesNames: seriesNames)
                                     disableDice = false
                                 }
                             } label: {

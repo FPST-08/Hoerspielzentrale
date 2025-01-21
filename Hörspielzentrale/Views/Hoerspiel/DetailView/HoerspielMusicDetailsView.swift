@@ -383,8 +383,8 @@ Mysteriöse Ereignisse, Misstrauen und ein unheimliches Phantom treiben die Gäs
     
     /// A view displaying information
     var infoView: some View {
-        HoerspielInfoView(hoerspiel: hoerspiel, entries: [
-            HoerspielInfoDisplay(title: "Kapitel-Quelle",
+        DetailsInfoView(hoerspiel: hoerspiel, entries: [
+            DetailsInfoDisplay(title: "Kapitel-Quelle",
                                  value: source?.name ?? "Apple Music",
                                  type: .link(link: source?.url ?? URL(string: "music://music.apple.com")!)),
         ])

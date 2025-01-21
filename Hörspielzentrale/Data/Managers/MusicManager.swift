@@ -193,20 +193,21 @@ import WidgetKit
     }
     
     /// Plays a seemingly random ``Hoerspiel``
-    ///
+    /// 
     /// If possible it prefers a ``Hoerspiel`` where the playback has not been initialized yet
     /// and the series is currently displayed. If that is not possible, it tries to play a ``Hoerspiel``
     /// where the series is currently displayed. The last attempt tries to play any ``Hoerspiel`` from the database
-    func playRandom() async {
+    /// - Parameter seriesNames: The series that are applicable
+    func playRandom(seriesNames: [String]) async {
         await internalSaveListeningProgress()
         do {
-            let displayedArtists = UserDefaults.standard[.displayedSortArtists]
-            let seriesNames = displayedArtists.map { $0.name }
             let id = try? await dataManager.fetchRandom {
                 var descriptor = FetchDescriptor<Hoerspiel>()
                 descriptor = FetchDescriptor(predicate: #Predicate<Hoerspiel> { hoerspiel in
                     if hoerspiel.playedUpTo != 0 || hoerspiel.played {
                         return false
+                    } else if seriesNames.isEmpty {
+                        return true
                     } else {
                         return seriesNames.contains(hoerspiel.artist)
                     }
@@ -219,10 +220,10 @@ import WidgetKit
                 let backUPID = try? await dataManager.fetchRandom {
                     var descriptor = FetchDescriptor<Hoerspiel>()
                     descriptor = FetchDescriptor(predicate: #Predicate<Hoerspiel> { hoerspiel in
-                        if hoerspiel.series != nil {
-                            return seriesNames.contains(hoerspiel.artist)
+                        if seriesNames.isEmpty {
+                            return true
                         } else {
-                            return false
+                            return seriesNames.contains(hoerspiel.artist)
                         }
                     })
                     return descriptor

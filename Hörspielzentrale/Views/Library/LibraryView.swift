@@ -1,25 +1,18 @@
 //
-//  NewContentView.swift
-//  diedreifragezeichenplayer
+//  LibraryView.swift
+//  Hörspielzentrale
 //
-//  Created by Philipp Steiner on 10.04.24.
-//
+//  Created by Philipp Steiner on 20.01.25.
 //
 
+import Defaults
 import OSLog
 import SwiftData
 import SwiftUI
 import TelemetryDeck
 
-/// `LibraryView`is a view that offers the user the most prominent actions
+/// The library root view
 struct LibraryView: View {
-    // MARK: - Properties
-    
-    /// A Boolean that represents the presense of the Settings Sheet
-    @State private var showSettings = false
-    
-    /// The `NavigationPath` of the tab
-    @State private var navPath = NavigationPath()
     
     /// An Observable Class responsible for navigation
     @Environment(NavigationManager.self) var navigation
@@ -27,82 +20,80 @@ struct LibraryView: View {
     /// An Observable Class responsible for data
     @Environment(DataManagerClass.self) var dataManager
     
-    // MARK: - View
+    /// All series that are part of the library
+    @State private var allSeries = [SendableSeries]()
+    
+    @Default(.libraryCoverDisplayMode) var displayMode
+    
     var body: some View {
         NavigationStack(path: Bindable(navigation).libraryPath) {
-            VStack {
-                ScrollView {
-                    UpNextView()
-                    
-                    LibrarySectionView(title: "Neu erschienen", fetchDescriptor: {
-                        let now = Date.now
-                        let cutOffDate = Date.now.advanced(by: -86400 * 3)
-                        
-                        var fetchDescriptor = FetchDescriptor<Hoerspiel>(predicate: #Predicate { hoerspiel in
-                            hoerspiel.releaseDate < now && hoerspiel.releaseDate > cutOffDate
-                        })
-                        
-                        fetchDescriptor.fetchLimit = 10
-                        return fetchDescriptor
-                    }, displaymode: .big)
-                    
-                    LibrarySectionView(title: "Bald verfügbar", fetchDescriptor: {
-                        let now = Date.now
-                        var fetchDescriptor = FetchDescriptor<Hoerspiel>(predicate: #Predicate { hoerspiel in
-                            hoerspiel.releaseDate > now
-                        })
-                        fetchDescriptor.sortBy = [SortDescriptor(\.releaseDate, order: .forward),
-                                                  SortDescriptor(\.title)]
-                        fetchDescriptor.fetchLimit = 10
-                        return fetchDescriptor
-                    }, displaymode: .rectangular)
-                    
-                    LibrarySectionView(title: "Neuheiten", fetchDescriptor: {
-                        let now = Date.now
-                        
-                        var fetchDescriptor = FetchDescriptor<Hoerspiel>(predicate: #Predicate { hoerspiel in
-                            hoerspiel.releaseDate < now
-                        })
-                        fetchDescriptor.sortBy = [SortDescriptor(\.releaseDate, order: .reverse)]
-                        fetchDescriptor.fetchLimit = 10
-                        return fetchDescriptor
-                    }, displaymode: .rectangular)
-                    
-                    LibrarySectionView(title: "Zuletzt gespielt", fetchDescriptor: {
-                        var fetchDescriptor = FetchDescriptor<Hoerspiel>(predicate: #Predicate { hoerspiel in
-                            if hoerspiel.playedUpTo != 0 {
-                                return true
-                            } else if hoerspiel.played {
-                                return true
-                            } else {
-                                return false
-                            }
-                        })
-                        fetchDescriptor.fetchLimit = 10
-                        fetchDescriptor.sortBy = [SortDescriptor(\Hoerspiel.lastPlayed, order: .reverse)]
-                        return fetchDescriptor
-                    }, displaymode: .rectangular)
-                }
-            }
-            .navigationTitle("Hörspiele")
-            .toolbar {
-                ToolbarItem(placement: .topBarTrailing) {
-                    Button {
-                        showSettings = true
-                    } label: {
-                        Image(systemName: "gear")
+            ScrollView {
+                switch displayMode {
+                case .inline:
+                    VStack {
+                        ForEach(allSeries) { series in
+                            RichLibrarySection(series: series)
+                        }
                     }
-
+                case .circle:
+                    LazyVGrid(columns: [GridItem(.adaptive(minimum: 110))]) {
+                        ForEach(allSeries) { series in
+                            LibraryCircleView(series: series)
+                        }
+                    }
+                    .padding(.horizontal, 3)
                 }
             }
-            .sheet(isPresented: $showSettings) {
-                SettingsView()
+            .navigationTitle("Mediathek")
+            .safeAreaPadding(.bottom, 60)
+            .toolbar {
+                ToolbarItem {
+                    Button {
+                        displayMode.toggle()
+                    } label: {
+                        Image(systemName: displayMode.imageSystemName)
+                    }
+                }
+                ToolbarItem {
+                    Button {
+                        navigation.showSeriesAddingSheet = true
+                    } label: {
+                        Image(systemName: "plus.square.fill.on.square.fill")
+                    }
+                }
             }
             .navigationDestination(for: SendableHoerspiel.self) {
                 HoerspielDetailView(hoerspiel: $0)
             }
-            .safeAreaPadding(.bottom, 60)
         }
+        .task {
+            do {
+                allSeries = try await dataManager.manager.fetchAllSeries()
+            } catch {
+                Logger.data.fullError(error, sendToTelemetryDeck: true)
+            }
+        }
+        
         .trackNavigation(path: "Library")
+    }
+    
+    /// The displaymode for the series
+    enum SeriesDisplayMode: Codable, Defaults.Serializable {
+        case inline, circle
+        
+        /// The system name to represent the current mode
+        var imageSystemName: String {
+            switch self {
+            case .inline:
+                return "line.3.horizontal"
+            case .circle:
+                return "circle.grid.2x2.fill"
+            }
+        }
+        
+        /// A function to toggle the mode
+        mutating func toggle() {
+            self = self == .inline ? .circle : .inline
+        }
     }
 }

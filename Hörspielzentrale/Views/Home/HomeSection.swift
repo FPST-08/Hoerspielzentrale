@@ -8,8 +8,8 @@
 import SwiftData
 import SwiftUI
 
-/// A reusable Section of the ``LibraryView``
-struct LibrarySectionView: View {
+/// A reusable Section of the ``HomeView``
+struct HomeSection: View {
     // MARK: - Properties
     
     /// The title of the section
@@ -20,32 +20,10 @@ struct LibrarySectionView: View {
     /// The current display mode
     let displaymode: DisplayMode
     
+    let destination: Destination
+    
     /// The current view state
     @State private var viewState: ViewState = .loading
-    
-    /// The width of the loading tile
-    var width: CGFloat {
-        switch displaymode {
-        case .rectangular:
-            UIScreen.screenWidth * 0.9
-        case .coverOnly:
-            130
-        case .big:
-            UIScreen.screenWidth * 0.9
-        }
-    }
-    
-    /// The height of the loading tile
-    var height: CGFloat {
-        switch displaymode {
-        case .rectangular:
-            140
-        case .coverOnly:
-            130
-        case .big:
-            UIScreen.screenWidth * 0.9
-        }
-    }
     
     // MARK: - View
     var body: some View {
@@ -53,7 +31,15 @@ struct LibrarySectionView: View {
             if hoerspiele.isEmpty {
                 EmptyView()
             } else {
-                NavigationSection(hoerspiele: hoerspiele.map { SendableHoerspiel(hoerspiel: $0) }, title: title)
+                switch destination {
+                case .hoerspielList:
+                    NavigationSection(destination:
+                            .hoerspielList(hoerspiele: hoerspiele.map {
+                                SendableHoerspiel(hoerspiel: $0)
+                            }), title: title)
+                case .series(let series):
+                    NavigationSection(destination: .series(series: series), title: series.name)
+                }
                 ScrollView(.horizontal) {
                     LazyHStack {
                         ForEach(hoerspiele) { hoerspiel in
@@ -73,13 +59,19 @@ struct LibrarySectionView: View {
         case loading, finished, hidden
     }
     
+    enum Destination {
+        case hoerspielList
+        case series(series: SendableSeries)
+    }
+    
     init(title: String,
+         displaymode: DisplayMode,
          fetchDescriptor: @escaping () -> FetchDescriptor<Hoerspiel>,
-         displaymode: DisplayMode
+         destination: Destination = .hoerspielList
     ) {
         self.title = title
         self.displaymode = displaymode
-        self.viewState = viewState
+        self.destination = destination
         _hoerspiele = Query(fetchDescriptor())
     }
 }

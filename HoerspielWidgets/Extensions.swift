@@ -40,20 +40,21 @@ extension Collection {
     }
 }
 
-extension View {
-    /// Sets the URL to open in the containing app when the user clicks the widget.
-    func widgetURL(for hoerspiel: SendableHoerspiel) -> some View {
-        modifier(WidgetURLViewModifier(hoerspiel: hoerspiel))
-    }
-}
-
-/// A modifier to apply the widgetURL to link to the detail view
-struct WidgetURLViewModifier: ViewModifier {
+/// A view to wrap another view that links to a hoerspiel inside the app
+struct DeepLink<Content: View>: View {
     /// The hoerspiel to link to
     let hoerspiel: SendableHoerspiel
-    func body(content: Content) -> some View {
-        content
-            .widgetURL(URL(string: "hoerspielzentrale://open-hoerspiel?upc=\(hoerspiel.upc)")!)
+    /// The view
+    @ViewBuilder let content: Content
+    /// The url to open the hoerspiel
+    var url: URL {
+        URL(string: "hoerspielzentrale://open-hoerspiel?upc=\(hoerspiel.upc)")!
+    }
+    
+    var body: some View {
+        Link(destination: url) {
+            content
+        }
     }
 }
 

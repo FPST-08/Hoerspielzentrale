@@ -190,7 +190,7 @@ struct HoerspielDisplayView: View {
                 description = "Erscheint am \(sendableHoerspiel.releaseDate.formatted(date: .long, time: .omitted))"
             } else {
                 let metadata = try? await sendableHoerspiel.loadMetaData()
-                description = metadata?.beschreibung ?? "Beschreibung nicht verfügbar"
+                description = (metadata?.beschreibung ?? "") + " " + (metadata?.kurzbeschreibung ?? "").trimmingCharacters(in: .whitespaces)
             }
         }
     }

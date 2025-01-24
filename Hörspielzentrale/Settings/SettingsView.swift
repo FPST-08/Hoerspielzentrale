@@ -191,6 +191,15 @@ mailto:hoerspielzentrale@icloud.com?subject=Idee für eine neue Funktion in der 
                         Text("Version \(Bundle.main.releaseVersionNumber!) (\(Bundle.main.buildVersionNumber!))")
                             .font(.caption)
                             .foregroundStyle(Color.tertiaryLabel)
+                        Button("Kontakt") {
+                            let mailtoString = """
+                            mailto:hoerspielzentrale@icloud.com?subject=Kontakt zur Hörspielzentrale
+                            """.addingPercentEncoding(withAllowedCharacters: .urlQueryAllowed)
+                            let mailtoUrl = URL(string: mailtoString!)!
+                            if UIApplication.shared.canOpenURL(mailtoUrl) {
+                                UIApplication.shared.open(mailtoUrl, options: [:])
+                            }
+                        }
                     }
                     .listRowInsets(EdgeInsets())
                     .frame(maxWidth: .infinity, minHeight: 60)

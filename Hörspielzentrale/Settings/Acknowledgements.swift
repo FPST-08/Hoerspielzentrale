@@ -16,5 +16,7 @@ import Foundation
     Acknow(title: "dreimetadaten", repository: URL(string: "https://github.com/YourMJK/dreimetadaten")),
     Acknow(title: "Connectivity", repository: URL(string: "https://github.com/rwbutler/Connectivity")),
     Acknow(title: "CloudKitSyncMonitor", repository: URL(string: "https://github.com/ggruen/CloudKitSyncMonitor")),
-    Acknow(title: "SwiftLintPlugins", repository: URL(string: "https://github.com/SimplyDanny/SwiftLintPlugins"))
+    Acknow(title: "SwiftLintPlugins", repository: URL(string: "https://github.com/SimplyDanny/SwiftLintPlugins")),
+    Acknow(title: "Defaults", repository: URL(string: "https://github.com/sindresorhus/Defaults")),
+    Acknow(title: "AppIcon-Entwurf von André", repository: URL(string: "http://www.anb030.de/a"))
 ].sorted { $0.title < $1.title}

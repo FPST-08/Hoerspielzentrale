@@ -17,11 +17,8 @@ struct LibraryView: View {
     /// An Observable Class responsible for navigation
     @Environment(NavigationManager.self) var navigation
     
-    /// An Observable Class responsible for data
-    @Environment(DataManagerClass.self) var dataManager
-    
     /// All series that are part of the library
-    @State private var allSeries = [SendableSeries]()
+    @Query var allSeries: [Series]
     
     @Default(.libraryCoverDisplayMode) var displayMode
     
@@ -32,13 +29,13 @@ struct LibraryView: View {
                 case .inline:
                     VStack {
                         ForEach(allSeries) { series in
-                            RichLibrarySection(series: series)
+                            RichLibrarySection(series: SendableSeries(series))
                         }
                     }
                 case .circle:
                     LazyVGrid(columns: [GridItem(.adaptive(minimum: 110))]) {
                         ForEach(allSeries) { series in
-                            LibraryCircleView(series: series)
+                            LibraryCircleView(series: SendableSeries(series))
                         }
                     }
                     .padding(.horizontal, 3)
@@ -66,14 +63,6 @@ struct LibraryView: View {
                 HoerspielDetailView(hoerspiel: $0)
             }
         }
-        .task {
-            do {
-                allSeries = try await dataManager.manager.fetchAllSeries()
-            } catch {
-                Logger.data.fullError(error, sendToTelemetryDeck: true)
-            }
-        }
-        
         .trackNavigation(path: "Library")
     }
     

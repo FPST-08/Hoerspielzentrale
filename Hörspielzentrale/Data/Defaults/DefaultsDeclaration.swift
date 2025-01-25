@@ -30,6 +30,8 @@ extension Defaults.Keys {
     static let libraryCoverDisplayMode = Key<LibraryView.SeriesDisplayMode>("libraryCoverDisplayMode",
                                                                             default: LibraryView.SeriesDisplayMode.circle)
     // swiftlint:disable:previous line_length
+    
+    static let coversize = Key<CoverSize>("coversize", default: CoverSize.normal)
 }
 
 /// An enum used for communicating the sorting property

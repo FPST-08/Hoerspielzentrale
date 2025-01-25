@@ -131,8 +131,10 @@ struct HoerspielMenuView<Content: View>: View {
     init(persistentIdentifier: PersistentIdentifier, @ViewBuilder content: () -> Content) {
         self.persistentIdentifier = persistentIdentifier
         self.content = content()
-        _hoerspiele = Query(filter: #Predicate<Hoerspiel> { hoerspiel in
+        var descriptor = FetchDescriptor<Hoerspiel>(predicate: #Predicate { hoerspiel in
             hoerspiel.persistentModelID == persistentIdentifier
         })
+        descriptor.fetchLimit = 1
+        _hoerspiele = Query(descriptor)
     }
 }

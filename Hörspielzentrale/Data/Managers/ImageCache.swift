@@ -5,6 +5,7 @@
 //  Created by Philipp Steiner on 07.09.24.
 //
 
+import Defaults
 import Foundation
 @preconcurrency import MusicKit
 import OSLog
@@ -21,15 +22,16 @@ import SwiftUI
     init(dataManager: DataManager) {
         self.datamanager = dataManager
     }
-    ///  Provides the cover for a specified ``SendableHoerspiel``
-    /// - Parameter hoerspiel: The ``SendableHoerspiel`` used to find the corresponding Cover
-    /// - Returns: Returns an `Image`if the cover was successfully retrieved
-    ///
-    /// This function is building on top of ``uiimage(for:)``and converts its result to an `Image`
-    ///
-    /// - Note: If the cover is needed as an UIImage, call ``uiimage(for:)`` directly
-    func image(for hoerspiel: SendableHoerspiel) async -> Image? {
-        if let uiimage = await uiimage(for: hoerspiel) {
+    /// Provides the cover for a specified ``SendableHoerspiel``
+    ///  - Parameter hoerspiel: The ``SendableHoerspiel`` used to find the corresponding Cover
+    ///  - Parameter size: The size option of the image
+    ///  - Returns: Returns an `Image`if the cover was successfully retrieved
+    /// 
+    ///  This function is building on top of ``uiimage(for:)``and converts its result to an `Image`
+    /// 
+    ///  - Note: If the cover is needed as an UIImage, call ``uiimage(for:)`` directly
+    func image(for hoerspiel: SendableHoerspiel, size: SizeOptions = .resized) async -> Image? {
+        if let uiimage = await uiimage(for: hoerspiel, size: size) {
             return Image(uiImage: uiimage)
         } else {
             return nil
@@ -38,14 +40,16 @@ import SwiftUI
     
     /// Provides the cover for a specified ``SendableHoerspiel``
     /// - Parameter hoerspiel: The ``SendableHoerspiel`` used to find the corresponding Cover
+    /// - Parameter size: The size option of the image
     /// - Returns: Returns an `UIImage` if the cover was successfully retrieved
-    ///
+    /// 
     /// First it will be tried to load the image from the cache.
     /// If it is not to be found there, it will be tried to load the image from disk.
     /// If that also fails, the image will be loaded from the Apple Music API.
     /// If all of these attempts where not successfull, nil will be returned
     func uiimage(
-        for hoerspiel: SendableHoerspiel
+        for hoerspiel: SendableHoerspiel,
+        size: SizeOptions = .resized
     ) async -> UIImage? {
         do {
             if hoerspiel.upc == "" {
@@ -57,26 +61,31 @@ import SwiftUI
             }
             #endif
             let upc = hoerspiel.upc
-            if let uiimage = cache.object(forKey: upc as NSString) {
-                Logger.data.info("Image for \(upc) was read from Cache  with size \(uiimage.size.width)")
-                deleteImageWithWrongSize(upc: upc, size: uiimage.size.width)
-                return uiimage
-            } else {
-                let fileURL = documentsDirectoryPath.appendingPathComponent("\(upc).jpg")
-                
-                if let imageData = try? Data(contentsOf: fileURL) {
-                    guard let uiimage = UIImage(data: imageData) else {
-                        return nil
-                    }
-                    cache.setObject(uiimage, forKey: upc as NSString)
-                    Logger.data.info("Image for \(upc) was read from disk with size \(uiimage.size.width)")
-                    deleteImageWithWrongSize(upc: upc, size: uiimage.size.width)
+            if size == .resized {
+                if let uiimage = cache.object(forKey: upc as NSString) {
+                    Logger.data.info("Image for \(upc) was read from Cache  with size \(uiimage.size.width)")
                     return uiimage
                 } else {
-                    Logger.data.info("Image for \(upc) is not locally available")
-                    return await loadImageFromRemote(for: hoerspiel)
+                    let fileURL = documentsDirectoryPath.appendingPathComponent("\(upc).jpg")
+                    let image = resizedImage(at: fileURL, for: CGSize(width: 64, height: 64))
+                    if let image {
+                        cache.setObject(image, forKey: "\(upc)" as NSString)
+                        return image
+                    }
+                }
+            } else {
+                let fileURL = documentsDirectoryPath.appendingPathComponent("\(upc).jpg")
+                if let image = UIImage(contentsOfFile: fileURL.path()) {
+                    let coverSize = Defaults[.coversize].width
+                    deleteImageWithWrongSize(upc: upc, size: coverSize)
+                    return image
                 }
             }
+            let coverSize = Defaults[.coversize].width
+            guard let image = await loadImageFromRemote(for: hoerspiel) else {
+                return nil
+            }
+            return resizedImage(image, for: size == .fullResolution ? CGSize(width: coverSize, height: coverSize) : CGSize(width: 32, height: 32))
         }
     }
     
@@ -217,7 +226,10 @@ Deleting image with upc \(upc) since its size of \(size) is not equal to the sto
                 return nil
             }
             
-            guard let url = artist.artwork?.url(width: 1024, height: 1024) else {
+            let coversizeString = UserDefaults.standard.string(forKey: "coversize")
+            let coversize = Int(CoverSize(coversizeString ?? "Groß").width)
+            
+            guard let url = artist.artwork?.url(width: coversize, height: coversize) else {
                 Logger.imageCache.error("Unable to get artwork url")
                 return nil
             }
@@ -239,10 +251,43 @@ Deleting image with upc \(upc) since its size of \(size) is not equal to the sto
         }
         return nil
     }
+    /// Fetches an `UIImage`from the url and resized that
+    /// - Parameters:
+    ///   - url: The file url of the image
+    ///   - size: The desired size
+    /// - Returns: Returns the resized image
+    func resizedImage(at url: URL, for size: CGSize) -> UIImage? {
+        guard let image = UIImage(contentsOfFile: url.path) else {
+            return nil
+        }
+
+        let renderer = UIGraphicsImageRenderer(size: size)
+        return renderer.image { _ in
+            image.draw(in: CGRect(origin: .zero, size: size))
+        }
+    }
+    
+    /// Resizes an `UIImage` to the specified size
+    /// - Parameters:
+    ///   - uiimage: The uiimage to resize
+    ///   - size: The desired size
+    /// - Returns: Returns the resized image
+    func resizedImage(_ uiimage: UIImage, for size: CGSize) -> UIImage? {
+        let renderer = UIGraphicsImageRenderer(size: size)
+        return renderer.image { _ in
+            uiimage.draw(in: CGRect(origin: .zero, size: size))
+        }
+    }
+    
+    /// The size options of an `UIImage`
+    enum SizeOptions {
+        case fullResolution
+        case resized
+    }
 }
 
 /// The Size of all Covers saved locally
-enum CoverSize: Hashable {
+enum CoverSize: Hashable, Codable, Defaults.Serializable {
     
     case small, normal, big
     

@@ -44,7 +44,6 @@ struct HoerspielListView: View {
                             "Datum unbekannt")
                         .foregroundStyle(Color.secondary)
                         .font(.subheadline)
-                    
                     Text(hoerspiel.title)
                         .foregroundStyle(Color.primary)
                         .font(.body)

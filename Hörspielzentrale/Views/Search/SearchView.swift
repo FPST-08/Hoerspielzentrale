@@ -52,9 +52,9 @@ struct SearchView: View {
     
     @Default(.displayedSortArtists) var displayedArtists
     
-    @State private var fetchLimit = 10
+    @State private var state = ViewState.loaded
     
-    @State private var state = ViewState.loading
+    @State private var fetchLimit: Int? = 10
     
     @Environment(\.editMode) var editMode
     
@@ -63,8 +63,6 @@ struct SearchView: View {
         NavigationStack(path: Bindable(navigation).searchPath) {
             Group {
                 switch state {
-                case .loading:
-                    ProgressView()
                 case .error:
                     ContentUnavailableView("Es ist ein Fehler aufgetreten", systemImage: "exclamationmark.triangle")
                 case .loaded:
@@ -76,11 +74,8 @@ struct SearchView: View {
                             onlyUnplayed = false
                             displayedArtists = allArtists
                             navigation.searchText = ""
-                        }, loadMore: {
-                            fetchLimit += 10
                         }, searchText: navigation.searchText,
                         fetchLimit: fetchLimit
-                        
                     )
                     .safeAreaPadding(.bottom, 60)
                     .toolbar {
@@ -175,7 +170,8 @@ struct SearchView: View {
                     if displayedArtists.isEmpty {
                         displayedArtists = allArtists
                     }
-                    state = .loaded
+                    try? await Task.sleep(for: .seconds(1.5))
+                    fetchLimit = nil
                 } catch {
                     Logger.data.fullError(error, sendToTelemetryDeck: true)
                     state = .error
@@ -192,6 +188,6 @@ struct SearchView: View {
     }
     
     enum ViewState {
-        case loading, loaded, error
+        case loaded, error
     }
 }

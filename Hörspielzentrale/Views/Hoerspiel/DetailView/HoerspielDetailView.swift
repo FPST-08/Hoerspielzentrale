@@ -109,7 +109,7 @@ struct HoerspielDetailView: View {
             .navigationTitle(hoerspiel.title)
             .navigationBarTitleDisplayMode(.inline)
             .task {
-                image = await imagecache.image(for: hoerspiel)
+                image = await imagecache.image(for: hoerspiel, size: .fullResolution)
                 TelemetryDeck.signal("Navigation.Detail", parameters: ["Hoerspiel": hoerspiel.title])
                 let center = UNUserNotificationCenter.current()
                 center.removeDeliveredNotifications(withIdentifiers: [hoerspiel.upc, "PR\(hoerspiel.upc)"])

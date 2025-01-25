@@ -168,7 +168,7 @@ import WidgetKit
             musicplayer.currentPlaybackTime = startPoint.timeInterval
             musicplayer.play()
             currentlyPlayingHoerspiel = hoerspiel
-            currentlyPlayingHoerspielCover = await imageCache.uiimage(for: hoerspiel)
+            currentlyPlayingHoerspielCover = await imageCache.uiimage(for: hoerspiel, size: .fullResolution)
             startDate = startPoint.startDate
             initiatedDate = Date.now
             endDate = startPoint.endDate

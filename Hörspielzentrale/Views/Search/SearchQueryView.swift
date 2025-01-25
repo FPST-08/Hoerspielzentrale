@@ -22,25 +22,11 @@ struct SearchQueryView: View {
     /// A closure to remove all filters passed from ``SearchView``
     let removeFilters: () -> Void
     
-    /// A function to increase the fetchlimit
-    let loadMore: @MainActor () -> Void
-    
     /// An Observable Class responsible for navigation
     @Environment(NavigationManager.self) var navigation
     
     /// An Observable Class responsible for data
     @Environment(DataManagerClass.self) var dataManager
-    
-    /// The string of the text at the end of the list
-    var textString: String {
-        if hoerspiele.count == 1 {
-            return "Gefällt dir dieses Hörspiel nicht?"
-        } else {
-            return """
-\(hoerspiele.count) tolle Hörspiele und du hast keines gefunden?
-"""
-        }
-    }
     
     @State private var multiSelection: Set<PersistentIdentifier> = []
     
@@ -67,14 +53,9 @@ struct SearchQueryView: View {
                             HoerspielListView(hoerspiel: SendableHoerspiel(hoerspiel: hoerspiel))
                                 .id(hoerspiel.persistentModelID)
                         }
-                        Text(textString)
-                            .onAppear {
-                                loadMore()
-                            }
                     }
                     .animation(nil, value: editMode?.wrappedValue)
                     .toolbar {
-                        
                         ToolbarItem(placement: .topBarLeading) {
                             Button {
                                 editMode?.wrappedValue = editMode?.wrappedValue.isEditing == true ? .inactive : .active
@@ -120,6 +101,9 @@ struct SearchQueryView: View {
                 editMode?.wrappedValue = .inactive
                 navigation.searchPresented = false
             }
+            .onAppear {
+                
+            }
         }
     }
     
@@ -142,17 +126,14 @@ struct SearchQueryView: View {
     ///   - onlyUnplayed: Indicates if only unplayed `Hoerspiele` should be returned
     ///   - sortBy: A sortDescriptor to sort all visible `Hoerspiele`
     ///   - removeFilters: A closure to remove all filters if applicable
-    ///   - fetchLimit: The amount of items loaded for the list
-    ///   - loadMore: A closure that increases the fetchlimit
     ///   - searchText: The search text
     init(
         displayedSeries: [SendableSeries],
         onlyUnplayed: Bool,
         sortBy: SortDescriptor<Hoerspiel>,
         removeFilters: @escaping @MainActor () -> Void,
-        loadMore: @escaping @MainActor () -> Void,
         searchText: String,
-        fetchLimit: Int
+        fetchLimit: Int?
     ) {
         let displayedSeriesIDs = displayedSeries.map { $0.musicItemID }
         var descriptor = FetchDescriptor<Hoerspiel>(predicate: #Predicate<Hoerspiel> { hoerspiel in
@@ -172,12 +153,9 @@ struct SearchQueryView: View {
                 return hoerspiel.title.localizedStandardContains(searchText)
             }
         })
-        
-        descriptor.fetchLimit = fetchLimit
         descriptor.sortBy = [sortBy]
-        
+        descriptor.fetchLimit = fetchLimit
         _hoerspiele = Query(descriptor)
         self.removeFilters = removeFilters
-        self.loadMore = loadMore
     }
 }

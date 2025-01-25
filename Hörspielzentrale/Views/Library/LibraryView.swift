@@ -17,30 +17,17 @@ struct LibraryView: View {
     /// An Observable Class responsible for navigation
     @Environment(NavigationManager.self) var navigation
     
-    /// All series that are part of the library
-    @Query var allSeries: [Series]
-    
     @Default(.libraryCoverDisplayMode) var displayMode
+    
+    /// The search string
+    @State private var searchString = ""
     
     var body: some View {
         NavigationStack(path: Bindable(navigation).libraryPath) {
             ScrollView {
-                switch displayMode {
-                case .inline:
-                    VStack {
-                        ForEach(allSeries) { series in
-                            RichLibrarySection(series: SendableSeries(series))
-                        }
-                    }
-                case .circle:
-                    LazyVGrid(columns: [GridItem(.adaptive(minimum: 110))]) {
-                        ForEach(allSeries) { series in
-                            LibraryCircleView(series: SendableSeries(series))
-                        }
-                    }
-                    .padding(.horizontal, 3)
-                }
+                LibraryQueryView(searchString: searchString)
             }
+            .searchable(text: $searchString, prompt: Text("Suche nach Serien in der Mediathek"))
             .navigationTitle("Mediathek")
             .safeAreaPadding(.bottom, 60)
             .toolbar {

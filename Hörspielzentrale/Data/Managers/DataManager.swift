@@ -579,7 +579,7 @@ actor DataManager {
     public func fetchSuggestedHoerspielForPlaybck() throws -> SendableHoerspiel {
         var upNextHoerspielDescriptor = FetchDescriptor<Hoerspiel>(predicate: #Predicate { hoerspiel in
             hoerspiel.showInUpNext
-        }, sortBy: [SortDescriptor(\Hoerspiel.lastPlayed)])
+        }, sortBy: [SortDescriptor(\Hoerspiel.addedToUpNext, order: .reverse)])
         upNextHoerspielDescriptor.fetchLimit = 1
         if let upNextHoerspiel = try modelContext.fetch(upNextHoerspielDescriptor).first {
             return SendableHoerspiel(hoerspiel: upNextHoerspiel)
@@ -588,7 +588,7 @@ actor DataManager {
         var overallFetchDescriptor = FetchDescriptor<Hoerspiel>(predicate: #Predicate { hoerspiel in
             hoerspiel.releaseDate < now
         }, sortBy: [SortDescriptor(\Hoerspiel.releaseDate, order: .reverse)])
-        
+        overallFetchDescriptor.fetchLimit = 1
         if let overallHoerspiel = try modelContext.fetch(overallFetchDescriptor).first {
             return SendableHoerspiel(hoerspiel: overallHoerspiel)
         }

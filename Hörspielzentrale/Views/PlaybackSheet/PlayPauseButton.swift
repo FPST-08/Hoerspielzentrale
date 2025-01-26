@@ -14,6 +14,7 @@ struct PlayPauseButtonView: View {
     /// The current playback state
     @ObservedObject var state = ApplicationMusicPlayer.shared.state
     
+    /// Referencing an `Observable` class responsible for playback
     @Environment(MusicManager.self) var musicManager
     
     /// A computed property simplifiying the access to the playback state
@@ -29,12 +30,9 @@ struct PlayPauseButtonView: View {
     /// The size of the overall area used to calculate the size of the button
     let size = UIScreen.main.bounds.size
     
-    /// A closure called whenever the button is tapped
-    let tapped: @MainActor () -> Void
-    
     var body: some View {
         Button {
-            tapped()
+            musicManager.togglePlayback()
         } label: {
             ZStack {
                 Image(systemName: "pause.fill")
@@ -49,6 +47,7 @@ struct PlayPauseButtonView: View {
                     .opacity(isPlaying ? 0 : 1)
                     .animation(.interpolatingSpring(stiffness: 170, damping: 15), value: isPlaying)
             }
+            .foregroundStyle(Color.white)
         }
     }
 }

@@ -216,19 +216,10 @@ class Maintenance {
 /// A view modifier that attaches and handles maintenance checks
 struct MaintenanceModifier: ViewModifier {
     @Environment(Maintenance.self) var maintenanceManager
-    @ObservedObject var syncMonitor = SyncMonitor.default
     func body(content: Content) -> some View {
         content
             .onAppear {
-                syncMonitor.startMonitoring()
                 maintenanceManager.checkForRequiredMaintenance()
-            }
-            .onChange(of: syncMonitor.syncStateSummary) { oldValue, newValue in
-                Logger.maintenance.info(
-                    "Syncing summary changed from \(oldValue.description) to \(newValue.description)")
-                if oldValue == .inProgress {
-                    maintenanceManager.checkForRequiredMaintenance()
-                }
             }
     }
 }

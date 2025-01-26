@@ -50,8 +50,7 @@ struct ContentView: View {
         .overlay {
             if navigation.presentMediaSheet {
                 PlaybackSheet(animation: animation,
-                              animateContent: $animateContent,
-                              persistentIdentifier: musicmanager.currentlyPlayingHoerspiel?.persistentModelID)
+                              animateContent: $animateContent)
                 .transition(.asymmetric(insertion: .identity, removal: .offset(y: -5)))
                 .environment(\.dynamicTypeSize, .large)
             }
@@ -87,6 +86,7 @@ struct ContentView: View {
                 .overlay {
                     MusicInfo(animateContent: $animateContent,
                               artwork: Image(musicmanager.currentlyPlayingHoerspielCover),
+                              applyArtworkMGE: true,
                               animation: animation)
                 }
         }

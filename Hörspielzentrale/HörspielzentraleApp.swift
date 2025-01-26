@@ -89,6 +89,9 @@ struct Hörspielzentrale: App {
                 .onChange(of: state.playbackStatus) { oldValue, newValue in
                     Logger.playback.info("Playback status changed")
                     if oldValue == .playing {
+                        if let enddate = musicmanager.endDate {
+                            musicmanager.remainingTime = enddate - Date()
+                        }
                         Task {
                             await musicmanager.saveListeningProgressAsync()
                         }

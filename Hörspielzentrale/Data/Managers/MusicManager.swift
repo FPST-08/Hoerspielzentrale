@@ -35,6 +35,7 @@ import WidgetKit
     var startDate: Date?
     var initiatedDate: Date?
     var endDate: Date?
+    var remainingTime: Double = 0
     
     /// The currently playing ``SendableHoerspiel``
     var currentlyPlayingHoerspiel: SendableHoerspiel?
@@ -276,6 +277,9 @@ import WidgetKit
     func togglePlayback(for hoerspiel: PersistentIdentifier) async {
         if hoerspiel == currentlyPlayingHoerspiel?.persistentModelID, musicplayer.playbackState == .playing {
             musicplayer.pause()
+            if let endDate {
+                remainingTime = endDate - Date()
+            }
         } else if hoerspiel == currentlyPlayingHoerspiel?.persistentModelID && musicplayer.playbackState != .playing {
             musicplayer.play()
         } else {
@@ -288,8 +292,16 @@ import WidgetKit
     func togglePlayback() {
         if musicplayer.playbackState == .playing {
             musicplayer.pause()
-        } else {
+            if let endDate {
+                remainingTime = endDate - Date()
+            }
+        } else if musicplayer.playbackState == .paused || musicplayer.playbackState == .interrupted {
             musicplayer.play()
+        } else {
+            Task {
+                let hoerspiel = try await dataManager.fetchSuggestedHoerspielForPlaybck()
+                await initiatePlayback(for: hoerspiel.persistentModelID)
+            }
         }
     }
     

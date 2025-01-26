@@ -20,6 +20,9 @@ struct MusicInfo: View {
     /// The cover of the currently playing ``Hoerspiel``
     let artwork: Image?
     
+    /// Indicating if the correct namespace should be applied in this view to stop matchedGeometryEffect-Errors
+    let applyArtworkMGE: Bool
+    
     /// The animation namespace of the animation
     var animation: Namespace.ID
     /// The current playback state
@@ -46,6 +49,9 @@ struct MusicInfo: View {
         return state.playbackStatus == .playing
     }
     
+    /// A dummy namespace
+    @Namespace var unusedNamespace
+    
     // MARK: - View
     var body: some View {
         HStack(alignment: .center) {
@@ -54,12 +60,12 @@ struct MusicInfo: View {
                     .resizable()
                     .frame(width: 45, height: 45)
                     .cornerRadius(10)
-                    .matchedGeometryEffect(id: "ARTWORK", in: animation)
+                    .matchedGeometryEffect(id: "ARTWORK", in: applyArtworkMGE ? animation : unusedNamespace )
             } else {
                 RoundedRectangle(cornerRadius: 10)
                     .foregroundStyle(Color.gray)
                     .frame(width: 45, height: 45)
-                    .matchedGeometryEffect(id: "ARTWORK", in: animation)
+                    .matchedGeometryEffect(id: "ARTWORK", in: applyArtworkMGE ? animation : unusedNamespace )
             }
             
             Text(musicManager.currentlyPlayingHoerspiel?.title ?? "Keine Wiedergabe")
@@ -85,7 +91,6 @@ struct MusicInfo: View {
                 Image(systemName: "\(isPlaying ? "pause" : "play").fill")
                     .font(.title2)
             }
-//            .disabled(state.playbackStatus != .paused && state.playbackStatus != .playing)
             Button {
                 Task {
                     await musicManager.saveListeningProgressAsync()

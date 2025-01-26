@@ -20,6 +20,9 @@ struct MusicProgressSlider: View {
     /// Referencing an `Observable` class responsible for playback
     @Environment(MusicManager.self) var musicplayer
     
+    /// An Observable Class responsible for data
+    @Environment(DataManagerClass.self) var dataManager
+    
     /// The range of the slider
     let inRange: ClosedRange<Double>
     
@@ -32,13 +35,7 @@ struct MusicProgressSlider: View {
     var emptyColor: Color = Color.white.opacity(0.3)
     
     /// The height of the slider
-    let height: CGFloat
-    
-    // A closure used for calling when scrubbing ended
-    let onEditingChanged: (_ point: Double) -> Void
-    
-    /// The current value of the playhead
-    @Binding var value: Double
+    let height: CGFloat = 32
     
     /// The local equivalent to ``value``
     @State private var localRealProgress: Double = 0
@@ -52,50 +49,47 @@ struct MusicProgressSlider: View {
     /// Used to display remaining time when scrubbing
     @State private var progressDuration: Double = 0
     
-    /// The `persistentIdentifier` for the currently playing ``Hoerspiel``
-    let persistentIdentifier: PersistentIdentifier?
-    
     // MARK: - View
     var body: some View {
         GeometryReader { bounds in
             ZStack {
                 VStack {
-                    
                     ZStack(alignment: .center) {
                         Capsule()
                             .fill(emptyColor)
-                        
                         Capsule()
-                        
                             .fill(isActive ? activeFillColor : fillColor)
                             .mask({
                                 HStack {
                                     Rectangle()
-                                    
                                         .frame(
                                             width: max(
                                                 bounds.size.width * CGFloat(
                                                     (localRealProgress + localTempProgress)),
                                                 0),
                                             alignment: .leading)
-                                    
                                     Spacer(minLength: 0)
                                 }
                             })
                     }
-                    
                     HStack {
                         if musicplayer.currentlyPlayingHoerspiel != nil {
-                            Text(progressDuration.customFormatted())
-                            
+                            if let startdate = musicplayer.startDate {
+                                Text(startdate, style: .timer)
+                            } else {
+                                Text((inRange.upperBound - progressDuration).customFormatted())
+                            }
                             if let sleeptimerDate = musicplayer.sleeptimerDate {
                                 Spacer(minLength: 0)
                                 Text(sleeptimerDate, style: .timer)
                             }
-
                             Spacer(minLength: 0)
-
-                            Text("- " + (inRange.upperBound - progressDuration).customFormatted())
+                            if let endDate = musicplayer.endDate {
+                                Text("- \(endDate, style: .timer)")
+                            } else {
+                                Text("- \(progressDuration.customFormatted())")
+                            }
+                            
                         } else {
                             Text("0:00")
                             Spacer()
@@ -118,8 +112,7 @@ struct MusicProgressSlider: View {
                 .onChanged { gesture in
                     localTempProgress = Double(gesture.translation.width / bounds.size.width)
                     let prg = max(min((localRealProgress + localTempProgress), 1), 0)
-                    progressDuration = inRange.upperBound * prg
-                    value = max(min(getPrgValue(), inRange.upperBound), inRange.lowerBound)
+                    progressDuration = (inRange.upperBound * (1 - prg))
                 }.onEnded { _ in
                     localRealProgress = max(min(localRealProgress + localTempProgress, 1), 0)
                     localTempProgress = 0
@@ -127,28 +120,42 @@ struct MusicProgressSlider: View {
                 }
             )
             .onChange(of: isActive) { _, newValue in
-                
-                Task(priority: .high) {
-                    if state.playbackStatus == .playing {
-                        musicplayer.musicplayer.pause()
-                    }
-                    await MainActor.run { // Update UI on main thread after pausing
-                        value = max(min(getPrgValue(), inRange.upperBound), inRange.lowerBound)
-                        if !newValue {
-                            onEditingChanged(progressDuration)
+                if state.playbackStatus == .playing {
+                    musicplayer.musicplayer.pause()
+                }
+                if !newValue {
+                    Task(priority: .userInitiated) {
+                        guard let persistentIdentifier = musicplayer.currentlyPlayingHoerspiel?.persistentModelID else {
+                            Logger.playback.error("Couldn't get id")
+                            return
+                        }
+                        do {
+                            try await dataManager.manager.update(
+                                persistentIdentifier,
+                                keypath: \.playedUpTo,
+                                to: Int(progressDuration))
+                            musicplayer.startPlayback(for: persistentIdentifier)
+                        } catch {
+                            Logger.playback.fullError(error, sendToTelemetryDeck: true)
                         }
                     }
                 }
             }
             .onAppear {
+                var value = 0.0
+                if let startDate = musicplayer.startDate {
+                    
+                    value = Date.now - startDate
+                }
                 localRealProgress = getPrgPercentage(value)
                 progressDuration = inRange.upperBound * localRealProgress
-            }
-            .onChange(of: value) { _, newValue in
-                if !isActive {
-                    progressDuration = newValue
-                    localRealProgress = newValue / inRange.upperBound
+                if state.playbackStatus != .playing {
+                    progressDuration = musicplayer.remainingTime
+                    localRealProgress = 1 - getPrgPercentage(musicplayer.remainingTime)
                 }
+            }
+            .onChange(of: state.playbackStatus) { _, _ in
+                progressDuration = musicplayer.remainingTime
             }
         }
         .allowsHitTesting(state.playbackStatus == .playing || state.playbackStatus == .paused)
@@ -156,7 +163,6 @@ struct MusicProgressSlider: View {
     }
     
     // MARK: - Functions
-    
     /// The currently needed animation
     private var animation: Animation {
         if isActive {

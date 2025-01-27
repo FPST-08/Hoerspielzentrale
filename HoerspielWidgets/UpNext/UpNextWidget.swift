@@ -104,41 +104,38 @@ struct UpNextWidgetEntry: View {
                     VStack(alignment: .leading) {
                         if let data = entry.data.sortByAddedToUpNext()[safe: 0] {
                             DeepLink(hoerspiel: data.hoerspiel) {
-                                HStack {
+                                HStack(alignment: .top) {
                                     if #available(iOSApplicationExtension 18.0, *) {
-                                        entry.data.sortByAddedToUpNext().first!.image
+                                        data.image
                                             .resizable()
                                             .widgetAccentedRenderingMode(.fullColor)
                                             .scaledToFit()
                                             .cornerRadius(10)
                                             .frame(width: 130, height: 130)
+                                            
                                     } else {
-                                        entry.data.sortByAddedToUpNext().first!.image
+                                        data.image
                                             .resizable()
                                             .scaledToFit()
                                             .cornerRadius(10)
                                             .frame(width: 130, height: 130)
                                     }
                                     VStack(alignment: .leading) {
-                                        Spacer()
                                         Text(data.hoerspiel.title)
                                             .fontWeight(.medium)
                                             .lineLimit(3)
-                                            .frame(height: 50, alignment: .bottom)
                                         Text("""
     \(data.hoerspiel.artist) · \
     \(data.hoerspiel.releaseDate.formatted(date: .numeric, time: .omitted)) · \
     \((data.hoerspiel.duration - Double(data.hoerspiel.playedUpTo)).formattedDuration())
     """)
                                         .foregroundStyle(Color.secondary)
-                                        .frame(maxHeight: .infinity, alignment: .top)
                                         .font(.caption)
                                     }
                                     .foregroundStyle(Color.white)
                                 }
                             }
                         }
-                        Spacer()
                         Text("Als Nächstes")
                             .fontWeight(.semibold)
                             .foregroundStyle(Color.white)
@@ -157,7 +154,7 @@ struct UpNextWidgetEntry: View {
                         }
                         Spacer()
                     }
-                    .padding(.vertical)
+                    .frame(maxHeight: .infinity)
                 default: Text("Größe nicht untersstützt \(family.description)")
                 }
             } else {

@@ -216,6 +216,9 @@ actor DataManager {
         guard let model = modelContext.model(for: persistentIdentifier) as? Hoerspiel else {
             throw DataBaseError.noModelForPersistentIdentifierFound
         }
+        if model.releaseDate.isFuture() {
+            return
+        }
         model.tracks = []
         for track in tracks.sorted() {
             model.tracks?.append(StoredTrack(index: tracks.firstIndex(of: track)!,
@@ -226,6 +229,11 @@ actor DataManager {
                                              hoerspiel: model))
         }
         try modelContext.save()
+    }
+    
+    /// Deletes all tracks
+    public func deleteAllTracks() throws {
+        try modelContext.delete(model: StoredTrack.self)
     }
     
     /// Suggested Entities suitable for App Intents

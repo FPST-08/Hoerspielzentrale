@@ -412,6 +412,7 @@ Mysteriöse Ereignisse, Misstrauen und ein unheimliches Phantom treiben die Gäs
                         previousSum += duration
                     }
                 }
+                try? await dataManager.manager.setTracks(hoerspiel.persistentModelID, tracks.map { SendableStoredTrack($0, index: tracks.firstIndex(of: $0) ?? 0) })
                 let duration = Double(tracks.reduce(0, { $0 + ($1.duration ?? 0)}))
                 try await dataManager.manager.update(hoerspiel.persistentModelID,
                                                      keypath: \.duration,

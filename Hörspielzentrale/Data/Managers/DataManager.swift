@@ -147,27 +147,7 @@ actor DataManager {
         return addedEntities
     }
     
-#if DEBUG
-    /// Populates the database with entries for the screenshots
-    func populateForScreenshots() {
-        try? modelContext.transaction {
-            let series = Series(name: "Hörspielhase", musicItemID: "DEBUG")
-            modelContext.insert(series)
-            for track in screenshotNames {
-                let hoerspiel = Hoerspiel(title: track,
-                                          albumID: "DEBUG",
-                                          duration: Double.random(in: 1800...5400),
-                                          releaseDate: Date().advanced(by: TimeInterval(86400 * Int.random(in: -365 ... 10))),
-                                          artist: "Hörspielhase",
-                                          upc: "DEBUG",
-                                          series: series)
-                modelContext.insert(hoerspiel)
-                
-            }
-            try modelContext.save()
-        }
-    }
-    #endif
+
     
     /// Returns a random `PersistentIdentifier` of an entity matching the `FetchDescriptor`
     /// - Parameter fetchDescriptor: The `FetchDescriptor` to fetch for
@@ -650,17 +630,3 @@ actor DataManager {
         self.manager = manager
     }
 }
-
-
-#if DEBUG
-let screenshotNames = ["Der letzte Ruf des Nebelvogels",
-                       "Das Phantom der verschlossenen Kammer",
-                       "Geheimnisse unter dem Dorf",
-                       "Die Uhr, die Mitternacht bringt",
-                       "Jenseits der verbotenen Tür",
-                       "Der Alchemist und der Ewige Funke",
-                       "Rätsel im Wellenbruch",
-                       "Der verborgene Pfad im Mondwald"
-                       
-]
-#endif

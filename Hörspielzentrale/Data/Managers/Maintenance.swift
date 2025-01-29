@@ -92,6 +92,11 @@ class Maintenance {
                 
                 Logger.maintenance.info("Found \(dups.count) duplicate series in database")
                 for dup in dups {
+                    #if DEBUG
+                    if dup == "DEBUG" {
+                        return
+                    }
+                    #endif
                     let fetchDescriptor = FetchDescriptor<Series>(predicate: #Predicate { series in
                         series.musicItemID == dup
                     })

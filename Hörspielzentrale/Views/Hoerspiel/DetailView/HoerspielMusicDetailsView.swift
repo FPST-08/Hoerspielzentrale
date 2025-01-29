@@ -115,7 +115,7 @@ struct HoerspielMusicDetailsView: View { // swiftlint:disable:this type_body_len
                             SpeakerView(rollen: sprechrollen)
                         }
                         
-                        if source == nil && hoerspiel.artist != "Die drei ???" && hoerspiel.artist != "Die drei ??? Kids" {
+                        if source == nil && hoerspiel.artist != "Die drei ???" && hoerspiel.artist != "Die drei ??? Kids" && hoerspiel.upc != "DEBUG" {
                             GroupBox("Mangelnde Daten") {
                                 Text("""
     Für dieses Hörspiel sind nur Daten über Apple Music bekannt. 
@@ -142,7 +142,7 @@ struct HoerspielMusicDetailsView: View { // swiftlint:disable:this type_body_len
                             SpeakerView(rollen: sprechrollen)
                         }
                         
-                        if source == nil && hoerspiel.artist != "Die drei ???" && hoerspiel.artist != "Die drei ??? Kids" {
+                        if source == nil && hoerspiel.artist != "Die drei ???" && hoerspiel.artist != "Die drei ??? Kids" && hoerspiel.upc != "DEBUG"{
                             GroupBox("Mangelnde Daten") {
                                 Text("""
                             Für dieses Hörspiel sind nur Daten über Apple Music bekannt. 

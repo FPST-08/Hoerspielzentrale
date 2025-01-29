@@ -389,6 +389,49 @@ und die Cover sind beim Scrollen sofort sichtbar
                     backgroundColor: Color.accent,
                     hapticFeedback: .notification(.success)
                 )
+            ),
+            WhatsNew(
+                            version: "1.3.0",
+                            title: .init(
+                                text: .init(
+                                    "Was ist neu in der "
+                                    + AttributedString(
+                                        "Hörspielzentrale",
+                                        attributes: .foregroundColor(.accent)
+                                    )
+                                )
+                            ),
+                            features: [
+                                WhatsNew.Feature(image: .init(systemName: "apps.ipad",
+                                                              foregroundColor: Color.blue),
+                                                 title: "iPad-Version",
+                                                 subtitle: """
+                                    Die Hörspielzentrale läuft nun auch nativ auf iPads.
+                                    """),
+                                WhatsNew.Feature(image: .init(systemName: "play.square.stack",
+                                                              foregroundColor: Color.purple),
+                                                 title: "Neuer Tab \"Mediathek\"",
+                                                 subtitle: """
+                                                        Ein neuer Tab vereinfacht das Navigieren zu Serien
+                                                        """),
+                                WhatsNew.Feature(image: .init(systemName: "app.fill",
+                                                              foregroundColor: Color.red),
+                                                 title: "Neues App-Icon",
+                                                 subtitle: """
+Die Hörspielzentrale erscheint mit einem neuen App-Icon
+"""),
+                                
+                                WhatsNew.Feature(image: .init(systemName: "ladybug",
+                                                              foregroundColor: Color.green),
+                                                 title: "Fehlerbehebungen",
+                                                 subtitle: "Viele kleine Layout-Fehler und Crashes behoben")
+                            ], primaryAction: .init(
+                                title: .init("Weiter"),
+                                backgroundColor: Color.accent,
+                                hapticFeedback: .notification(.success)
+                            ), migration: {
+                                try? await dataManagerClass.manager.deleteAllTracks()
+                            }
             )
             
         ]

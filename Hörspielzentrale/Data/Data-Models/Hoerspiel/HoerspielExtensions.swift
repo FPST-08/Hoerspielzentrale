@@ -137,7 +137,6 @@ extension PersistentIdentifier {
     }
 }
 
-
 /// An Error used to communicate Errors when calculating the starting point of a ``Hoerspiel``
 enum CalculatingStartingPointError: Error {
     case unableToGetStoredDuration,

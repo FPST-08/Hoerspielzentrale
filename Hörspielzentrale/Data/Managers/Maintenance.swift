@@ -6,11 +6,11 @@
 //
 
 import CloudKitSyncMonitor
+@preconcurrency import MusicKit
 import OSLog
 import SwiftData
 import SwiftUI
 import TelemetryDeck
-@preconcurrency import MusicKit
 
 @MainActor
 @Observable

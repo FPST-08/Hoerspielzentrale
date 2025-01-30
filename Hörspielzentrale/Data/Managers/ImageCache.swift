@@ -85,7 +85,9 @@ import SwiftUI
             guard let image = await loadImageFromRemote(for: hoerspiel) else {
                 return nil
             }
-            return resizedImage(image, for: size == .fullResolution ? CGSize(width: coverSize, height: coverSize) : CGSize(width: 32, height: 32))
+            return resizedImage(image, for: size == .fullResolution
+                                ? CGSize(width: coverSize, height: coverSize)
+                                : CGSize(width: 32, height: 32))
         }
     }
     

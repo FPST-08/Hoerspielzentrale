@@ -30,7 +30,6 @@ class BackgroundActivities {
     }
     
     // swiftlint:disable line_length
-    // swiftlint:disable:next cyclomatic_complexity
     /// Runs the background task and sends notifications accrodingly
     ///
     /// Trigger this task via this command in lldb:
@@ -38,6 +37,7 @@ class BackgroundActivities {
     /// e -l objc -- (void)[[BGTaskScheduler sharedScheduler] _simulateLaunchForTaskWithIdentifier:@"newReleasesBackgroundTask"]
     /// ```
     func runBackgroundTask() async { // swiftlint:disable:this function_body_length
+        // swiftlint:disable:previous cyclomatic_complexity
         // swiftlint:enable line_length
         do {
             let added = try await seriesManager.checkForNewReleasesInBackground()

@@ -22,7 +22,9 @@ struct ScreenShotHoerspiel {
     init(title: String) {
         self.title = title
         self.duration = TimeInterval(Int.random(in: 1200...4800))
-        self.releaseDate = Date.from(day: Int.random(in: 0..<30), month: Int.random(in: 1..<13), year: Int.random(in: 0..<3) + 2022)
+        self.releaseDate = Date.from(day: Int.random(in: 0..<30),
+                                     month: Int.random(in: 1..<13),
+                                     year: Int.random(in: 0..<3) + 2022)
         self.lastPlayed = self.releaseDate.advanced(by: Double(Int.random(in: 0..<10) * 86400))
     }
 }
@@ -116,8 +118,3 @@ extension DataManager {
     }
 }
 #endif
-
-
-
-
-

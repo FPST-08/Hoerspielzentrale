@@ -7,7 +7,7 @@
 
 import OSLog
 import SwiftData
-import SwiftUI
+@preconcurrency import SwiftUI
 import WidgetKit
 
 #if DEBUG
@@ -127,7 +127,9 @@ Count of all artists: \(String(describing: try? modelContext.fetchCount(FetchDes
                     Task {
                         do {
                             UNUserNotificationCenter.current().removeAllDeliveredNotifications()
-                            var desc = FetchDescriptor<Hoerspiel>(sortBy: [SortDescriptor(\Hoerspiel.releaseDate, order: .reverse)])
+                            var desc = FetchDescriptor<Hoerspiel>(sortBy: [
+                                SortDescriptor(\Hoerspiel.releaseDate, order: .reverse)
+                            ])
                             desc.fetchLimit = 5
                             let models = try modelContext.fetch(desc)
                             for model in models {

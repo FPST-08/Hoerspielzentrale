@@ -36,86 +36,84 @@ struct HoerspielDetailView: View {
     
     // MARK: - View
     var body: some View {
-        GeometryReader { geo in
-            ScrollView {
-                VStack {
-                    if let image {
-                        image
-                            .resizable()
-                            .scaledToFit()
-                            .cornerRadius(15)
-                            .shadow(radius: 10)
-                            .coverFrame()
-                    } else {
-                        Rectangle()
-                            .foregroundStyle(Color.secondarySystemBackground)
-                            .cornerRadius(15)
-                            .shadow(radius: 10)
-                            .coverFrame()
+        ScrollView {
+            VStack {
+                if let image {
+                    image
+                        .resizable()
+                        .scaledToFit()
+                        .cornerRadius(15)
+                        .shadow(radius: 10)
+                        .coverFrame()
+                } else {
+                    Rectangle()
+                        .foregroundStyle(Color.secondarySystemBackground)
+                        .cornerRadius(15)
+                        .shadow(radius: 10)
+                        .coverFrame()
+                }
+                
+                Text(hoerspiel.title)
+                    .font(.title3)
+                    .fontWeight(.semibold)
+                    .padding(.top, 5)
+                Text(hoerspiel.releaseDate != Date.distantPast ?
+                     hoerspiel.releaseDate.formatted(date: .numeric, time: .omitted) :
+                        "Veröffentlichundsdatum unbekannt")
+                .foregroundStyle(Color.secondary)
+                .font(.callout)
+                .padding(.bottom, -5)
+                HStack {
+                    Spacer()
+                    Button {
+                        musicplayer.startPlayback(for: hoerspiel.persistentModelID)
+                        requestReviewIfAppropriate()
+                    } label: {
+                        Label("Wiedergeben", systemImage: "play.fill")
                     }
-                    
-                    Text(hoerspiel.title)
-                        .font(.title3)
-                        .fontWeight(.semibold)
-                        .padding(.top, 5)
-                    Text(hoerspiel.releaseDate != Date.distantPast ?
-                                             hoerspiel.releaseDate.formatted(date: .numeric, time: .omitted) :
-                                                "Veröffentlichundsdatum unbekannt")
-                        .foregroundStyle(Color.secondary)
-                        .font(.callout)
-                        .padding(.bottom, -5)
-                    HStack {
-                        Spacer()
-                        Button {
+                    .buttonStyle(DetailPlayButtonStyle())
+                    Spacer()
+                    Button {
+                        Task {
+                            try await dataManager.manager.update(
+                                hoerspiel.persistentModelID,
+                                keypath: \.playedUpTo,
+                                to: 0)
                             musicplayer.startPlayback(for: hoerspiel.persistentModelID)
                             requestReviewIfAppropriate()
-                        } label: {
-                            Label("Wiedergeben", systemImage: "play.fill")
                         }
-                        .buttonStyle(DetailPlayButtonStyle())
-                        Spacer()
-                        Button {
-                            Task {
-                                try await dataManager.manager.update(
-                                    hoerspiel.persistentModelID,
-                                    keypath: \.playedUpTo,
-                                    to: 0)
-                                musicplayer.startPlayback(for: hoerspiel.persistentModelID)
-                                requestReviewIfAppropriate()
+                    } label: {
+                        Label("Ab Anfang", systemImage: "arrow.circlepath")
+                    }
+                    .buttonStyle(DetailPlayButtonStyle())
+                    Spacer()
+                }
+                .buttonStyle(.prominent)
+                HoerspielMusicDetailsView(hoerspiel: hoerspiel)
+            }
+            .frame(maxWidth: .infinity)
+            .toolbar {
+                ToolbarItem(placement: .topBarTrailing) {
+                    HoerspielMenuView(persistentIdentifier: hoerspiel.persistentModelID) {
+                        Image(systemName: "ellipsis")
+                            .padding(10)
+                            .background {
+                                Circle()
+                                    .foregroundStyle(Color.secondarySystemBackground)
                             }
-                        } label: {
-                            Label("Ab Anfang", systemImage: "arrow.circlepath")
-                        }
-                        .buttonStyle(DetailPlayButtonStyle())
-                        Spacer()
-                    }
-                    .buttonStyle(.prominent)
-                    HoerspielMusicDetailsView(hoerspiel: hoerspiel)
-                }
-                .frame(maxWidth: .infinity)
-                .toolbar {
-                    ToolbarItem(placement: .topBarTrailing) {
-                        HoerspielMenuView(persistentIdentifier: hoerspiel.persistentModelID) {
-                            Image(systemName: "ellipsis")
-                                .padding(10)
-                                .background {
-                                    Circle()
-                                        .foregroundStyle(Color.secondarySystemBackground)
-                                }
-                        }
                     }
                 }
             }
-            .navigationTitle(hoerspiel.title)
-            .navigationBarTitleDisplayMode(.inline)
-            .task {
-                image = await imagecache.image(for: hoerspiel, size: .fullResolution)
-                TelemetryDeck.signal("Navigation.Detail", parameters: ["Hoerspiel": hoerspiel.title])
-                let center = UNUserNotificationCenter.current()
-                center.removeDeliveredNotifications(withIdentifiers: [hoerspiel.upc, "PR\(hoerspiel.upc)"])
-            }
-            .safeAreaPadding(.bottom, 60)
         }
+        .navigationTitle(hoerspiel.title)
+        .navigationBarTitleDisplayMode(.inline)
+        .task {
+            image = await imagecache.image(for: hoerspiel, size: .fullResolution)
+            TelemetryDeck.signal("Navigation.Detail", parameters: ["Hoerspiel": hoerspiel.title])
+            let center = UNUserNotificationCenter.current()
+            center.removeDeliveredNotifications(withIdentifiers: [hoerspiel.upc, "PR\(hoerspiel.upc)"])
+        }
+        .safeAreaPadding(.bottom, 60)
         .trackNavigation(path: "HoerspielDetailView")
         
     }

@@ -10,6 +10,7 @@ import OSLog
 import SwiftData
 import SwiftUI
 
+// swiftlint:disable file_length
 /// A view displaying Details about a ``Hoerspiel`` in the ``HoerspielDetailView``
 struct HoerspielMusicDetailsView: View { // swiftlint:disable:this type_body_length
     // MARK: - Properties
@@ -69,7 +70,7 @@ struct HoerspielMusicDetailsView: View { // swiftlint:disable:this type_body_len
     
     /// The chapters that should be displayed
     var displayChapters: [Chapter] {
-        var shownChapterCount = UIDevice.isIpad ? 10 : 5
+        let shownChapterCount = UIDevice.isIpad ? 10 : 5
         guard let currentlyPlayingChapter else {
             return Array(chapters.prefix(shownChapterCount))
         }
@@ -78,7 +79,8 @@ struct HoerspielMusicDetailsView: View { // swiftlint:disable:this type_body_len
         if chapterIndex <= 2 {
             return Array(chapters.prefix(shownChapterCount))
         } else {
-            return Array(chapters[chapterIndex - 2..<chapterIndex + min(shownChapterCount - 2, chapters.endIndex - chapterIndex )])
+            return Array(chapters[chapterIndex - 2..<chapterIndex +
+                                  min(shownChapterCount - 2, chapters.endIndex - chapterIndex )])
         }
     }
     
@@ -115,7 +117,10 @@ struct HoerspielMusicDetailsView: View { // swiftlint:disable:this type_body_len
                             SpeakerView(rollen: sprechrollen)
                         }
                         
-                        if source == nil && hoerspiel.artist != "Die drei ???" && hoerspiel.artist != "Die drei ??? Kids" && hoerspiel.upc != "DEBUG" {
+                        if source == nil
+                            && hoerspiel.artist != "Die drei ???"
+                            && hoerspiel.artist != "Die drei ??? Kids"
+                            && hoerspiel.upc != "DEBUG" {
                             GroupBox("Mangelnde Daten") {
                                 Text("""
     Für dieses Hörspiel sind nur Daten über Apple Music bekannt. 
@@ -142,11 +147,15 @@ struct HoerspielMusicDetailsView: View { // swiftlint:disable:this type_body_len
                             SpeakerView(rollen: sprechrollen)
                         }
                         
-                        if source == nil && hoerspiel.artist != "Die drei ???" && hoerspiel.artist != "Die drei ??? Kids" && hoerspiel.upc != "DEBUG"{
+                        if source == nil
+                            && hoerspiel.artist != "Die drei ???"
+                            && hoerspiel.artist != "Die drei ??? Kids"
+                            && hoerspiel.upc != "DEBUG" {
                             GroupBox("Mangelnde Daten") {
                                 Text("""
                             Für dieses Hörspiel sind nur Daten über Apple Music bekannt. 
-                            Wenn du eine bessere Datenquelle für dieses Hörspiel kennst, schreibe mir gerne über hoerspielzentrale@icloud.com
+                            Wenn du eine bessere Datenquelle für dieses Hörspiel kennst, \ 
+                            schreibe mir gerne über hoerspielzentrale@icloud.com
                             """)
                             }
                             .padding(.horizontal)
@@ -386,7 +395,7 @@ Mysteriöse Ereignisse, Misstrauen und ein unheimliches Phantom treiben die Gäs
         DetailsInfoView(hoerspiel: hoerspiel, entries: [
             DetailsInfoDisplay(title: "Kapitel-Quelle",
                                  value: source?.name ?? "Apple Music",
-                                 type: .link(link: source?.url ?? URL(string: "music://music.apple.com")!)),
+                                 type: .link(link: source?.url ?? URL(string: "music://music.apple.com")!))
         ])
     }
     
@@ -412,7 +421,11 @@ Mysteriöse Ereignisse, Misstrauen und ein unheimliches Phantom treiben die Gäs
                         previousSum += duration
                     }
                 }
-                try? await dataManager.manager.setTracks(hoerspiel.persistentModelID, tracks.map { SendableStoredTrack($0, index: tracks.firstIndex(of: $0) ?? 0) })
+                try? await dataManager.manager.setTracks(hoerspiel.persistentModelID,
+                                                         tracks.map {
+                    SendableStoredTrack($0,
+                                        index: tracks.firstIndex(of: $0) ?? 0)
+                })
                 let duration = Double(tracks.reduce(0, { $0 + ($1.duration ?? 0)}))
                 try await dataManager.manager.update(hoerspiel.persistentModelID,
                                                      keypath: \.duration,

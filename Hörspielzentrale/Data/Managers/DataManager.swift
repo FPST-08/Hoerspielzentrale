@@ -121,6 +121,7 @@ actor DataManager {
     /// - Parameter codables: The array of codables to insert
     /// - Parameter artist: The artist of all the codables
     /// - Returns: Returns the ``SendableHoerspiel`` that were added to disk
+    @discardableResult
     public func insert(_ codables: [CodableHoerspiel], artist: Artist) throws -> [SendableHoerspiel] {
         var addedEntities = [SendableHoerspiel]()
         try modelContext.transaction {
@@ -146,8 +147,6 @@ actor DataManager {
         }
         return addedEntities
     }
-    
-
     
     /// Returns a random `PersistentIdentifier` of an entity matching the `FetchDescriptor`
     /// - Parameter fetchDescriptor: The `FetchDescriptor` to fetch for

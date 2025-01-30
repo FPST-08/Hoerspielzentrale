@@ -72,12 +72,7 @@ struct UpNextWidgetEntry: View {
                                     .fontWeight(.medium)
                                     .foregroundStyle(Color.white)
                                 
-                                Text("""
-                                \(data.hoerspiel.artist) · \
-                                \(data.hoerspiel.playedUpTo == 0
-                                ? "\(data.hoerspiel.duration.formattedDuration())"
-                                : "Noch \((data.hoerspiel.duration - TimeInterval(data.hoerspiel.playedUpTo)).formattedDuration())")
-                                """)
+                                Text(systemSmallSubtitle(data.hoerspiel))
                                 .font(.caption2)
                                 .foregroundStyle(Color.secondary)
                                 Spacer()
@@ -174,6 +169,18 @@ struct UpNextWidgetEntry: View {
             }
             
         }
+    }
+    
+    /// Provides the subtitle for the systemSmall widget
+    /// - Parameter hoerspiel: The displayed hoerspiel
+    /// - Returns: The appropriate subtitle
+    func systemSmallSubtitle(_ hoerspiel: SendableHoerspiel) -> String {
+        """
+        \(hoerspiel.artist) · \
+        \(hoerspiel.playedUpTo == 0
+        ? "\(hoerspiel.duration.formattedDuration())"
+        : "Noch \((hoerspiel.duration - TimeInterval(hoerspiel.playedUpTo)).formattedDuration())")
+        """
     }
     
     /// The list representation of a Hoerspiel in a widget

@@ -70,7 +70,9 @@ struct SeriesSearchView: View {
                     }
                     ForEach(searchResults) { result in
                         Button {
-                            if !(seriesManager.selectedArtists.contains(result) || seriesManager.seriesToDownload.contains(result) || seriesManager.selectedArtists.contains(result)) {
+                            if !(seriesManager.selectedArtists.contains(result) ||
+                                 seriesManager.seriesToDownload.contains(result) ||
+                                 seriesManager.selectedArtists.contains(result)) {
                                 seriesManager.selectedArtists.append(result)
                                 seriesManager.downloadSeries(result)
                             }

@@ -211,7 +211,6 @@ struct Hörspielzentrale: App {
                     let fetchCount = try cloudModelContainer.mainContext.fetchCount(FetchDescriptor<Hoerspiel>())
                     Logger.data.debug("\(fetchCount)")
                 }
-                let allSeries = try cloudModelContainer.mainContext.fetch(FetchDescriptor<Series>())
                 
                 for index in jsonLocal {
                     var series: Series?
@@ -268,9 +267,10 @@ struct Hörspielzentrale: App {
     // swiftlint:enable function_body_length
 }
 
-
 final class AppDelegate: NSObject, UIApplicationDelegate {
-    func application(_ application: UIApplication, willFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey : Any]? = nil) -> Bool {
+    func application(_ application: UIApplication,
+                     willFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]? = nil
+    ) -> Bool {
         UNUserNotificationCenter.current().delegate = self
         return true
     }

@@ -6,8 +6,8 @@
 //
 
 import OSLog
-import UserNotifications
 import UIKit
+import UserNotifications
 
 extension UNNotificationAttachment {
     /// Save the image to disk
@@ -16,7 +16,8 @@ extension UNNotificationAttachment {
     static func create(imageFileIdentifier: String, data: NSData) -> UNNotificationAttachment? {
         let fileManager = FileManager.default
         let tmpSubFolderName = ProcessInfo.processInfo.globallyUniqueString
-        let tmpSubFolderURL = NSURL(fileURLWithPath: NSTemporaryDirectory()).appendingPathComponent(tmpSubFolderName, isDirectory: true)
+        let tmpSubFolderURL = NSURL(fileURLWithPath: NSTemporaryDirectory())
+            .appendingPathComponent(tmpSubFolderName, isDirectory: true)
 
         do {
             try fileManager.createDirectory(at: tmpSubFolderURL!, withIntermediateDirectories: true, attributes: nil)
@@ -39,9 +40,6 @@ extension UNNotificationAttachment {
     /// - Returns: The correct attachment
     static func create(uiimage: UIImage,
                        upc: String) -> UNNotificationAttachment? {
-        guard let dataURL = URL(string: "\(upc).jpg") else {
-            return nil
-        }
         guard let data = uiimage.pngData() else {
             return nil
         }

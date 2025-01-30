@@ -10,10 +10,10 @@ import Defaults
 import MediaPlayer
 import MusicKit
 import OSLog
+import StoreKit
 import SwiftData
 import SwiftUI
 import UIKit
-import StoreKit
 
 /// The documents directory used to save files
 let documentsDirectoryPath: URL = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask).first!
@@ -224,3 +224,5 @@ extension UIScreen {
         return keyWindow?.safeAreaInsets
     }
 }
+
+extension ReferenceWritableKeyPath: @unchecked @retroactive Sendable { }

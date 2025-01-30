@@ -5,12 +5,12 @@
 //  Created by Philipp Steiner on 23.12.24.
 //
 
+import MusicKit
 import OSLog
 import SwiftData
 import SwiftUI
 import TelemetryDeck
 import WidgetKit
-import MusicKit
 
 struct UpNextProvider: TimelineProvider {
     typealias Entry = UpNextEntry
@@ -75,7 +75,9 @@ struct UpNextProvider: TimelineProvider {
             let response = try await request.response()
             
             for hoerspiel in hoerspiele {
-                if let imageURL = response.items.first(where: { $0.upc == hoerspiel.upc })?.artwork?.url(width: 256, height: 256) {
+                if let imageURL = response.items
+                    .first(where: { $0.upc == hoerspiel.upc })?
+                    .artwork?.url(width: 256, height: 256) {
                     let (data, _) = try await URLSession.shared.data(from: imageURL)
                     if let uiimage = UIImage(data: data) {
                         returnArray.append(HoerspielData(hoerspiel: hoerspiel, image: Image(uiImage: uiimage)))
@@ -107,11 +109,8 @@ struct HoerspielData {
     let image: Image
 }
 
-
-
 /// The documents directory used to save files
 let documentsDirectoryPath: URL = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask).first!
-
 
 extension Array where Element == SendableHoerspiel {
     func sortByAdded() -> [SendableHoerspiel] {

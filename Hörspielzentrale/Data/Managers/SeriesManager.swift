@@ -10,10 +10,12 @@ import OSLog
 import SwiftData
 import SwiftUI
 
+// swiftlint:disable file_length
 /// A observable class resposible for downloading series
 @MainActor
 @Observable
 class SeriesManager {
+    // swiftlint:disable:previous type_body_length
     /// The datamanager to perform database operations
     let dataManager: DataManager
     

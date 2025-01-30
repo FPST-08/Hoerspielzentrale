@@ -45,34 +45,34 @@ struct PlaybackPlayerView: View {
                         musicManager.volume = Double(AVAudioSession.sharedInstance().outputVolume)
                     }
                     HStack(alignment: .center) {
-                        //                                                                        Button {
-                        //
-                        //                                                                        } label: {
-                        //                                                                            Image(systemName: "quote.bubble")
-                        //                                                                                .font(.title2)
-                        //                                                                        }
-                        //                                                Spacer()
-                        //                        //                        AirPlayView()
-                        //
-                        //
-                        //                                                VStack(spacing: 6) {
-                        //                                                    Button {
-                        //
-                        //                                                    } label: {
-                        //                                                        Image(systemName: "airpodspro")
-                        //                                                            .font(.title2)
-                        //                                                    }
-                        //                                                    Text("Philipp's Airpods")
-                        //                                                        .font(.caption)
-                        //                                                }
-                        //                                                Spacer()
-                        //                                                                        Button {
-                        //
-                        //                                                                        } label: {
-                        //                                                                            Image(systemName: "list.bullet")
-                        //                                                                                .font(.title2)
-                        //                                                                        }
-                        //                                                Spacer()
+//                        Button {
+//
+//                        } label: {
+//                            Image(systemName: "quote.bubble")
+//                                .font(.title2)
+//                        }
+//                        Spacer()
+//                        //                        AirPlayView()
+//
+//
+//                        VStack(spacing: 6) {
+//                            Button {
+//
+//                            } label: {
+//                                Image(systemName: "airpodspro")
+//                                    .font(.title2)
+//                            }
+//                            Text("Philipp's Airpods")
+//                                .font(.caption)
+//                        }
+//                        Spacer()
+//                        Button {
+//
+//                        } label: {
+//                            Image(systemName: "list.bullet")
+//                                .font(.title2)
+//                        }
+                        Spacer()
                         AirPlayView()
                             .frame(width: 50, height: 50)
                     }

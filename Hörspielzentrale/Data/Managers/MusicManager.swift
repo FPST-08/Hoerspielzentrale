@@ -14,9 +14,12 @@ import SwiftUI
 import TelemetryDeck
 import WidgetKit
 
+// swiftlint:disable file_length
+
 /// A class resposible for all playback related actions
 @MainActor
 @Observable final class MusicManager {
+    // swiftlint:disable:previous type_body_length
     init(dataManager: DataManager, navigation: NavigationManager, imageCache: ImageCache) {
         self.dataManager = dataManager
         self.navigation = navigation
@@ -122,6 +125,7 @@ import WidgetKit
     }
     
     private func initiatePlayback(for persistentIdentifier: PersistentIdentifier) async {
+        // swiftlint:disable:previous function_body_length
 #if DEBUG
         guard let hoerspiel = try? await dataManager.batchRead(persistentIdentifier) else {
             return

@@ -32,6 +32,8 @@ extension Defaults.Keys {
     // swiftlint:disable:previous line_length
     
     static let coversize = Key<CoverSize>("coversize", default: CoverSize.normal)
+    
+    static let tabSelection = Key<Selection>("tabSelection", default: .home)
 }
 
 /// An enum used for communicating the sorting property

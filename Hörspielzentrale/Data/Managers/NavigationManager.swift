@@ -5,6 +5,8 @@
 //  Created by Philipp Steiner on 30.06.24.
 //
 
+import Defaults
+import DefaultsMacros
 import MusicKit
 import OSLog
 import SwiftData
@@ -21,7 +23,10 @@ import SwiftUI
     let dataManager: DataManager
     
     /// Currently selected tab
-    var selection = Selection.home
+    
+    @ObservableDefault(.tabSelection)
+    @ObservationIgnored
+    var selection: Selection
     
     /// The search text of the current search
     var searchText = ""
@@ -140,7 +145,7 @@ import SwiftUI
 }
 
 /// Enum for currently selected tab
-enum Selection: Int {
+enum Selection: Int, Codable, Defaults.Serializable {
     case library
     case search
     case home

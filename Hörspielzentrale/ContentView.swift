@@ -55,10 +55,10 @@ struct ContentView: View {
                 .environment(\.dynamicTypeSize, .large)
             }
         }
-        .alert(isPresented: Bindable(navigation).searchPresented) {
-            Alert(
-                title: Text(navigation.alertTitle),
-                message: navigation.alertDescription != nil ? Text(navigation.alertDescription!) : nil)
+        .alert(navigation.alertTitle, isPresented: Bindable(navigation).alertPresented) {
+            Button("Ok", role: .cancel, action: { })
+        } message: {
+            Text(navigation.alertDescription ?? "")
         }
         .sheet(isPresented: Bindable(navigation).showSeriesAddingSheet) {
             NavigationStack {

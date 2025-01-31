@@ -44,6 +44,9 @@ struct Hörspielzentrale: App {
     
     /// Creation of ``BackgroundActivities``
     @State var backgroundActivities: BackgroundActivities
+    
+    /// Creation of ``NetworkHelper``
+    @State var networkHelper: NetworkHelper
 
     /// The current playback state
     @ObservedObject var state = ApplicationMusicPlayer.shared.state
@@ -234,13 +237,20 @@ struct Hörspielzentrale: App {
         }
         let dataManager = DataManager(modelContainer: modelContainer)
         self.dataManagerClass = DataManagerClass(manager: dataManager)
+        
+        let networkHelper = NetworkHelper()
+        self.networkHelper = networkHelper
+        
         let navigationManager = NavigationManager(dataManager: dataManager)
         self.navigationManager = navigationManager
         
         let imageCache = ImageCache(dataManager: dataManager)
         self.imageCache = imageCache
         
-        let musicplayer = MusicManager(dataManager: dataManager, navigation: navigationManager, imageCache: imageCache)
+        let musicplayer = MusicManager(dataManager: dataManager,
+                                       navigation: navigationManager,
+                                       imageCache: imageCache,
+                                       networkHelper: networkHelper)
         self.musicmanager = musicplayer
         
         let seriesManager = SeriesManager(dataManager: dataManager)

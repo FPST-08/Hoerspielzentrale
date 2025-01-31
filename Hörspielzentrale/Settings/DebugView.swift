@@ -22,6 +22,7 @@ struct DebugView: View {
     @Environment(Maintenance.self) var maintenanceManager
     @Environment(BackgroundActivities.self) var backgroundActivities
     @Environment(SeriesManager.self) var seriesManager
+    @Environment(NavigationManager.self) var navigation
     // MARK: - View
     var body: some View {
         List {
@@ -120,6 +121,14 @@ Count of all artists: \(String(describing: try? modelContext.fetchCount(FetchDes
                 }
             } header: {
                 Text("Data")
+            }
+            
+            Section {
+                Button("Present Alert") {
+                    navigation.presentAlert(title: "Test-Alert", description: "Lorem ipsum dolor sit amet")
+                }
+            } header: {
+                Text("Navigation")
             }
             
             Section {

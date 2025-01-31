@@ -47,7 +47,8 @@ import SwiftUI
     /// A boolean that indicates if the alert is shown
     ///
     /// This value can only be set using ``presentAlert(title:description:)``
-    private(set) var alertPresented = false
+    var alertPresented = false
+    
     /// The title of the alert
     ///
     /// This value can only be set using ``presentAlert(title:description:)``

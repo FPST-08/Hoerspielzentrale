@@ -20,10 +20,15 @@ import WidgetKit
 @MainActor
 @Observable final class MusicManager {
     // swiftlint:disable:previous type_body_length
-    init(dataManager: DataManager, navigation: NavigationManager, imageCache: ImageCache) {
+    init(dataManager: DataManager,
+         navigation: NavigationManager,
+         imageCache: ImageCache,
+         networkHelper: NetworkHelper
+    ) {
         self.dataManager = dataManager
         self.navigation = navigation
         self.imageCache = imageCache
+        self.networkHelper = networkHelper
     }
     
     // MARK: - Proerties
@@ -32,6 +37,8 @@ import WidgetKit
     let navigation: NavigationManager
     
     let imageCache: ImageCache
+    
+    let networkHelper: NetworkHelper
     
     let musicplayer = MPMusicPlayerController.applicationMusicPlayer
     
@@ -189,6 +196,17 @@ import WidgetKit
             ])
         } catch {
             let title = try? await dataManager.read(persistentIdentifier, keypath: \.title)
+            switch networkHelper.connectionStatus {
+            case .working:
+                navigation.presentAlert(title: "Es ist ein Fehler aufgetreten",
+                                        description: "Die Wiedergabe konnte nicht gestartet werden")
+            case .notWorking:
+                navigation.presentAlert(title: "Keine Verbindung zum Internet",
+                                        description: """
+Stelle eine Verbindung über Wifi oder Mobilfunk her, um dieses Hörspiel abspielen zu können
+""")
+            }
+            
             Logger.playback.fullError(error, additionalParameters: [
                 "Hoerspiel": title ?? "N/A",
                 "Error": String("\(error)"),

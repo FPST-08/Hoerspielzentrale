@@ -103,15 +103,27 @@ import SwiftUI
     
     /// Opens a hoerspiel with a specific `UPC`
     /// - Parameter upc: the upc of the hoerspiel to open
-    ///
-    /// If possible, call ``openHoerspiel(albumID:)`` directly as that is more efficient
     func openHoerspiel(upc: String) async {
-        do {
-            let album = try await upc.getAlbum()
-            await openHoerspiel(albumID: album.id.rawValue)
-        } catch {
-            Logger.navigation.fullError(error, sendToTelemetryDeck: true)
+        selection = .library
+        presentMediaSheet = false
+        let fetchedResults = try? await dataManager.fetchIdentifiers( {
+            var fetchDescriptor = FetchDescriptor<Hoerspiel>(predicate: #Predicate { hoerspiel in
+                hoerspiel.upc == upc
+            })
+            fetchDescriptor.fetchLimit = 1
+            return fetchDescriptor
+        })
+        guard let result = fetchedResults?.first else {
+            Logger.navigation.error("Unable to get first result with upc \(upc)")
+            return
         }
+        guard let sendableHoerspiel = try? await dataManager.batchRead(result) else {
+            Logger.navigation.error("Couldn't get sendableHoerspiel")
+            return
+        }
+        Logger.navigation.info(
+            "Opening hoerspiel with title \(sendableHoerspiel.title) and upc \(sendableHoerspiel.upc)")
+        libraryPath.append(sendableHoerspiel)
     }
     
     func presentAlert(title: String, description: String?) {

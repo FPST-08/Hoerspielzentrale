@@ -81,6 +81,7 @@ struct Hörspielzentrale: App {
                 .environment(maintenanceManager)
                 .environment(seriesManager)
                 .environment(backgroundActivities)
+                .environment(networkHelper)
                 .environment(
                     \.whatsNew,
                      WhatsNewEnvironment(

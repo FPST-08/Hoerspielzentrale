@@ -72,7 +72,6 @@ struct Hörspielzentrale: App {
                 .onboarding()
                 .whatsNewSheet()
                 .maintenance()
-                .networkUnavailable()
                 .modelContainer(modelContainer)
                 .environment(musicmanager)
                 .environment(navigationManager)

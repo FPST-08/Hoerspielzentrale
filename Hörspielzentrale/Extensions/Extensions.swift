@@ -147,7 +147,8 @@ extension Image {
 enum GettingAlbumError: Error {
     case appleMusicError,
          unableToReadTitle,
-         secondOptionFailed
+         secondOptionFailed,
+         unableToLoadTracks
     
     var localizedDescription: String {
         switch self {
@@ -157,6 +158,8 @@ enum GettingAlbumError: Error {
             "Der Titel des Hörspiels konnte nicht gelesen werden"
         case .secondOptionFailed:
             "Das Album konnte zweifach nicht geladen werden"
+        case .unableToLoadTracks:
+            "Die Tracks des Albums konnten nicht geladen werden"
         }
     }
 }

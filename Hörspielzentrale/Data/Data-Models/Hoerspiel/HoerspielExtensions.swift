@@ -127,12 +127,19 @@ extension PersistentIdentifier {
             Logger.data.info("Tracks were loaded from storage, count: \(storedTracks.count)")
             return storedTracks.sorted()
         }
-        guard let tracks = try await self.album(dataManager)?.with(.tracks).tracks else {
-            throw GettingAlbumError.appleMusicError
+        if let tracks = try? await self.album(dataManager)?.with(.tracks).tracks {
+            Logger.data.info("Tracks were loaded from Apple Music catalog")
+            let sendableTracks = tracks.map { SendableStoredTrack($0, index: tracks.firstIndex(of: $0)!)}
+            try? await dataManager.setTracks(self, sendableTracks)
+            return sendableTracks
         }
-        Logger.data.info("Tracks were loaded from Apple Music")
+        let id = try await dataManager.read(self, keypath: \.albumID)
+        var request = MusicLibraryRequest<Album>()
+        request.filter(matching: \.id, equalTo: MusicItemID(id))
+        guard let tracks = try? await request.response().items.first?.with(.tracks).tracks else {
+            throw GettingAlbumError.unableToLoadTracks
+        }
         let sendableTracks = tracks.map { SendableStoredTrack($0, index: tracks.firstIndex(of: $0)!)}
-        try? await dataManager.setTracks(self, sendableTracks)
         return sendableTracks
     }
 }

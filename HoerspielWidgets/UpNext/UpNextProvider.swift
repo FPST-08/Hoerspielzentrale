@@ -54,7 +54,7 @@ struct UpNextProvider: TimelineProvider {
         }
     }
     
-    func getHoerspiele() async -> [HoerspielData] {
+    func getHoerspiele() async -> [HoerspielData] { // swiftlint:disable:this cyclomatic_complexity
         do {
             var fetchDescriptor = FetchDescriptor<Hoerspiel>()
             fetchDescriptor.predicate = #Predicate { hoerspiel in
@@ -72,15 +72,32 @@ struct UpNextProvider: TimelineProvider {
             }
             let request = MusicCatalogResourceRequest<Album>(matching: \.upc, memberOf: hoerspiele.map { $0.upc })
             
-            let response = try await request.response()
+            guard let response = try? await request.response() else {
+                for hoerspiel in hoerspiele {
+                    if let data = fallBackData(hoerspiel) {
+                        returnArray.append(data)
+                    }
+                }
+                return returnArray
+            }
             
             for hoerspiel in hoerspiele {
                 if let imageURL = response.items
                     .first(where: { $0.upc == hoerspiel.upc })?
                     .artwork?.url(width: 256, height: 256) {
-                    let (data, _) = try await URLSession.shared.data(from: imageURL)
-                    if let uiimage = UIImage(data: data) {
-                        returnArray.append(HoerspielData(hoerspiel: hoerspiel, image: Image(uiImage: uiimage)))
+                    do {
+                        let (data, _) = try await URLSession.shared.data(from: imageURL)
+                        if let uiimage = UIImage(data: data) {
+                            returnArray.append(HoerspielData(hoerspiel: hoerspiel, image: Image(uiImage: uiimage)))
+                        } else {
+                            if let data = fallBackData(hoerspiel) {
+                                returnArray.append(data)
+                            }
+                        }
+                    } catch {
+                        if let data = fallBackData(hoerspiel) {
+                            returnArray.append(data)
+                        }
                     }
                 }
             }
@@ -89,6 +106,15 @@ struct UpNextProvider: TimelineProvider {
             Logger.widgets.fullError(error)
             return []
         }
+    }
+    
+    func fallBackData(_ hoerspiel: SendableHoerspiel) -> HoerspielData? {
+        if let uiimage = UIImage(color: UIColor.secondaryLabel,
+                                 size: CGSize(width: 1, height: 1)) {
+            let image = Image(uiImage: uiimage)
+            return HoerspielData(hoerspiel: hoerspiel, image: image)
+        }
+        return nil
     }
 }
 

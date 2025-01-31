@@ -98,3 +98,14 @@ public extension UIImage {
         self.init(cgImage: cgImage)
     }
 }
+
+extension Image {
+    init?(_ uiImage: UIImage?) {
+        if let uiImage {
+            let image = Image(uiImage: uiImage)
+            self = image
+        } else {
+            return nil
+        }
+    }
+}

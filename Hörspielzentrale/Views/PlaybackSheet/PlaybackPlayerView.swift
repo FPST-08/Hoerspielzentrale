@@ -72,7 +72,7 @@ struct PlaybackPlayerView: View {
 //                            Image(systemName: "list.bullet")
 //                                .font(.title2)
 //                        }
-                        Spacer()
+//                        Spacer()
                         AirPlayView()
                             .frame(width: 50, height: 50)
                     }

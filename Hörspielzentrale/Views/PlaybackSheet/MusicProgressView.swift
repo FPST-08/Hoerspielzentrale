@@ -72,28 +72,29 @@ struct MusicProgressSlider: View {
                                 }
                             })
                     }
-                    HStack {
-                        if musicplayer.currentlyPlayingHoerspiel != nil {
-                            if let startdate = musicplayer.startDate {
-                                Text(startdate, style: .timer)
-                            } else {
-                                Text((inRange.upperBound - progressDuration).customFormatted())
-                            }
-                            if let sleeptimerDate = musicplayer.sleeptimerDate {
+                    ZStack(alignment: .center) {
+                        HStack {
+                            if musicplayer.currentlyPlayingHoerspiel != nil {
+                                if let startdate = musicplayer.startDate {
+                                    Text(startdate, style: .timer)
+                                } else {
+                                    Text((inRange.upperBound - progressDuration).customFormatted())
+                                }
                                 Spacer(minLength: 0)
-                                Text(sleeptimerDate, style: .timer)
-                            }
-                            Spacer(minLength: 0)
-                            if let endDate = musicplayer.endDate {
-                                Text("- \(endDate, style: .timer)")
+                                if let endDate = musicplayer.endDate {
+                                    Text("- \(endDate, style: .timer)")
+                                } else {
+                                    Text("- \(progressDuration.customFormatted())")
+                                }
+                                
                             } else {
-                                Text("- \(progressDuration.customFormatted())")
+                                Text("0:00")
+                                Spacer()
+                                Text("0:00")
                             }
-                            
-                        } else {
-                            Text("0:00")
-                            Spacer()
-                            Text("0:00")
+                        }
+                        if let sleeptimerDate = musicplayer.sleeptimerDate {
+                            Text(sleeptimerDate, style: .timer)
                         }
                     }
                     .font(.system(.headline, design: .rounded))

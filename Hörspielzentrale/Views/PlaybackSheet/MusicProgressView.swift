@@ -154,8 +154,10 @@ struct MusicProgressSlider: View {
                     localRealProgress = 1 - getPrgPercentage(musicplayer.remainingTime)
                 }
             }
-            .onChange(of: state.playbackStatus) { _, _ in
-                progressDuration = musicplayer.remainingTime
+            .onChange(of: musicplayer.remainingTime) { _, newValue in
+                Logger.playback.info("Updated remainingTime after detecting manual change to playback")
+                progressDuration = newValue
+                localRealProgress = 1 - getPrgPercentage(newValue)
             }
         }
         .allowsHitTesting(state.playbackStatus == .playing || state.playbackStatus == .paused)

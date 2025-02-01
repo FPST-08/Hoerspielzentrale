@@ -91,16 +91,16 @@ import WidgetKit
                 return
             }
             
-            guard let identifier = try await dataManager.fetchIdentifiers({
+            guard let hoerspiel = try await dataManager.fetch({
                 FetchDescriptor<Hoerspiel>(predicate: #Predicate { hoerspiel in
                     hoerspiel.title == currentPlayingTrackAlbumTitle
                 })}).first else {
                 return
             }
             
-            let duration = try await dataManager.read(identifier, keypath: \.duration)
+            let duration = try await dataManager.read(hoerspiel.persistentModelID, keypath: \.duration)
             
-            let tracks = try await identifier.tracks(dataManager).sorted()
+            let tracks = try await hoerspiel.persistentModelID.tracks(dataManager).sorted()
             
             var currentPlayBackTime = self.musicplayer.currentPlaybackTime
             
@@ -117,6 +117,11 @@ import WidgetKit
             startDate = Date.now - currentPlayBackTime
             endDate = Date.now + (duration - currentPlayBackTime)
             initiatedDate = Date.now
+            if let endDate {
+                remainingTime = endDate - Date.now
+            }
+            currentlyPlayingHoerspiel = hoerspiel
+            await currentlyPlayingHoerspielCover = imageCache.uiimage(for: hoerspiel)
         } catch {
             Logger.playback.fullError(error, sendToTelemetryDeck: true)
         }

@@ -69,7 +69,11 @@ struct ContentView: View {
         }
         .musicSubscriptionSheet(isPresented: Bindable(navigation).musicSubscriptionSheetPresented,
                                 itemID: navigation.musicItemID)
-        
+        .onScrubbing {
+            Task {
+                await musicmanager.calculateDatesWhilePlaying()
+            }
+        }
     }
     
     // MARK: - Functions

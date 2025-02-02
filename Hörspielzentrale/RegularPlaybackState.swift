@@ -44,6 +44,9 @@ struct ManualPlaybackChangeModifier: ViewModifier {
     func body(content: Content) -> some View {
         content
             .run(everyTimeInterval: 1) {
+                if musicmanager.lastProgrammaticChange?.advanced(by: 2).isFuture() == true {
+                    return
+                }
                 let newValue = musicmanager.musicplayer.currentPlaybackTime
                 let newIndex = musicmanager.musicplayer.indexOfNowPlayingItem
                 if let oldValue, let oldIndex, let oldDuration {
@@ -69,6 +72,12 @@ struct ManualPlaybackChangeModifier: ViewModifier {
                 oldValue = nil
                 oldDuration = nil
                 oldIndex = musicmanager.musicplayer.indexOfNowPlayingItem
+            }
+            .onChange(of: musicmanager.lastProgrammaticChange) { _, _ in
+                oldValue = nil
+                oldDuration = nil
+                oldIndex = musicmanager.musicplayer.indexOfNowPlayingItem
+
             }
     }
 }

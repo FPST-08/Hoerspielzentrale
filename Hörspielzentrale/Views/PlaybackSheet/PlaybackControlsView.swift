@@ -42,21 +42,7 @@ struct PlaybackControlsView: View {
             }
             HStack(spacing: size.width * 0.18) {
                 Button {
-                    Task {
-                        await musicManager.saveListeningProgressAsync()
-                        guard let persistentIdentifier = musicManager.currentlyPlayingHoerspiel?.persistentModelID,
-                              let playedUpTo = try? await dataManager.manager.read(
-                                persistentIdentifier,
-                                keypath: \.playedUpTo
-                              ) else {
-                            return
-                        }
-                        try? await dataManager.manager.update(
-                            persistentIdentifier,
-                            keypath: \.playedUpTo,
-                            to: playedUpTo - 15)
-                        musicManager.startPlayback(for: persistentIdentifier)
-                    }
+                    musicManager.skip(for: -15)
                 } label: {
                     Image(systemName: "gobackward.15")
                         .font(.title)
@@ -68,20 +54,7 @@ struct PlaybackControlsView: View {
                 PlayPauseButtonView()
                 
                 Button {
-                    Task {
-                        await musicManager.saveListeningProgressAsync()
-                        guard let persistentIdentifier = musicManager.currentlyPlayingHoerspiel?.persistentModelID,
-                              let playedUpTo = try? await dataManager.manager.read(
-                                persistentIdentifier,
-                                keypath: \.playedUpTo) else {
-                            return
-                        }
-                        try? await dataManager.manager.update(
-                            persistentIdentifier,
-                            keypath: \.playedUpTo,
-                            to: playedUpTo + 15)
-                        musicManager.startPlayback(for: persistentIdentifier)
-                    }
+                    musicManager.skip(for: 15)
                 } label: {
                     Image(systemName: "goforward.15")
                         .font(.title)

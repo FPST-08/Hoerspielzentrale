@@ -23,6 +23,7 @@ extension PersistentIdentifier {
         _ dataHandler: DataManager
     ) async throws -> (
         tracks: [SendableStoredTrack],
+        trackIndex: Int,
         timeInterval: TimeInterval,
         startDate: Date,
         endDate: Date
@@ -86,7 +87,15 @@ extension PersistentIdentifier {
             let startDate = Date.now.advanced(by: Double(-currentPoint))
             let endDate = Date.now.advanced(by: duration)
             
+            guard let firstReturnTrack = returnTracks.first else {
+                throw CalculatingStartingPointError.unableToGetTrackIndex
+            }
+            guard let trackIndex = tracks.firstIndex(of: firstReturnTrack) else {
+                throw CalculatingStartingPointError.unableToGetTrackIndex
+            }
+            
             return (tracks: returnTracks,
+                    trackIndex: trackIndex,
                     timeInterval: startPoint,
                     startDate: startDate,
                     endDate: endDate)
@@ -103,10 +112,11 @@ extension PersistentIdentifier {
                     Logger.data.fault("Unable to get track index from its own array")
                     throw CalculatingStartingPointError.unableToGetTrackIndex
                 }
-                let returnTracks = Array(tracks[indexOfTrack...])
+                
                 let startDate = Date.now.advanced(by: Double(-playedUpTo))
                 let endDate = startDate.advanced(by: duration)
-                return (tracks: returnTracks,
+                return (tracks: tracks,
+                        trackIndex: indexOfTrack,
                         timeInterval: remainingTime,
                         startDate: startDate,
                         endDate: endDate)

@@ -92,21 +92,7 @@ struct MusicInfo: View {
                     .font(.title2)
             }
             Button {
-                Task {
-                    await musicManager.saveListeningProgressAsync()
-                    guard let persistentIdentifier = persistentIdentifier,
-                          let playedUpTo = try? await dataManager.manager.read(
-                            persistentIdentifier,
-                            keypath: \.playedUpTo
-                          ) else {
-                        return
-                    }
-                    try? await dataManager.manager.update(
-                        persistentIdentifier,
-                        keypath: \.playedUpTo,
-                        to: playedUpTo + 15)
-                    musicManager.startPlayback(for: persistentIdentifier)
-                }
+                musicManager.skip(for: 15)
             } label: {
                 Image(systemName: "goforward.15")
                     .font(.title2)

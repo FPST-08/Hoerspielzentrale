@@ -47,6 +47,8 @@ import WidgetKit
     var endDate: Date?
     var remainingTime: Double = 0
     
+    var lastProgrammaticChange: Date?
+    
     /// The currently playing ``SendableHoerspiel``
     var currentlyPlayingHoerspiel: SendableHoerspiel?
     
@@ -127,6 +129,60 @@ import WidgetKit
         }
     }
     
+    func skip(for interval: TimeInterval) {
+        currentPlaybackTask?.cancel()
+        currentPlaybackTask = Task {
+            lastProgrammaticChange = Date.now
+            let currentPlaybackTime = musicplayer.currentPlaybackTime
+            let currentItemDuration = musicplayer.nowPlayingItem?.playbackDuration ?? 0
+            if currentPlaybackTime + interval < currentItemDuration && currentPlaybackTime + interval >= 0 {
+                Logger.playback.info("""
+[Skip] Skipping inside one track from \
+\(currentPlaybackTime) to \(currentPlaybackTime + interval)
+""")
+                musicplayer.currentPlaybackTime = currentPlaybackTime + interval
+            } else {
+                // Adding together current playbacktime and interval
+                var desiredTime = currentPlaybackTime + interval
+                
+                // Skipping until hitting the correct track
+                if interval > 0 {
+                    while desiredTime > musicplayer.nowPlayingItem?.playbackDuration ?? 0 {
+                        Logger.playback.info("""
+[Skip] Skipping to next track since its the desiredtime is still \(desiredTime)
+""")
+                        desiredTime -= musicplayer.nowPlayingItem?.playbackDuration ?? 0
+                        musicplayer.skipToNextItem()
+                    }
+                } else {
+                    while desiredTime < 0 {
+                        Logger.playback.info("""
+[Skip] Skipping to previous track since desiredTime is still \(desiredTime) 
+""")
+                        musicplayer.skipToPreviousItem()
+                        desiredTime += musicplayer.nowPlayingItem?.playbackDuration ?? 0
+                    }
+                }
+                
+                Logger.playback.info("[Skip] Finished skipping")
+                
+                // Setting playhead accrodingly
+                musicplayer.currentPlaybackTime = desiredTime
+                Logger.playback.info("[Skip] Set playbacktime accrodingly")
+                
+                // Resume playback if necessary
+                musicplayer.play()
+            }
+            // Set dates accordingly
+            startDate = startDate?.advanced(by: -interval)
+            endDate = endDate?.advanced(by: -interval)
+            initiatedDate = initiatedDate?.advanced(by: -interval)
+            if let endDate {
+                remainingTime = endDate - Date.now
+            }
+        }
+    }
+    
     /// Starts a playback
     /// - Parameter persistentIdentifier: The `persistentIdentifier` of the ``Hoerspiel`` to play
     func startPlayback(for persistentIdentifier: PersistentIdentifier) {
@@ -138,6 +194,7 @@ import WidgetKit
     
     private func initiatePlayback(for persistentIdentifier: PersistentIdentifier) async {
         // swiftlint:disable:previous function_body_length
+        lastProgrammaticChange = Date.now
 #if DEBUG
         guard let hoerspiel = try? await dataManager.batchRead(persistentIdentifier) else {
             return
@@ -182,6 +239,9 @@ import WidgetKit
             musicplayer.stop()
             musicplayer.setQueue(with: startPoint.tracks.map { $0.musicItemID })
             try await musicplayer.prepareToPlay()
+            for _ in 0..<startPoint.trackIndex {
+                musicplayer.skipToNextItem()
+            }
             musicplayer.currentPlaybackTime = startPoint.timeInterval
             musicplayer.play()
             currentlyPlayingHoerspiel = hoerspiel
@@ -282,6 +342,7 @@ Stelle eine Verbindung über Wifi oder Mobilfunk her, um dieses Hörspiel abspie
             Task(priority: .high) {
                 await MainActor.run {
                     sleeptimerDate = nil
+                    lastProgrammaticChange = Date.now
                     musicplayer.pause()
                     
                 }
@@ -303,11 +364,13 @@ Stelle eine Verbindung über Wifi oder Mobilfunk her, um dieses Hörspiel abspie
     /// Toggles the playback when appropriate or initiates a new playback
     func togglePlayback(for hoerspiel: PersistentIdentifier) async {
         if hoerspiel == currentlyPlayingHoerspiel?.persistentModelID, musicplayer.playbackState == .playing {
+            lastProgrammaticChange = Date.now
             musicplayer.pause()
             if let endDate {
                 remainingTime = endDate - Date()
             }
         } else if hoerspiel == currentlyPlayingHoerspiel?.persistentModelID && musicplayer.playbackState != .playing {
+            lastProgrammaticChange = Date.now
             musicplayer.play()
         } else {
             await internalSaveListeningProgress()
@@ -318,11 +381,13 @@ Stelle eine Verbindung über Wifi oder Mobilfunk her, um dieses Hörspiel abspie
     /// Toggles the playback
     func togglePlayback() {
         if musicplayer.playbackState == .playing {
+            lastProgrammaticChange = Date.now
             musicplayer.pause()
             if let endDate {
                 remainingTime = endDate - Date()
             }
         } else if musicplayer.playbackState == .paused || musicplayer.playbackState == .interrupted {
+            lastProgrammaticChange = Date.now
             musicplayer.play()
         } else {
             Task {

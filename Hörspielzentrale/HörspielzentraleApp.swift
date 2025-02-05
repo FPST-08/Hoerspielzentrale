@@ -53,11 +53,6 @@ struct Hörspielzentrale: App {
 
     /// The modelContainer
     let modelContainer: ModelContainer
-
-    @AppStorage("onboarding") var onboarding = true
-    
-    /// The current scenephase of the app
-    @Environment(\.scenePhase) private var phase
     
     /// An app delegate to handle deeplinks on notifications
     @UIApplicationDelegateAdaptor(AppDelegate.self) private var delegate
@@ -109,18 +104,10 @@ struct Hörspielzentrale: App {
                     Logger.url.info("App was opened via URL: \(incomingURL)")
                     handleIncomingURL(incomingURL)
                 }
-                
-        }
-        .onChange(of: phase) { _, newPhase in
-            switch newPhase {
-            case .background:
-                scheduleAppRefresh()
-                Task.detached {
-                    await seriesManager.fetchUpdatesFromMusicLibrary()
+                .onAppear {
+                    scheduleAppRefresh()
                 }
-                WidgetCenter.shared.reloadAllTimelines()
-            default: break
-            }
+                
         }
         .backgroundTask(.appRefresh("newReleasesBackgroundTask")) { _ in
             await backgroundActivities.runBackgroundTask()

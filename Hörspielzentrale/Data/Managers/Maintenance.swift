@@ -140,6 +140,7 @@ class Maintenance {
             await self.handleDuplicateSeries()
             await self.handleDuplicateHoerspiels()
             await self.addMissingSeries()
+            await self.seriesManager.fetchUpdatesFromMusicLibrary()
             Logger.metadata.info("Finished maintenance after \(Date() - startdate)")
         }
     }

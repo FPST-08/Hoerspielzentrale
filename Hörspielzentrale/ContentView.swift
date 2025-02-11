@@ -38,6 +38,10 @@ struct ContentView: View {
                 .tabItem { Label("Mediathek", systemImage: "play.square.stack")}
                 .tag(Selection.library)
             
+            NewSearchView()
+                .tabItem { Label("Neue Suche", systemImage: "magnifyingglass") }
+                .tag(Selection.newSearch)
+            
             SearchView()
                 .tabItem { Label("Suche", systemImage: "magnifyingglass") }
                 .tag(Selection.search)

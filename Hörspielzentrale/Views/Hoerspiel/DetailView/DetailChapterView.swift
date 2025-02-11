@@ -5,6 +5,7 @@
 //  Created by Philipp Steiner on 31.01.25.
 //
 
+@preconcurrency import MusicKit
 import OSLog
 import SwiftUI
 
@@ -12,7 +13,10 @@ import SwiftUI
 struct DetailChapterView: View {
     // MARK: - Properties
     /// The corresponding hoerspiel
-    let hoerspiel: SendableHoerspiel
+    let hoerspiel: SendableHoerspiel?
+    
+    /// The corresponding album
+    let album: Album?
     
     /// The chapters of the ``Hoerspiel``
     @State private var chapters = [Chapter]()
@@ -29,7 +33,7 @@ struct DetailChapterView: View {
     /// The currently playing chapter
     var currentlyPlayingChapter: Chapter? {
         guard let startDate = musicManager.startDate,
-              musicManager.currentlyPlayingHoerspiel?.persistentModelID == hoerspiel.persistentModelID else {
+              musicManager.currentlyPlayingHoerspiel?.persistentModelID == hoerspiel?.persistentModelID else {
             return nil
         }
         
@@ -82,18 +86,19 @@ struct DetailChapterView: View {
                 ForEach(displayChapters, id: \.self) { chapter in
                     VStack {
                         Button {
-                            Task {
-                                do {
-                                    try await dataManager.manager.update(hoerspiel.persistentModelID,
-                                                                         keypath: \.playedUpTo,
-                                                                         to: Int(chapter.start))
-                                    musicManager.startPlayback(for: hoerspiel.persistentModelID)
-                                    requestReviewIfAppropriate()
-                                } catch {
-                                    Logger.playback.fullError(error, sendToTelemetryDeck: true)
+                            if let hoerspiel {
+                                Task {
+                                    do {
+                                        try await dataManager.manager.update(hoerspiel.persistentModelID,
+                                                                             keypath: \.playedUpTo,
+                                                                             to: Int(chapter.start))
+                                        musicManager.startPlayback(for: hoerspiel.persistentModelID)
+                                        requestReviewIfAppropriate()
+                                    } catch {
+                                        Logger.playback.fullError(error, sendToTelemetryDeck: true)
+                                    }
                                 }
                             }
-                            
                         } label: {
                             HStack {
                                 Text(chapter.name)
@@ -123,7 +128,7 @@ struct DetailChapterView: View {
         }
         .task { // MARK: - Task
 #if DEBUG
-            if hoerspiel.upc == "DEBUG" {
+            if hoerspiel?.upc == "DEBUG" {
                 chapters = [
                     Chapter(name: "Das Echo der Finsternis", start: 0, end: 600), // 10 Minuten
                     Chapter(name: "Die Spuren im Staub", start: 600, end: 1080), // 8 Minuten
@@ -137,15 +142,20 @@ struct DetailChapterView: View {
 #endif
             do {
                 if chapters.isEmpty {
-                    let metadata = try? await hoerspiel.loadMetaData()
-                    let tracks = try await hoerspiel.persistentModelID.tracks(dataManager.manager)
+                    var metadata: MetaData?
+                    if let hoerspiel {
+                        metadata = try? await hoerspiel.loadMetaData()
+                    } else if let album {
+                        metadata = try? await album.loadMetaData()
+                    }
+                    let tracks = try await fetchTracks()
                     if let metadata {
                         var offsetDuration: TimeInterval = 0.0
                         if tracks.first?.title.contains("Inhaltsangabe") == true {
                             let duration = tracks.first?.duration ?? 0
                             offsetDuration += duration
                         }
-                        if hoerspiel.hasDisclaimer {
+                        if hoerspiel?.hasDisclaimer == true || album?.hasDisclaimer == true {
                             offsetDuration += 42
                         }
                         chapters = metadata.kapitel?.compactMap {
@@ -184,6 +194,35 @@ struct DetailChapterView: View {
                 Logger.metadata.fullError(error, sendToTelemetryDeck: true)
             }
         }
+    }
+    
+    /// Fetches the most suitable tracks
+    /// - Returns: Returns an array of tracks
+    func fetchTracks() async throws -> [SendableStoredTrack] {
+        if let hoerspiel { // only works when stored tracks are available
+            if let tracks = try? await dataManager.manager.fetchTracks(hoerspiel.persistentModelID) {
+                return tracks
+            }
+        }
+        if let tracks = try await album?.with(.tracks).tracks { // Only works when album is available
+            let sendableTracks = tracks.map { SendableStoredTrack($0, index: tracks.firstIndex(of: $0)!)}
+            if let persistentModelID = hoerspiel?.persistentModelID {
+                try? await dataManager.manager.setTracks(persistentModelID, sendableTracks)
+            }
+            return sendableTracks
+        }
+        // Fetch album as last ressource
+        if let hoerspiel {
+            let id = hoerspiel.albumID
+            var request = MusicLibraryRequest<Album>()
+            request.filter(matching: \.id, equalTo: MusicItemID(id))
+            guard let tracks = try? await request.response().items.first?.with(.tracks).tracks else {
+                throw GettingAlbumError.unableToLoadTracks
+            }
+            let sendableTracks = tracks.map { SendableStoredTrack($0, index: tracks.firstIndex(of: $0)!)}
+            return sendableTracks
+        }
+        throw GettingAlbumError.unableToLoadTracks
     }
 }
 

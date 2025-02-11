@@ -34,6 +34,10 @@ extension Defaults.Keys {
     static let coversize = Key<CoverSize>("coversize", default: CoverSize.normal)
     
     static let tabSelection = Key<Selection>("tabSelection", default: .home)
+    
+    static let searchMode = Key<SearchMode>("searchMode", default: .local)
+    
+    static let recentlySearched = Key<[SearchResult]>("recentlySearched", default: [])
 }
 
 /// An enum used for communicating the sorting property

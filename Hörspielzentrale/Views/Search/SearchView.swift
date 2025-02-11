@@ -178,10 +178,10 @@ struct SearchView: View {
                 }
             }
             .navigationDestination(for: SendableHoerspiel.self) { hoerspiel in
-                HoerspielDetailView(hoerspiel: hoerspiel)
+                HoerspielDetailView(hoerspiel)
             }
             .navigationDestination(for: Hoerspiel.self) { hoerspiel in
-                HoerspielDetailView(hoerspiel: SendableHoerspiel(hoerspiel: hoerspiel))
+                HoerspielDetailView(SendableHoerspiel(hoerspiel: hoerspiel))
             }
             .trackNavigation(path: "Search")
         }

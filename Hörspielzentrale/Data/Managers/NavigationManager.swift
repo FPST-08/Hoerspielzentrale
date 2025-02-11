@@ -149,6 +149,7 @@ enum Selection: Int, Codable, Defaults.Serializable {
     case library
     case search
     case home
+    case newSearch
 }
 
 extension String {

@@ -99,7 +99,7 @@ struct HomeView: View {
                 SettingsView()
             }
             .navigationDestination(for: SendableHoerspiel.self) {
-                HoerspielDetailView(hoerspiel: $0)
+                HoerspielDetailView($0)
             }
             .safeAreaPadding(.bottom, 60)
         }

@@ -184,31 +184,7 @@ extension SendableHoerspiel {
     /// Loads the corresponding metadata from `dreimetadaten.de`
     /// - Returns: Returns the ``MetaData``
     func loadMetaData() async throws -> MetaData {
-        guard self.artist != "Die drei ???" || self.artist != "Die drei ??? Kids" else {
-            throw MetaDataError.seriesNotSupported
-        }
-        let albumID = self.albumID
-        
-        guard let url = URL(string: "https://v2.dreimetadaten.de/index/apple-music/\(albumID)") else {
-            throw MetaDataError.invalidURL
-        }
-        
-        let (data, response) = try await URLSession.shared.data(from: url)
-        
-        let httpResponse = response as? HTTPURLResponse
-        
-        guard let httpResponse = httpResponse, httpResponse.statusCode == 200 else {
-            
-            Logger.metadata.error("Status count is not 200, \(httpResponse?.statusCode ?? 0)")
-            
-            throw MetaDataError.unknownError
-        }
-        do {
-            let decodedData = try JSONDecoder().decode(MetaData.self, from: data)
-            return decodedData
-        } catch {
-            throw MetaDataError.unexpectedResponse
-        }
+        try await loadMetaDataInternal(artistName: self.artist, albumID: self.albumID)
     }
     
     /// The episode number of self
@@ -232,6 +208,64 @@ extension SendableHoerspiel {
         }
     }
     
+}
+
+extension Album {
+    /// Loads the corresponding metadata from `dreimetadaten.de`
+    /// - Returns: Returns the ``MetaData``
+    func loadMetaData() async throws -> MetaData {
+        try await loadMetaDataInternal(artistName: self.artistName, albumID: self.id.rawValue)
+    }
+    
+    /// A bool tha indicates if self has a disclaimer
+    var hasDisclaimer: Bool {
+        if let episodeNumber = self.episodeNumber,
+           self.artistName == "Die drei ???",
+           hoerspielNumbersWithDisclaimer.contains(episodeNumber) {
+            return true
+        } else {
+            return false
+        }
+    }
+    
+    /// The episode number of self
+    var episodeNumber: Int? {
+        let numAsString = self.title.components(separatedBy: " ")[safe: 1]?.replacingOccurrences(of: ":", with: "")
+        if let numAsString {
+            return Int(numAsString)
+        } else {
+            return nil
+        }
+    }
+}
+
+/// Loads the corresponding metadata from `dreimetadaten.de`
+/// - Returns: Returns the ``MetaData``
+private func loadMetaDataInternal(artistName: String, albumID: String) async throws -> MetaData {
+    guard artistName != "Die drei ???" || artistName != "Die drei ??? Kids" else {
+        throw MetaDataError.seriesNotSupported
+    }
+    
+    guard let url = URL(string: "https://v2.dreimetadaten.de/index/apple-music/\(albumID)") else {
+        throw MetaDataError.invalidURL
+    }
+    
+    let (data, response) = try await URLSession.shared.data(from: url)
+    
+    let httpResponse = response as? HTTPURLResponse
+    
+    guard let httpResponse = httpResponse, httpResponse.statusCode == 200 else {
+        
+        Logger.metadata.error("Status count is not 200, \(httpResponse?.statusCode ?? 0)")
+        
+        throw MetaDataError.unknownError
+    }
+    do {
+        let decodedData = try JSONDecoder().decode(MetaData.self, from: data)
+        return decodedData
+    } catch {
+        throw MetaDataError.unexpectedResponse
+    }
 }
 
 /// An Error used to communicate `MetaData` loading errors

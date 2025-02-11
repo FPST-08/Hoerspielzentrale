@@ -5,6 +5,8 @@
 //  Created by Philipp Steiner on 21.11.24.
 //
 
+import Defaults
+import DefaultsMacros
 @preconcurrency import MusicKit
 import OSLog
 import SwiftData
@@ -21,6 +23,19 @@ class SeriesManager {
     
     init(dataManager: DataManager) {
         self.dataManager = dataManager
+        Task {
+            let series = try await dataManager.fetchAllSeries()
+            let chunkedSeries = series.chunked(into: 25)
+            var artists = [Artist]()
+            for serie in chunkedSeries {
+                let musicItemIDs = serie.map { MusicItemID($0.musicItemID) }
+                let request = MusicCatalogResourceRequest<Artist>(matching: \.id,
+                                                                  memberOf: musicItemIDs)
+                let response = try await request.response()
+                artists.append(contentsOf: response.items)
+            }
+            self.selectedArtists = artists.sorted { $0.name < $1.name }
+        }
     }
     
     /// The queue of series to download
@@ -83,6 +98,7 @@ class SeriesManager {
     /// - Parameter artist: The series to start the download for
     private func startDownload(_ artist: Artist) {
         currentDownloadTask = Task {
+            selectedArtists.append(artist)
             currentProgressValue = 0
             currentProgressLabel = "Download von \(artist.name) startet"
             currentlyDownloadingArtist = artist

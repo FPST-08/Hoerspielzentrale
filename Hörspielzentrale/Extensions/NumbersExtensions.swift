@@ -107,3 +107,14 @@ extension BinaryFloatingPoint {
         return formattedString
     }
 }
+
+extension Date {
+    /// A textual representation of the time passed since self
+    /// - Returns: The representation
+    func timeAgo() -> String {
+        let formatter = RelativeDateTimeFormatter()
+        formatter.unitsStyle = .full // Use "full", "spellOut", or "short" based on preference
+        formatter.dateTimeStyle = .numeric
+        return formatter.localizedString(for: self, relativeTo: Date())
+    }
+}

@@ -140,6 +140,16 @@ struct SendableHoerspiel: Sendable, Hashable, Codable, Identifiable {
         }
     }
     
+    /// Creates a ``SendableHoerspiel`` from an optional ``Hoerspiel``
+    /// - Parameter hoerspiel: The original source of truth that gets copied
+    init?(_ hoerspiel: Hoerspiel?) {
+        if let hoerspiel {
+            self = SendableHoerspiel(hoerspiel: hoerspiel)
+        } else {
+            return nil
+        }
+    }
+    
     func hash(into hasher: inout Hasher) {
         hasher.combine(id)
     }

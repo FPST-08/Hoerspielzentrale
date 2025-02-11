@@ -14,7 +14,7 @@ struct DetailChapterFullView: View {
     let chapters: [Chapter]
     
     /// The corresponding hoerspiel
-    let hoerspiel: SendableHoerspiel
+    let hoerspiel: SendableHoerspiel?
     
     /// The corresponding chapter source
     let source: ChapterSource?
@@ -24,6 +24,9 @@ struct DetailChapterFullView: View {
     
     /// Referencing an `Observable` class responsible for playback
     @Environment(MusicManager.self) var musicManager
+    
+    /// An Observable Class responsible for navigation
+    @Environment(NavigationManager.self) var navigation
     
     /// The date when the current chapter will end
     var currentChapterEnding: Date? {
@@ -36,7 +39,7 @@ struct DetailChapterFullView: View {
     /// The currently playing chapter
     var currentlyPlayingChapter: Chapter? {
         guard let startDate = musicManager.startDate,
-              musicManager.currentlyPlayingHoerspiel?.persistentModelID == hoerspiel.persistentModelID else {
+              musicManager.currentlyPlayingHoerspiel?.persistentModelID == hoerspiel?.persistentModelID else {
             return nil
         }
         
@@ -55,17 +58,18 @@ struct DetailChapterFullView: View {
         List {
             ForEach(chapters, id: \.self) { chapter in
                 Button {
-                    Task {
-                        do {
-                            try await dataManager.manager.update(hoerspiel.persistentModelID,
-                                                                 keypath: \.playedUpTo,
-                                                                 to: Int(chapter.start))
-                            musicManager.startPlayback(for: hoerspiel.persistentModelID)
-                        } catch {
-                            Logger.playback.fullError(error, sendToTelemetryDeck: true)
+                    if let hoerspiel {
+                        Task {
+                            do {
+                                try await dataManager.manager.update(hoerspiel.persistentModelID,
+                                                                     keypath: \.playedUpTo,
+                                                                     to: Int(chapter.start))
+                                musicManager.startPlayback(for: hoerspiel.persistentModelID)
+                            } catch {
+                                Logger.playback.fullError(error, sendToTelemetryDeck: true)
+                            }
                         }
                     }
-                    
                 } label: {
                     HStack {
                         Text(chapter.name)

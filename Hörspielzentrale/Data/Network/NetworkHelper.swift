@@ -16,6 +16,11 @@ import OSLog
     
     /// The current connection status
     var connectionStatus = ConnectionStatus.working
+    
+    /// A boolean that indicates a valid internet connection
+    var validConnection: Bool {
+        return connectionStatus == .working
+    }
 
     init() {
         let connectivityChanged: (Connectivity) -> Void = { [weak self] connectivity in

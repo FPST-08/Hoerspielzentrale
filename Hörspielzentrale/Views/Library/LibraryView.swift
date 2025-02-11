@@ -47,7 +47,7 @@ struct LibraryView: View {
                 }
             }
             .navigationDestination(for: SendableHoerspiel.self) {
-                HoerspielDetailView(hoerspiel: $0)
+                HoerspielDetailView($0)
             }
         }
         .trackNavigation(path: "Library")

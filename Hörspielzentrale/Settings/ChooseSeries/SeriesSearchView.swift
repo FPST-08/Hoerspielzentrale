@@ -73,7 +73,6 @@ struct SeriesSearchView: View {
                             if !(seriesManager.selectedArtists.contains(result) ||
                                  seriesManager.seriesToDownload.contains(result) ||
                                  seriesManager.selectedArtists.contains(result)) {
-                                seriesManager.selectedArtists.append(result)
                                 seriesManager.downloadSeries(result)
                             }
                             dismiss()

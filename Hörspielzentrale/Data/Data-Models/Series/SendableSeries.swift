@@ -8,7 +8,7 @@ import Foundation
 import SwiftData
 
 /// A struct that is used to safely pass around a ``Series``
-struct SendableSeries: Codable, Sendable, Identifiable, Equatable {
+struct SendableSeries: Codable, Sendable, Identifiable, Equatable, Hashable {
     /// A rebranded instance of `musicItemID`to conform to `Identifable`
     var id: String {
         musicItemID

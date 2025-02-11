@@ -5,6 +5,7 @@
 //  Created by Philipp Steiner on 12.12.24.
 //
 
+import MusicKit
 import SwiftUI
 
 /// A view used to display Information
@@ -36,6 +37,10 @@ struct DetailsInfoView: View {
         }
     }
     
+    /// Creates the view from a hoerspiel and any other additional entries
+    /// - Parameters:
+    ///   - hoerspiel: The hoerspiel
+    ///   - entries: The additional entries
     init(
         hoerspiel: SendableHoerspiel,
         entries: [DetailsInfoDisplay] = [DetailsInfoDisplay]()
@@ -55,6 +60,8 @@ struct DetailsInfoView: View {
         self.entries.append(contentsOf: entries)
     }
     
+    /// Creates the view from additional entries
+    /// - Parameter entries: The entries
     init(entries: [DetailsInfoDisplay]) {
         self.entries = entries
     }

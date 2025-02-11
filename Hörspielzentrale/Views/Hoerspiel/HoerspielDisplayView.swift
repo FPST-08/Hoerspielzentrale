@@ -83,7 +83,7 @@ struct HoerspielDisplayView: View {
     // MARK: - View
     var body: some View {
         NavigationLink {
-            HoerspielDetailView(hoerspiel: sendableHoerspiel)
+            HoerspielDetailView(sendableHoerspiel)
                 .backwardsNavigationTransition("zoom", in: namespace)
         } label: {
             ZStack {

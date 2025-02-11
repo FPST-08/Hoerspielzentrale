@@ -24,7 +24,7 @@ struct HoerspielListView: View {
     // MARK: - View
     var body: some View {
         NavigationLink {
-            HoerspielDetailView(hoerspiel: hoerspiel)
+            HoerspielDetailView(hoerspiel)
         } label: {
             HStack {
                 if let image {

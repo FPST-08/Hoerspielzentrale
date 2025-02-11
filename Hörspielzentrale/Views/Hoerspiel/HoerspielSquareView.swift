@@ -29,7 +29,7 @@ struct HoerspielSquareView: View {
     // MARK: - View
     var body: some View {
         NavigationLink {
-            HoerspielDetailView(hoerspiel: hoerspiel)
+            HoerspielDetailView(hoerspiel)
                 .backwardsNavigationTransition("zoom", in: namespace)
         } label: {
             ZStack(alignment: .center) {

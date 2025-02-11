@@ -12,7 +12,7 @@ import SwiftUI
 import TelemetryDeck
 
 /// A view used to display details about a ``Series``
-struct SeriesDetailView: View { // swiftlint:disable:this type_body_length
+struct SeriesDetailView: View {
     /// The ``Series`` to display details about
     @State private var series: SendableSeries?
     
@@ -32,12 +32,6 @@ struct SeriesDetailView: View { // swiftlint:disable:this type_body_length
     
     /// The dominant color of the `seriesImage`
     @State private var color = Color.primary
-    
-    /// An optional upcoming ``Hoerspiel``
-    @Query private var upcomingHoerspiel: [Hoerspiel]
-    
-    /// The 10 most recent ``Hoerspiel`` published in this ``Series``
-    @Query private var mostRecentHoerspiels: [Hoerspiel]
     
     /// The corresponding artist for this ``Series``
     @State private var artist: Artist?
@@ -92,11 +86,8 @@ struct SeriesDetailView: View { // swiftlint:disable:this type_body_length
                                 }
                             }
                         }
-                        if let hoerspiel = SendableHoerspiel(upcomingHoerspiel.first) {
-                            SectionHeader(title: "Bald verfügbar")
-                            HoerspielDisplayView(hoerspiel, .rectangular)
-                        }
                         if let series {
+                            SeriesDetailUpcomingView(series: series)
                             HomeSection(title: "Als Nächstes", displaymode: .rectangular, fetchDescriptor: {
                                 let id = series.musicItemID
                                 // swiftlint:disable:next line_length
@@ -109,8 +100,8 @@ struct SeriesDetailView: View { // swiftlint:disable:this type_body_length
                             }, destination: .hoerspielList)
                         }
                         
-                        allHoerspielSection
                         if let series {
+                            SeriesDetailHoerspielView(series: series)
                             SeriesInfoView(series: series)
                                 .padding(.vertical)
                         }
@@ -189,47 +180,6 @@ struct SeriesDetailView: View { // swiftlint:disable:this type_body_length
         .trackNavigation(path: "SeriesDetailView")
     }
     
-    /// A view to display and link to all ``Hoerspiel``
-    var allHoerspielSection: some View {
-        Group {
-            if let series {
-                NavigationSection(destination: .allHoerspiels(series: series), title: "Alle Hörspiele")
-                ScrollView(.horizontal) {
-                    LazyHStack {
-                        ForEach(mostRecentHoerspiels) { hoerspiel in
-                            HoerspielDisplayView(SendableHoerspiel(hoerspiel: hoerspiel), .coverOnly)
-                        }
-                        NavigationLink {
-                            AllHoerspielsView(series: series)
-                        } label: {
-                            ZStack {
-                                RoundedRectangle(cornerRadius: 15)
-                                    .foregroundStyle(Color.white.opacity(0.3))
-                                RoundedRectangle(cornerRadius: 15)
-                                    .foregroundStyle(Color.systemBackground)
-                                    .padding(1)
-                                VStack {
-                                    Image(systemName: "chevron.forward")
-                                        .font(.title)
-                                        .fontWeight(.heavy)
-                                    Text("Alle anzeigen")
-                                        .fontWeight(.medium)
-                                }
-                                
-                            }
-                            .frame(width: 120, height: 120)
-                        }
-                        
-                    }
-                    .scrollTargetLayout()
-                }
-                .scrollTargetBehavior(.viewAligned)
-                .scrollIndicators(.never)
-                .contentMargins(.leading, 20, for: .scrollContent)
-            }
-        }
-    }
-    
     /// Fetches the series corresponding to an artist
     /// - Parameter artist: The initial artist
     /// - Returns: The corresponding series
@@ -272,27 +222,6 @@ struct SeriesDetailView: View { // swiftlint:disable:this type_body_length
         self.series = series
         self.name = series.name
         self.musicItemID = series.musicItemID
-        do {
-            let id = series.musicItemID
-            let now = Date.now
-            var descriptor = FetchDescriptor<Hoerspiel>(predicate: #Predicate { hoerspiel in
-                return hoerspiel.series?.musicItemID == id && hoerspiel.releaseDate > now
-            })
-            descriptor.fetchLimit = 1
-            descriptor.sortBy = [SortDescriptor(\Hoerspiel.releaseDate, order: .reverse)]
-            _upcomingHoerspiel = Query(descriptor)
-        }
-        
-        do {
-            let id = series.musicItemID
-            let now = Date.now
-            var descriptor = FetchDescriptor<Hoerspiel>(predicate: #Predicate { hoerspiel in
-                hoerspiel.series?.musicItemID == id && hoerspiel.releaseDate < now
-            })
-            descriptor.fetchLimit = 10
-            descriptor.sortBy = [SortDescriptor(\Hoerspiel.releaseDate, order: .reverse)]
-            _mostRecentHoerspiels = Query(descriptor)
-        }
     }
     
     /// Creates the view from an artist
@@ -301,26 +230,5 @@ struct SeriesDetailView: View { // swiftlint:disable:this type_body_length
         self.artist = artist
         self.name = artist.name
         self.musicItemID = artist.id.rawValue
-        do {
-            let id = artist.id.rawValue
-            let now = Date.now
-            var descriptor = FetchDescriptor<Hoerspiel>(predicate: #Predicate { hoerspiel in
-                return hoerspiel.series?.musicItemID == id && hoerspiel.releaseDate > now
-            })
-            descriptor.fetchLimit = 1
-            descriptor.sortBy = [SortDescriptor(\Hoerspiel.releaseDate, order: .reverse)]
-            _upcomingHoerspiel = Query(descriptor)
-        }
-        
-        do {
-            let id = artist.id.rawValue
-            let now = Date.now
-            var descriptor = FetchDescriptor<Hoerspiel>(predicate: #Predicate { hoerspiel in
-                hoerspiel.series?.musicItemID == id && hoerspiel.releaseDate < now
-            })
-            descriptor.fetchLimit = 10
-            descriptor.sortBy = [SortDescriptor(\Hoerspiel.releaseDate, order: .reverse)]
-            _mostRecentHoerspiels = Query(descriptor)
-        }
     }
 }

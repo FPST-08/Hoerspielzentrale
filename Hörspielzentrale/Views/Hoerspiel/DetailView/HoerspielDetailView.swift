@@ -24,6 +24,10 @@ struct HoerspielDetailView: View {
     
     @State private var album: Album?
     
+    @State private var series: SendableSeries?
+    
+    @State private var artist: Artist?
+    
     /// The title of the entity
     let title: String
     
@@ -72,6 +76,16 @@ struct HoerspielDetailView: View {
                     .font(.title3)
                     .fontWeight(.semibold)
                     .padding(.top, 5)
+                NavigationLink {
+                    if let artist {
+                        SeriesDetailView(artist: artist)
+                    } else if let series {
+                        SeriesDetailView(series: series)
+                    }
+                } label: {
+                    Text(hoerspiel?.artist ?? album?.artistName ?? "Unbekannt")
+                        .font(.title3)
+                }
                 Text(releaseDate?.formatted(date: .numeric, time: .omitted) ??
                         "Veröffentlichundsdatum unbekannt")
                 .foregroundStyle(Color.secondary)
@@ -155,8 +169,9 @@ Füge die Serie hinzu, um dieses Hörspiel abspielen zu können
                 image = await imagecache.image(for: hoerspiel, size: .fullResolution)
                 let center = UNUserNotificationCenter.current()
                 center.removeDeliveredNotifications(withIdentifiers: [hoerspiel.upc, "PR\(hoerspiel.upc)"])
-            } else {
-                guard let artworkURL = album?.artwork?.url(width: 512, height: 512) else {
+                series = try? await dataManager.manager.series(for: hoerspiel)
+            } else if let album {
+                guard let artworkURL = album.artwork?.url(width: 512, height: 512) else {
                     return
                 }
                 guard let (data, _) = try? await URLSession.shared.data(from: artworkURL) else {
@@ -166,6 +181,7 @@ Füge die Serie hinzu, um dieses Hörspiel abspielen zu können
                     return
                 }
                 image = Image(uiImage: uiimage)
+                artist = try? await album.with(.artists).artists?.first
             }
         }
         .safeAreaPadding(.bottom, 60)

@@ -177,7 +177,7 @@ actor DataManager {
     /// Fetches the tracks for a `persistentIdentifier`
     /// - Parameter persistentIdentifier: The `persistentIdentifier` of the ``Hoerspiel`` to load the tracks from
     /// - Returns: Returns an array of ``SendableStoredTrack``
-    public func fetchTracks(_ persistentIdentifier: PersistentIdentifier) throws -> [SendableStoredTrack] {
+    private func fetchCachedTracks(_ persistentIdentifier: PersistentIdentifier) throws -> [SendableStoredTrack] {
         guard let model = modelContext.model(for: persistentIdentifier) as? Hoerspiel else {
             throw DataBaseError.noModelForPersistentIdentifierFound
         }
@@ -185,6 +185,62 @@ actor DataManager {
             return tracks.map { SendableStoredTrack($0)}
         }
         throw DataBaseError.propertyNotAvailable
+    }
+    
+    /// Fetches the tracks for a specified hoerspiel or album
+    /// - Parameters:
+    ///   - hoerspiel: The hoerspiel
+    ///   - album: The album
+    /// - Returns: The tracks
+    public func fetchTracks(_ hoerspiel: SendableHoerspiel?, album: Album?) async throws -> [SendableStoredTrack] {
+        if let hoerspiel, let tracks = try? fetchCachedTracks(hoerspiel.persistentModelID).sorted() {
+            return tracks
+        }
+        if let tracks = try await album?.with(.tracks).tracks { // Only works when album is available
+            let sendableTracks = tracks.map { SendableStoredTrack($0, index: tracks.firstIndex(of: $0)!)}
+            if let persistentModelID = hoerspiel?.persistentModelID {
+                try? setTracks(persistentModelID, sendableTracks)
+            }
+            return sendableTracks
+        }
+        // Fetch album as last ressource
+        if let hoerspiel {
+            let upc = hoerspiel.upc
+            var request = MusicCatalogResourceRequest<Album>(matching: \.upc, equalTo: upc)
+            request.limit = 1
+            request.properties.append(.tracks)
+            let response = try? await request.response()
+            let album = response?.items.first
+            if let tracks = album?.tracks, !tracks.isEmpty {
+                let sendableTracks = tracks.map { SendableStoredTrack($0, index: tracks.firstIndex(of: $0)!)}
+                try? setTracks(hoerspiel.persistentModelID, sendableTracks)
+                return sendableTracks
+            }
+            var libraryRequest = MusicLibraryRequest<Album>()
+            libraryRequest.filter(matching: \.id, equalTo: MusicItemID(hoerspiel.albumID))
+            libraryRequest.limit = 1
+            let libraryResponse = try? await libraryRequest.response()
+            if let album = libraryResponse?.items.first {
+                let withTracks = try await album.with(.tracks)
+                let tracks = withTracks.tracks
+                if let tracks, !tracks.isEmpty {
+                    let sendableTracks = tracks.map { SendableStoredTrack($0, index: tracks.firstIndex(of: $0)!)}
+                    try? setTracks(hoerspiel.persistentModelID, sendableTracks)
+                    return sendableTracks
+                }
+            }
+        }
+        throw GettingAlbumError.unableToLoadTracks
+    }
+    
+    /// Returns the ``SendableHoerspiel`` for a spciefied identifier
+    /// - Parameter identifier: The identifier
+    /// - Returns: The model
+    public func model(for identifier: PersistentIdentifier) throws -> SendableHoerspiel {
+        guard let model = modelContext.model(for: identifier) as? Hoerspiel else {
+            throw DataBaseError.propertyInUnexpectedState
+        }
+        return SendableHoerspiel(hoerspiel: model)
     }
     
     /// Sets the tracks of a ``Hoerspiel``

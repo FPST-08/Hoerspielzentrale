@@ -102,7 +102,7 @@ import WidgetKit
             
             let duration = try await dataManager.read(hoerspiel.persistentModelID, keypath: \.duration)
             
-            let tracks = try await hoerspiel.persistentModelID.tracks(dataManager).sorted()
+            let tracks = try await dataManager.fetchTracks(hoerspiel, album: nil)
             
             var currentPlayBackTime = self.musicplayer.currentPlaybackTime
             
@@ -420,7 +420,7 @@ Stelle eine Verbindung über Wifi oder Mobilfunk her, um dieses Hörspiel abspie
                                         "Hoerspiel": currentlyPlayingHoerspiel.title
                                      ])
                 
-                let tracks = try await persistentIdentifier.tracks(dataManager)
+                let tracks = try await dataManager.fetchTracks(currentlyPlayingHoerspiel, album: nil)
                 
                 // Unwrapping NowPlayingItem
                 guard let nowPlayingItem = self.musicplayer.nowPlayingItem else {

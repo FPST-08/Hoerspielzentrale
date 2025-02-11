@@ -27,6 +27,9 @@ struct DetailChapterView: View {
     /// Referencing an `Observable` class responsible for playback
     @Environment(MusicManager.self) var musicManager
     
+    /// An Observable Class responsible for navigation
+    @Environment(NavigationManager.self) var navigation
+    
     /// The source of the chapters
     @State private var source: ChapterSource?
     
@@ -148,7 +151,7 @@ struct DetailChapterView: View {
                     } else if let album {
                         metadata = try? await album.loadMetaData()
                     }
-                    let tracks = try await fetchTracks()
+                    let tracks = try await dataManager.manager.fetchTracks(hoerspiel, album: album)
                     if let metadata {
                         var offsetDuration: TimeInterval = 0.0
                         if tracks.first?.title.contains("Inhaltsangabe") == true {
@@ -194,35 +197,6 @@ struct DetailChapterView: View {
                 Logger.metadata.fullError(error, sendToTelemetryDeck: true)
             }
         }
-    }
-    
-    /// Fetches the most suitable tracks
-    /// - Returns: Returns an array of tracks
-    func fetchTracks() async throws -> [SendableStoredTrack] {
-        if let hoerspiel { // only works when stored tracks are available
-            if let tracks = try? await dataManager.manager.fetchTracks(hoerspiel.persistentModelID) {
-                return tracks
-            }
-        }
-        if let tracks = try await album?.with(.tracks).tracks { // Only works when album is available
-            let sendableTracks = tracks.map { SendableStoredTrack($0, index: tracks.firstIndex(of: $0)!)}
-            if let persistentModelID = hoerspiel?.persistentModelID {
-                try? await dataManager.manager.setTracks(persistentModelID, sendableTracks)
-            }
-            return sendableTracks
-        }
-        // Fetch album as last ressource
-        if let hoerspiel {
-            let id = hoerspiel.albumID
-            var request = MusicLibraryRequest<Album>()
-            request.filter(matching: \.id, equalTo: MusicItemID(id))
-            guard let tracks = try? await request.response().items.first?.with(.tracks).tracks else {
-                throw GettingAlbumError.unableToLoadTracks
-            }
-            let sendableTracks = tracks.map { SendableStoredTrack($0, index: tracks.firstIndex(of: $0)!)}
-            return sendableTracks
-        }
-        throw GettingAlbumError.unableToLoadTracks
     }
 }
 

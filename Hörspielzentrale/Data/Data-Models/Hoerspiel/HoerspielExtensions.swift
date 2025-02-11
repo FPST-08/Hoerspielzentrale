@@ -28,7 +28,10 @@ extension PersistentIdentifier {
         startDate: Date,
         endDate: Date
     ) {
-        let tracks = try await self.tracks(dataHandler)
+        guard let hoerspiel = try? await dataHandler.model(for: self) else {
+            throw CalculatingStartingPointError.unableToGetModel
+        }
+        let tracks = try await dataHandler.fetchTracks(hoerspiel, album: nil)
         let duration = tracks.reduce(0) { $0 + ($1.duration)}
         guard let storedDuration = try? await dataHandler.read(self, keypath: \.duration) else {
             Logger.data.fault("Unable to get stored duration")
@@ -127,31 +130,6 @@ extension PersistentIdentifier {
     // swiftlint: enable cyclomatic_complexity
     // swiftlint: enable function_body_length
     // swiftlint: enable large_tuple
-    
-    /// The ``SendableStoredTrack`` for a hoerspiel
-    /// - Parameter dataManager: The dataManager used for database access
-    /// - Returns: Returns an array of ``SendableStoredTrack``
-    func tracks(_ dataManager: DataManager) async throws -> [SendableStoredTrack] {
-        let storedTracks = try? await dataManager.fetchTracks(self)
-        if let storedTracks, !storedTracks.isEmpty {
-            Logger.data.info("Tracks were loaded from storage, count: \(storedTracks.count)")
-            return storedTracks.sorted()
-        }
-        if let tracks = try? await self.album(dataManager)?.with(.tracks).tracks {
-            Logger.data.info("Tracks were loaded from Apple Music catalog")
-            let sendableTracks = tracks.map { SendableStoredTrack($0, index: tracks.firstIndex(of: $0)!)}
-            try? await dataManager.setTracks(self, sendableTracks)
-            return sendableTracks
-        }
-        let id = try await dataManager.read(self, keypath: \.albumID)
-        var request = MusicLibraryRequest<Album>()
-        request.filter(matching: \.id, equalTo: MusicItemID(id))
-        guard let tracks = try? await request.response().items.first?.with(.tracks).tracks else {
-            throw GettingAlbumError.unableToLoadTracks
-        }
-        let sendableTracks = tracks.map { SendableStoredTrack($0, index: tracks.firstIndex(of: $0)!)}
-        return sendableTracks
-    }
 }
 
 /// An Error used to communicate Errors when calculating the starting point of a ``Hoerspiel``
@@ -160,7 +138,8 @@ enum CalculatingStartingPointError: Error {
          unableToGetPlayedUpTo,
          unableToGetTrackIndex,
          unableToGetReleaseDate,
-         unableToFindMatchingTrack
+         unableToFindMatchingTrack,
+    unableToGetModel
 }
 
 extension CalculatingStartingPointError: LocalizedError {
@@ -176,6 +155,8 @@ extension CalculatingStartingPointError: LocalizedError {
             return "Das Veröffentlichungsdatum konnte nicht geladen werden. Dies ist für Smart Skip erforderlich"
         case .unableToFindMatchingTrack:
             return "Der entsprechende Titel konnte nicht gefunden werden"
+        case .unableToGetModel:
+            return "Das entsprechende Hörspiel wurde nicht gefunden"
         }
     }
 }

@@ -225,7 +225,6 @@ actor DataManager {
                 let tracks = withTracks.tracks
                 if let tracks, !tracks.isEmpty {
                     let sendableTracks = tracks.map { SendableStoredTrack($0, index: tracks.firstIndex(of: $0)!)}
-                    try? setTracks(hoerspiel.persistentModelID, sendableTracks)
                     return sendableTracks
                 }
             }

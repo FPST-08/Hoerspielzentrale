@@ -206,10 +206,13 @@ Fetching batch of \(currentBadge.first?.title ?? "N/A") by \(currentBadge.first?
                             }
                         }
                         for codable in codables {
-                            Logger.seriesManager.info("Updating \(codable.title)")
-                            try await self.dataManager.updateHoerspielWhenSuitable(codable)
+                            Logger.seriesManager.info("Updating \(codable.title) with upc \(codable.upc)")
+                            do {
+                                try await self.dataManager.updateHoerspielWhenSuitable(codable)
+                            } catch {
+                                Logger.maintenance.fullError(error, sendToTelemetryDeck: false)
+                            }
                         }
-                        
                     } catch {
                         Logger.maintenance.fullError(error, sendToTelemetryDeck: true)
                     }
@@ -263,7 +266,7 @@ Fetching batch of \(currentBadge.first?.title ?? "N/A") by \(currentBadge.first?
     /// 
     /// This function might take a while to complete
     /// - Returns: Returns all of the added ``SendableHoerspiel``
-    public func checkForNewReleasesInBackground() async throws -> [SendableHoerspiel] {
+    @discardableResult public func checkForNewReleasesInBackground() async throws -> [SendableHoerspiel] {
         let allSeries = try await dataManager.fetch({FetchDescriptor<Series>()})
         
         var responseArtists = [Artist]()

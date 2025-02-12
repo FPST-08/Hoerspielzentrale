@@ -137,6 +137,11 @@ class Maintenance {
         Task.detached(priority: .utility) {
             Logger.maintenance.info("Started maintenance")
             let startdate = Date.now
+            do {
+                try await self.seriesManager.checkForNewReleasesInBackground()
+            } catch {
+                Logger.maintenance.fullError(error, sendToTelemetryDeck: true)
+            }
             await self.handleDuplicateSeries()
             await self.handleDuplicateHoerspiels()
             await self.addMissingSeries()

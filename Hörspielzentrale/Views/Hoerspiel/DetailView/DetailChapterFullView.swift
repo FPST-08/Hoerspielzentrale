@@ -44,8 +44,8 @@ struct DetailChapterFullView: View {
         }
         
         for chapter in chapters {
-            let startTime = startDate.advanced(by: chapter.start)
-            let endTime = startDate.advanced(by: chapter.end)
+            let startTime = startDate.advanced(by: chapter.start - 1)
+            let endTime = startDate.advanced(by: chapter.end - 1)
             
             if startTime.isPast() && endTime.isFuture() {
                 return chapter

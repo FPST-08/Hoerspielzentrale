@@ -178,7 +178,7 @@ struct HoerspielDisplayView: View {
     func loadData() async {
         do {
             guard let uiimage = await imageCache.uiimage(for: sendableHoerspiel,
-                                                         size: displaymode == .big ? .fullResolution : .resized) else {
+                                                         size: displaymode == .big ? .fullResolution : .small) else {
                 return
             }
             guard let uicolor = uiimage.averageColor else {

@@ -22,7 +22,7 @@ struct HoerspielSquareView: View {
     let hoerspiel: SendableHoerspiel
     
     /// The cover of the `hoerspiel`
-    @State private var image: Image?
+    @State private var image: Image = Image(UIImage(color: .gray))!
     
     @Namespace var namespace
     
@@ -37,20 +37,10 @@ struct HoerspielSquareView: View {
                     .frame(width: 230, height: 230)
                     .foregroundStyle(Color.white.opacity(0.3))
                 ZStack(alignment: .bottom) {
-                    
-                    if let image {
-                        image
-                            .resizable()
-                            .scaledToFit()
-                            .frame(width: 228, height: 228)
-                        
-                            .zIndex(0)
-                    } else {
-                        RoundedRectangle(cornerRadius: 15)
-                            .foregroundStyle(Color.black)
-                        
-                            .zIndex(0)
-                    }
+                    image
+                        .resizable()
+                        .scaledToFit()
+                        .frame(width: 228, height: 228)
                     Rectangle()
                         .fill(.thinMaterial)
                         .frame(height: 60)
@@ -97,8 +87,8 @@ struct HoerspielSquareView: View {
             .frame(width: 230, height: 230)
         }
         .task {
-            if image == nil {
-                image = await imageCache.image(for: hoerspiel)
+            if let fetchedImage = await imageCache.image(for: hoerspiel, size: .regular) {
+                image = fetchedImage
             }
         }
         

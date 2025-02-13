@@ -17,7 +17,11 @@ import SwiftUI
     let datamanager: DataManager
     
     /// The cache used to store the covers
-    private let cache: NSCache<NSString, UIImage> = NSCache()
+    private let smallImageCache: NSCache<NSString, UIImage> = NSCache()
+    
+    private let regularImageCache: NSCache<NSString, UIImage> = NSCache()
+    
+    private let seriesImageCache: NSCache<NSString, UIImage> = NSCache()
     
     init(dataManager: DataManager) {
         self.datamanager = dataManager
@@ -30,7 +34,7 @@ import SwiftUI
     ///  This function is building on top of ``uiimage(for:)``and converts its result to an `Image`
     /// 
     ///  - Note: If the cover is needed as an UIImage, call ``uiimage(for:)`` directly
-    func image(for hoerspiel: SendableHoerspiel, size: SizeOptions = .resized) async -> Image? {
+    func image(for hoerspiel: SendableHoerspiel, size: SizeOptions = .small) async -> Image? {
         if let uiimage = await uiimage(for: hoerspiel, size: size) {
             return Image(uiImage: uiimage)
         } else {
@@ -47,47 +51,54 @@ import SwiftUI
     /// If it is not to be found there, it will be tried to load the image from disk.
     /// If that also fails, the image will be loaded from the Apple Music API.
     /// If all of these attempts where not successfull, nil will be returned
-    func uiimage(
+    func uiimage( // swiftlint:disable:this cyclomatic_complexity
         for hoerspiel: SendableHoerspiel,
-        size: SizeOptions = .resized
+        size: SizeOptions = .small
     ) async -> UIImage? {
-        do {
-            if hoerspiel.upc == "" {
-                return nil
+        if hoerspiel.upc == "" {
+            return nil
+        }
+#if DEBUG
+        if hoerspiel.upc == "DEBUG" {
+            return UIImage(color: UIColor.random)
+        }
+#endif
+        let upc = hoerspiel.upc
+        switch size {
+        case .fullResolution:
+            let fileURL = documentsDirectoryPath.appendingPathComponent("\(upc).jpg")
+            if let image = UIImage(contentsOfFile: fileURL.path()) {
+                let coverSize = Defaults[.coversize].width
+                deleteImageWithWrongSize(upc: upc, size: coverSize)
+                return image
             }
-            #if DEBUG
-            if hoerspiel.upc == "DEBUG" {
-                return UIImage(color: UIColor.random)
-            }
-            #endif
-            let upc = hoerspiel.upc
-            if size == .resized {
-                if let uiimage = cache.object(forKey: upc as NSString) {
-                    Logger.data.info("Image for \(upc) was read from Cache  with size \(uiimage.size.width)")
-                    return uiimage
-                } else {
-                    let fileURL = documentsDirectoryPath.appendingPathComponent("\(upc).jpg")
-                    let image = resizedImage(at: fileURL, for: CGSize(width: 64, height: 64))
-                    if let image {
-                        cache.setObject(image, forKey: "\(upc)" as NSString)
-                        return image
-                    }
-                }
+        case .small, .regular:
+            let cache = size == .small ? smallImageCache : regularImageCache
+            let size = size == .small ? 80 : 192
+            if let uiimage = cache.object(forKey: upc as NSString) {
+                Logger.data.info("Image for \(upc) was read from Cache  with size \(uiimage.size.width)")
+                return uiimage
             } else {
                 let fileURL = documentsDirectoryPath.appendingPathComponent("\(upc).jpg")
-                if let image = UIImage(contentsOfFile: fileURL.path()) {
-                    let coverSize = Defaults[.coversize].width
-                    deleteImageWithWrongSize(upc: upc, size: coverSize)
+                let image = resizedImage(at: fileURL, for: CGSize(width: size, height: size))
+                if let image {
+                    cache.setObject(image, forKey: "\(upc)" as NSString)
                     return image
                 }
             }
+        }
+        
+        guard let image = await loadImageFromRemote(for: hoerspiel) else {
+            return nil
+        }
+        switch size {
+        case .fullResolution:
             let coverSize = Defaults[.coversize].width
-            guard let image = await loadImageFromRemote(for: hoerspiel) else {
-                return nil
-            }
-            return resizedImage(image, for: size == .fullResolution
-                                ? CGSize(width: coverSize, height: coverSize)
-                                : CGSize(width: 32, height: 32))
+            return resizedImage(image, for: CGSize(width: coverSize, height: coverSize))
+        case .small:
+            return resizedImage(image, for: CGSize(width: 80, height: 80))
+        case .regular:
+            return resizedImage(image, for: CGSize(width: 192, height: 192))
         }
     }
     
@@ -194,7 +205,7 @@ Deleting image with upc \(upc) since its size of \(size) is not equal to the sto
             }
             #endif
             let musicItemID = sendableSeries.musicItemID
-            if let uiimage = cache.object(forKey: musicItemID as NSString) {
+            if let uiimage = seriesImageCache.object(forKey: musicItemID as NSString) {
                 Logger.data.info("Image for \(musicItemID) was read from Cache")
                 return uiimage
             } else {
@@ -204,7 +215,7 @@ Deleting image with upc \(upc) since its size of \(size) is not equal to the sto
                     guard let uiimage = UIImage(data: imageData) else {
                         return nil
                     }
-                    cache.setObject(uiimage, forKey: musicItemID as NSString)
+                    seriesImageCache.setObject(uiimage, forKey: musicItemID as NSString)
                     Logger.data.info("Image for \(musicItemID) was read from disk")
                     return uiimage
                 } else {
@@ -284,7 +295,8 @@ Deleting image with upc \(upc) since its size of \(size) is not equal to the sto
     /// The size options of an `UIImage`
     enum SizeOptions {
         case fullResolution
-        case resized
+        case small
+        case regular
     }
 }
 

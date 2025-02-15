@@ -40,7 +40,7 @@ struct PlaybackPlayerView: View {
                                      backgroundColor: backgroundColor)
                 
                 VStack(alignment: .center, spacing: spacing) {
-                    VolumeSlider(backgroundColor: backgroundColor, colorScheme: colorScheme)
+                    VolumeSlider()
                     .onAppear {
                         musicManager.volume = Double(AVAudioSession.sharedInstance().outputVolume)
                     }

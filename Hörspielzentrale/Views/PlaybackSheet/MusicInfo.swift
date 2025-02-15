@@ -101,7 +101,7 @@ struct MusicInfo: View {
             .disabled(state.playbackStatus != .paused && state.playbackStatus != .playing)
             .foregroundStyle(state.playbackStatus != .paused && state.playbackStatus != .playing
                              ? Color.gray
-                             : Color.white)
+                             : Color.primary)
             .padding(.horizontal, 25)
         }
         

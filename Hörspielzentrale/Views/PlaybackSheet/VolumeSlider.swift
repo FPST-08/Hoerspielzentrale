@@ -22,13 +22,13 @@ struct VolumeSlider: View {
     let inRange: ClosedRange<Double> = 0...1
     
     /// The color of the filled area while changing
-    let activeFillColor: Color
+    let activeFillColor: Color = .white
     
     /// The color of the filled area
-    let fillColor: Color
+    let fillColor: Color = .white.opacity(0.5)
     
     /// The color of the unfilled area
-    let emptyColor: Color
+    let emptyColor: Color = .white.opacity(0.3)
     
     /// The height of the slider
     ///
@@ -130,11 +130,5 @@ struct VolumeSlider: View {
         return (
             (localRealProgress + localTempProgress) * (inRange.upperBound - inRange.lowerBound)
         ) + inRange.lowerBound
-    }
-    
-    init(backgroundColor: Color, colorScheme: ColorScheme) {
-        self.activeFillColor = backgroundColor.playbackControlColor(colorScheme: colorScheme)
-        self.fillColor = backgroundColor.playbackControlColor(colorScheme: colorScheme).opacity(0.5)
-        self.emptyColor = backgroundColor.playbackControlColor(colorScheme: colorScheme).opacity(0.5)
     }
 }

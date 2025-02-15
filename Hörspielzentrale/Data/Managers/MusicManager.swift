@@ -214,7 +214,8 @@ import WidgetKit
             guard subscription.canPlayCatalogContent else {
                 Logger.authorization.info("User cannot play catalog content")
                 
-                if subscription.canBecomeSubscriber, let album = try await persistentIdentifier.album(dataManager) {
+                if subscription.canBecomeSubscriber {
+                    let album = try await hoerspiel.album(dataManager)
                     navigation.presentMusicSubscriptionSheet(itemID: album.id.rawValue)
                 } else {
                     navigation.presentAlert(

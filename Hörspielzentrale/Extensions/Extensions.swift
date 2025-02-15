@@ -148,7 +148,8 @@ enum GettingAlbumError: Error {
     case appleMusicError,
          unableToReadTitle,
          secondOptionFailed,
-         unableToLoadTracks
+         unableToLoadTracks,
+        unableToLoadAlbumViaDifferentMethods
     
     var localizedDescription: String {
         switch self {
@@ -160,6 +161,8 @@ enum GettingAlbumError: Error {
             "Das Album konnte zweifach nicht geladen werden"
         case .unableToLoadTracks:
             "Die Tracks des Albums konnten nicht geladen werden"
+        case .unableToLoadAlbumViaDifferentMethods:
+            "Das Album konnte über verschiene Wege nicht geladen werden"
         }
     }
 }

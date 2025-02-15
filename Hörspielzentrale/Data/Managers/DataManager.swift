@@ -194,6 +194,7 @@ actor DataManager {
     /// - Returns: The tracks
     public func fetchTracks(_ hoerspiel: SendableHoerspiel?, album: Album?) async throws -> [SendableStoredTrack] {
         if let hoerspiel, let tracks = try? fetchCachedTracks(hoerspiel.persistentModelID).sorted() {
+            Logger.data.info("Tracks were fetched from local cache")
             return tracks
         }
         if let tracks = try await album?.with(.tracks).tracks { // Only works when album is available
@@ -201,17 +202,14 @@ actor DataManager {
             if let persistentModelID = hoerspiel?.persistentModelID {
                 try? setTracks(persistentModelID, sendableTracks)
             }
+            Logger.data.info("Tracks were fetched via the album property")
             return sendableTracks
         }
         // Fetch album as last ressource
         if let hoerspiel {
-            let upc = hoerspiel.upc
-            var request = MusicCatalogResourceRequest<Album>(matching: \.upc, equalTo: upc)
-            request.limit = 1
-            request.properties.append(.tracks)
-            let response = try? await request.response()
-            let album = response?.items.first
-            if let tracks = album?.tracks, !tracks.isEmpty {
+            let albumWithoutTracks = try await hoerspiel.album(self)
+            let album = try await albumWithoutTracks.with(.tracks)
+            if let tracks = album.tracks, !tracks.isEmpty {
                 let sendableTracks = tracks.map { SendableStoredTrack($0, index: tracks.firstIndex(of: $0)!)}
                 try? setTracks(hoerspiel.persistentModelID, sendableTracks)
                 return sendableTracks

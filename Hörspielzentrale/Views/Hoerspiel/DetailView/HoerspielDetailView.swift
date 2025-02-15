@@ -87,7 +87,7 @@ struct HoerspielDetailView: View {
                         .font(.title3)
                 }
                 Text(releaseDate?.formatted(date: .numeric, time: .omitted) ??
-                        "Veröffentlichundsdatum unbekannt")
+                     "Veröffentlichundsdatum unbekannt")
                 .foregroundStyle(Color.secondary)
                 .font(.callout)
                 .padding(.bottom, -5)
@@ -163,6 +163,15 @@ Füge die Serie hinzu, um dieses Hörspiel abspielen zu können
                         fetchDescriptor.fetchLimit = 1
                         return fetchDescriptor
                     }).first
+                    if let persistentModelID = hoerspiel?.persistentModelID, let upc = album.upc {
+                        try? await dataManager.manager.update(persistentModelID,
+                                                              keypath: \.upc,
+                                                              to: upc)
+                        try? await dataManager.manager.update(persistentModelID,
+                                                              keypath: \.albumID,
+                                                              to: album.id.rawValue)
+                    }
+                    
                 }
             }
             if let hoerspiel {
@@ -182,6 +191,15 @@ Füge die Serie hinzu, um dieses Hörspiel abspielen zu können
                 }
                 image = Image(uiImage: uiimage)
                 artist = try? await album.with(.artists).artists?.first
+            }
+            
+            if let album, let hoerspiel, let upc = album.upc {
+                try? await dataManager.manager.update(hoerspiel.persistentModelID,
+                                                      keypath: \.upc,
+                                                      to: upc)
+                try? await dataManager.manager.update(hoerspiel.persistentModelID,
+                                                      keypath: \.albumID,
+                                                      to: album.id.rawValue)
             }
         }
         .safeAreaPadding(.bottom, 60)

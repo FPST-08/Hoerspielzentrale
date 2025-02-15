@@ -139,7 +139,7 @@ enum CalculatingStartingPointError: Error {
          unableToGetTrackIndex,
          unableToGetReleaseDate,
          unableToFindMatchingTrack,
-    unableToGetModel
+         unableToGetModel
 }
 
 extension CalculatingStartingPointError: LocalizedError {
@@ -273,32 +273,44 @@ enum MetaDataError: Error, LocalizedError {
     }
 }
 
-extension PersistentIdentifier {
-    func album(_ dataHandler: DataManager) async throws -> Album? {
-        let itemID = await MusicItemID(try dataHandler.read(self, keypath: \.albumID))
-        let albumRequest = MusicCatalogResourceRequest<Album>(matching: \.id, equalTo: itemID)
-        let albumResponse = try? await albumRequest.response()
-        
-        if let album = albumResponse?.items.first {
-            return album
-        } else {
-            Logger.data.error("Unable to get response from albumRequest with id \(itemID)")
-        }
-        guard let title = try? await dataHandler.read(self, keypath: \.title) else {
-            throw GettingAlbumError.unableToReadTitle
-        }
-        let searchRequest = MusicCatalogSearchRequest(term: title, types: [Album.self])
-        let searchResponse = try? await searchRequest.response()
-        if let album = searchResponse?.albums.first(where: { $0.title == title }) {
-            do {
-                try await dataHandler.update(self, keypath: \.albumID, to: album.id.rawValue)
-                Logger.data.info("Updated album ID for \(title)")
-            } catch {
-                Logger.data.fullError(error, sendToTelemetryDeck: true)
+extension SendableHoerspiel {
+    func album(_ dataManager: DataManager) async throws -> Album {
+        do {
+            let request = MusicCatalogResourceRequest<Album>(matching: \.upc, equalTo: self.upc)
+            let response = try await request.response()
+            if let album = response.items.first(where: { $0.upc == self.upc }) {
+                await updateValues(album: album, dataManager)
+                Logger.data.info("Fetched album via upc")
+                return album
             }
-            return album
+            Logger.data.warning("Unable to fetch album \(self.title) via upc \(self.upc)")
         }
-        Logger.data.error("Couldn't get album with json nor get album with custom fetch for title \(title)")
-        throw GettingAlbumError.secondOptionFailed
+        do {
+            let request = MusicCatalogResourceRequest<Album>(matching: \.id, equalTo: MusicItemID(self.albumID))
+            let response = try await request.response()
+            if let album = response.items.first(where: { $0.id.rawValue == self.albumID }) {
+                await updateValues(album: album, dataManager)
+                Logger.data.info("Fetched album via albumID")
+                return album
+            }
+            Logger.data.warning("Unable to fetch album \(self.title) via id \(self.albumID)")
+        }
+        do {
+            let request = MusicCatalogSearchRequest(term: self.title, types: [Album.self])
+            let response = try await request.response()
+            if let album = response.albums.first(where: { $0.title == self.title && $0.artistName == self.artist }) {
+                await updateValues(album: album, dataManager)
+                return album
+            }
+            Logger.data.warning("Unable to fetch album \(self.title) via title")
+        }
+        throw GettingAlbumError.unableToLoadAlbumViaDifferentMethods
+    }
+    
+    private func updateValues(album: Album, _ dataManager: DataManager) async {
+        if let upc = album.upc {
+            try? await dataManager.update(self.persistentModelID, keypath: \.upc, to: upc)
+        }
+        try? await dataManager.update(self.persistentModelID, keypath: \.albumID, to: album.id.rawValue)
     }
 }

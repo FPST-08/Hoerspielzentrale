@@ -103,27 +103,7 @@ import SwiftUI
     }
     
     func loadImageFromRemote(for hoerspiel: SendableHoerspiel) async -> UIImage? {
-        var album: Album?
-
-        var request = MusicCatalogResourceRequest<Album>(matching: \.upc, equalTo: hoerspiel.upc)
-        request.limit = 1
-        
-        if let fetchedAlbum = try? await request.response().items.first {
-            
-            album = fetchedAlbum
-        } else {
-            let request = MusicCatalogSearchRequest(
-                term: hoerspiel.title,
-                types: [Album.self])
-            guard let fetchedAlbum = try? await request.response()
-                .albums
-                .first(where: { $0.title == hoerspiel.title }) else {
-                Logger.data.error("Unable to get album via searchResponse")
-                return nil
-            }
-            album = fetchedAlbum
-        }
-        guard let album else {
+        guard let album = try? await hoerspiel.album(datamanager) else {
             Logger.data.error("Couldn't get album")
             return nil
         }

@@ -195,11 +195,10 @@ import WidgetKit
     private func initiatePlayback(for persistentIdentifier: PersistentIdentifier) async {
         // swiftlint:disable:previous function_body_length
         lastProgrammaticChange = Date.now
-#if DEBUG
         guard let hoerspiel = try? await dataManager.batchRead(persistentIdentifier) else {
             return
         }
-        
+#if DEBUG
         if hoerspiel.upc == "DEBUG" {
             startDate = Date().advanced(by: -2310)
             endDate = Date().advanced(by: 2190)
@@ -224,8 +223,6 @@ import WidgetKit
                 }
                 return
             }
-            
-            let hoerspiel = try await dataManager.batchRead(persistentIdentifier)
             
             let center = UNUserNotificationCenter.current()
             center.removeDeliveredNotifications(withIdentifiers: [hoerspiel.upc, "PR\(hoerspiel.upc)"])

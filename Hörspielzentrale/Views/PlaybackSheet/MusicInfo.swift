@@ -58,14 +58,15 @@ struct MusicInfo: View {
             if let artwork = artwork {
                 artwork
                     .resizable()
+                    .matchedGeometryEffect(id: "ARTWORK", in: applyArtworkMGE ? animation : unusedNamespace)
                     .frame(width: 45, height: 45)
                     .cornerRadius(10)
-                    .matchedGeometryEffect(id: "ARTWORK", in: applyArtworkMGE ? animation : unusedNamespace )
             } else {
                 RoundedRectangle(cornerRadius: 10)
+                    .matchedGeometryEffect(id: "ARTWORK", in: applyArtworkMGE ? animation : unusedNamespace)
                     .foregroundStyle(Color.gray)
                     .frame(width: 45, height: 45)
-                    .matchedGeometryEffect(id: "ARTWORK", in: applyArtworkMGE ? animation : unusedNamespace )
+                    
             }
             
             Text(musicManager.currentlyPlayingHoerspiel?.title ?? "Keine Wiedergabe")

@@ -29,28 +29,10 @@ struct ContentView: View {
     
     // MARK: - View
     var body: some View {
-        TabView(selection: Bindable(navigation).selection) {
-            HomeView()
-                .tabItem { Label("Startseite", systemImage: "house.fill") }
-                .tag(Selection.home)
-            
-            LibraryView()
-                .tabItem { Label("Mediathek", systemImage: "play.square.stack")}
-                .tag(Selection.library)
-            
-            NewSearchView()
-                .tabItem { Label("Neue Suche", systemImage: "magnifyingglass") }
-                .tag(Selection.newSearch)
-            
-            SearchView()
-                .tabItem { Label("Suche", systemImage: "magnifyingglass") }
-                .tag(Selection.search)
-        }
-        .safeAreaInset(edge: .bottom) {
-            if !navigation.searchPresented || !navigation.presentMediaSheet {
-                customBottomSheet()
-            }
-        }
+        ContentTabView(animateContent: $animateContent)
+            .playbackBottomSheet(animateContent: $animateContent,
+                                 animation: animation,
+                                 condition: UIDevice.runsIOS18OrNewer)
         .overlay {
             if navigation.presentMediaSheet {
                 PlaybackSheet(animation: animation,
@@ -77,41 +59,6 @@ struct ContentView: View {
             Task {
                 await musicmanager.calculateDatesWhilePlaying()
             }
-        }
-    }
-    
-    // MARK: - Functions
-    
-    /// Creation of the botton sheet seen at the bottom screen
-    /// - Returns: Returns the view of the bottom Sheet
-    @ViewBuilder
-    func customBottomSheet() -> some View {
-        ZStack {
-            RoundedRectangle(cornerRadius: animateContent ? deviceCornerRadius : 15)
-                .fill(Color.systemGray4)
-                .shadow(radius: 3)
-                .padding(.horizontal, 10)
-                .overlay {
-                    MusicInfo(animateContent: $animateContent,
-                              artwork: Image(musicmanager.currentlyPlayingHoerspielCover),
-                              applyArtworkMGE: true,
-                              animation: animation)
-                }
-        }
-        .matchedGeometryEffect(id: "BGVIEW", in: animation)
-        .frame(height: 60)
-        .offset(y: bottomSheetOffset)
-    }
-    
-    /// The offset of the bottomSheet
-    var bottomSheetOffset: CGFloat {
-        if !UIDevice.isIpad {
-            return -49
-        }
-        if UIScreen.safeArea?.bottom == 0 {
-            return -10
-        } else {
-            return 0
         }
     }
 }

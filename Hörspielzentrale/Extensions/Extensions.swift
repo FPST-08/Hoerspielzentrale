@@ -180,6 +180,14 @@ extension UIDevice {
     static var isIpad: Bool {
         return UIDevice.current.userInterfaceIdiom == .pad
     }
+    
+    static var runsIOS18OrNewer: Bool {
+        if #available(iOS 18.0, *) {
+            return true
+        } else {
+            return false
+        }
+    }
 }
 
 extension MPMusicPlaybackState {

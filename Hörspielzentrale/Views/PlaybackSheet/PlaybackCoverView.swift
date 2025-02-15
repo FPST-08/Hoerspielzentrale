@@ -34,6 +34,7 @@ struct PlaybackCoverView: View {
             if let cover = Image(musicManager.currentlyPlayingHoerspielCover) {
                 cover
                     .resizable()
+                    .matchedGeometryEffect(id: "ARTWORK", in: animation, isSource: true)
                     .cornerRadius(15)
                     .shadow(radius: 10)
                     .scaleEffect(isPlaying ? 1 : 0.7)
@@ -41,12 +42,12 @@ struct PlaybackCoverView: View {
                 
             } else {
                 RoundedRectangle(cornerRadius: 15, style: .continuous)
+                    .matchedGeometryEffect(id: "ARTWORK", in: animation, isSource: true)
                     .foregroundStyle(Color.gray)
                     .cornerRadius(15)
                     .shadow(radius: 10)
             }
         }
-        .matchedGeometryEffect(id: "ARTWORK", in: animation, isSource: true)
         .coverFrame()
         .padding(.vertical, UIScreen.main.bounds.height < 700 ? 10 : 30)
     }

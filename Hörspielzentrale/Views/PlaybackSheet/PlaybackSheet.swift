@@ -49,8 +49,7 @@ struct PlaybackSheet: View {
                 .foregroundStyle(Color.clear)
             
             Rectangle()
-            
-                .fill(.clear)
+                .foregroundStyle(Color.clear)
                 .overlay(
                     RoundedRectangle(cornerRadius: animateContent ? deviceCornerRadius : 0, style: .continuous)
                         .fill(Color.systemBackground)

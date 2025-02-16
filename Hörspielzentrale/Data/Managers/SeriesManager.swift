@@ -353,6 +353,9 @@ weitere wurde geladen
                 returnAlbums.append(contentsOf: response.items)
             }
         }
+        returnAlbums = returnAlbums.filter { album in
+            album.tracks?.contains { $0.playParameters != nil } == true
+        }
         return returnAlbums
     }
     
@@ -370,6 +373,11 @@ weitere wurde geladen
         }
         guard let tracks = album.tracks else {
             assertionFailure()
+            return nil
+        }
+        
+        guard tracks.contains(where: { $0.playParameters != nil }) else {
+            Logger.seriesManager.notice("All of the tracks have empty play parameters, returning nil")
             return nil
         }
         

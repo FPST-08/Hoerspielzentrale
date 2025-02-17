@@ -6,6 +6,7 @@
 //
 
 import MusicKit
+import SwiftData
 import SwiftUI
 
 /// A view used to add artists to the library
@@ -16,6 +17,9 @@ struct ArtistAddView: View {
     /// Referencing an `@Observable` class responsible for managing series
     @Environment(SeriesManager.self) var seriesManager
     
+    /// All currently added series
+    @Query var series: [Series]
+    
     /// The description presented to the user
     var description: String {
         if seriesManager.currentlyDownloadingArtist == artist {
@@ -25,7 +29,7 @@ struct ArtistAddView: View {
 \(seriesManager.currentlyDownloadingArtist?.name ?? "N/A") wird aktuell geladen. \ 
 Anschließend wird \(artist.name) geladen
 """
-        } else if seriesManager.selectedArtists.contains(where: { $0.id == artist.id }) {
+        } else if series.contains(where: { $0.musicItemID == artist.id.rawValue }) {
             return "\(artist.name) ist bereits hinzugefügt"
         } else {
             return """
@@ -42,7 +46,7 @@ Um Hörspiele dieser Serie abspielen zu können, füge die Serie zur Mediathek h
             return "\(artist.name) lädt..."
         } else if seriesManager.seriesToDownload.contains(artist) {
             return "\(artist.name) wird geladen"
-        } else if seriesManager.selectedArtists.contains(where: { $0.id == artist.id}) {
+        } else if series.contains(where: { $0.musicItemID == artist.id.rawValue }) {
             return "\(artist.name) ist bereits hinzugefügt"
         } else {
             return "Hinzufügen"
@@ -53,7 +57,7 @@ Um Hörspiele dieser Serie abspielen zu können, füge die Serie zur Mediathek h
     var disableButton: Bool {
         return seriesManager.currentlyDownloadingArtist == artist
         || seriesManager.seriesToDownload.contains(artist)
-        || seriesManager.selectedArtists.contains(where: { artist.id == $0.id })
+        || series.contains(where: { $0.musicItemID == artist.id.rawValue })
     }
     
     var body: some View {

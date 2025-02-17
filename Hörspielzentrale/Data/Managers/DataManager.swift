@@ -22,9 +22,7 @@ actor DataManager {
     /// Deletes an entity with a given persistentIdentifier
     /// - Parameter persistentIdentifier: PersistentIdentifier of entity that should be deleted
     public func delete(_ persistentIdentifier: PersistentIdentifier) throws {
-        guard let model = modelContext.model(for: persistentIdentifier) as? Hoerspiel else {
-            throw DataBaseError.noModelForPersistentIdentifierFound
-        }
+        let model = modelContext.model(for: persistentIdentifier)
         modelContext.delete(model)
         try modelContext.save()
     }

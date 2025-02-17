@@ -27,6 +27,9 @@ struct SeriesDetailView: View {
     
     @Environment(SeriesManager.self) var seriesManager
     
+    /// An Observable Class responsible for navigation
+    @Environment(NavigationManager.self) var navigation
+    
     /// The image of the ``Series``
     @State private var seriesImage: UIImage?
     
@@ -43,6 +46,8 @@ struct SeriesDetailView: View {
     let musicItemID: String
     
     @State private var isLoading = true
+    
+    @State private var showDeleteAlert = false
     
     var body: some View {
         Group {
@@ -83,6 +88,16 @@ struct SeriesDetailView: View {
                                     }
                                     .buttonStyle(ProminentButtonStyle())
                                     .padding(.horizontal)
+                                }
+                                HStack {
+                                    Button {
+                                        showDeleteAlert.toggle()
+                                    } label: {
+                                        Image(systemName: "trash")
+                                    }
+                                    .buttonStyle(ProminentButtonStyle())
+                                    .padding(.horizontal)
+                                    Spacer()
                                 }
                             }
                         }
@@ -178,6 +193,24 @@ struct SeriesDetailView: View {
             }
         }
         .trackNavigation(path: "SeriesDetailView")
+        .alert("Bist du sicher?", isPresented: $showDeleteAlert) {
+            Button("Löschen", role: .destructive) {
+                if let persistentModelID = series?.persistentModelID {
+                    Task {
+                        do {
+                            try await dataManager.manager.delete(persistentModelID)
+                            series = nil
+                        } catch {
+                            navigation.presentAlert(title: "Es ist ein Fehler aufgetreten",
+                                                    description: "Die Serie konnte nicht gelöscht werden")
+                            Logger.data.fullError(error, sendToTelemetryDeck: true)
+                        }
+                    }
+                }
+            }
+        } message: {
+            Text("Alle Hörspiele und die Bookmarks von \(series?.name ?? artist?.name ?? "Unbekannt") werden gelöscht.")
+        }
     }
     
     /// Fetches the series corresponding to an artist

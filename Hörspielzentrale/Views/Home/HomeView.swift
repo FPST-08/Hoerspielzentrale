@@ -6,6 +6,7 @@
 //
 //
 
+import Defaults
 import MusicKit
 import OSLog
 import SwiftData
@@ -34,6 +35,12 @@ struct HomeView: View {
     /// A bool to disable the dice
     @State private var disableDice = true
     
+    /// The order of sections in the home view
+    @Default(.homeOrder) var homeOrder
+    
+    /// A boolean to show the reordering sheet
+    @State private var showReorderSheet = false
+    
     // MARK: - View
     var body: some View {
         NavigationStack(path: Bindable(navigation).homePath) {
@@ -41,54 +48,14 @@ struct HomeView: View {
                 ScrollView {
                     UpNextView()
                     
-                    HomeSection(title: "Neu erschienen", displaymode: .big, fetchDescriptor: {
-                        let now = Date.now
-                        let cutOffDate = Date.now.advanced(by: -86400 * 3)
-                        
-                        var fetchDescriptor = FetchDescriptor<Hoerspiel>(predicate: #Predicate { hoerspiel in
-                            hoerspiel.releaseDate < now && hoerspiel.releaseDate > cutOffDate
-                        })
-                        
-                        fetchDescriptor.fetchLimit = 10
-                        return fetchDescriptor
-                    })
+                    HomeSections()
                     
-                    HomeSection(title: "Bald verfügbar", displaymode: .rectangular, fetchDescriptor: {
-                        let now = Date.now
-                        var fetchDescriptor = FetchDescriptor<Hoerspiel>(predicate: #Predicate { hoerspiel in
-                            hoerspiel.releaseDate > now
-                        })
-                        fetchDescriptor.sortBy = [SortDescriptor(\.releaseDate, order: .forward),
-                                                  SortDescriptor(\.title)]
-                        fetchDescriptor.fetchLimit = 10
-                        return fetchDescriptor
-                    })
-                    
-                    HomeSection(title: "Neuheiten", displaymode: .rectangular, fetchDescriptor: {
-                        let now = Date.now
-                        
-                        var fetchDescriptor = FetchDescriptor<Hoerspiel>(predicate: #Predicate { hoerspiel in
-                            hoerspiel.releaseDate < now
-                        })
-                        fetchDescriptor.sortBy = [SortDescriptor(\.releaseDate, order: .reverse)]
-                        fetchDescriptor.fetchLimit = 10
-                        return fetchDescriptor
-                    })
-                    
-                    HomeSection(title: "Zuletzt gespielt", displaymode: .rectangular, fetchDescriptor: {
-                        var fetchDescriptor = FetchDescriptor<Hoerspiel>(predicate: #Predicate { hoerspiel in
-                            if hoerspiel.playedUpTo != 0 {
-                                return true
-                            } else if hoerspiel.played {
-                                return true
-                            } else {
-                                return false
-                            }
-                        })
-                        fetchDescriptor.fetchLimit = 10
-                        fetchDescriptor.sortBy = [SortDescriptor(\Hoerspiel.lastPlayed, order: .reverse)]
-                        return fetchDescriptor
-                    })
+                    Button {
+                        showReorderSheet = true
+                    } label: {
+                        Label("Anordnen", systemImage: "checklist")
+                    }
+                    .padding()
                 }
             }
             .navigationTitle("Hörspiele")
@@ -126,6 +93,26 @@ struct HomeView: View {
                     Logger.authorization.fullError(error, sendToTelemetryDeck: true)
                 }
             }
+            .sheet(isPresented: $showReorderSheet) {
+                List {
+                    Section {
+                        ForEach(homeOrder) { item in
+                            HStack {
+                                Text(item.description)
+                                Spacer()
+                                Image(systemName: "line.3.horizontal")
+                                    .foregroundStyle(Color.secondary)
+                            }
+                        }
+                        .onMove { origin, destination in
+                            homeOrder.move(fromOffsets: origin, toOffset: destination)
+                        }
+                    } footer: {
+                        Text("Bewege die Abschnitte um diese neu anzuordnen")
+                    }
+                }
+            }
+            .presentationDetents([.medium])
         }
         .trackNavigation(path: "Home")
     }

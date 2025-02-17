@@ -6,6 +6,8 @@
 //
 
 import Defaults
+import Foundation
+import SwiftData
 
 extension Defaults.Keys {
     static let sortFilter = Key<SortingType>("SortFilter", default: SortingType.releaseDate)
@@ -38,6 +40,11 @@ extension Defaults.Keys {
     static let searchMode = Key<SearchMode>("searchMode", default: .local)
     
     static let recentlySearched = Key<[SearchResult]>("recentlySearched", default: [])
+    
+    static let homeOrder = Key<[HomeSectionType]>("homeOrder", default: [.brandNew,
+                                                                         .soonAvailable,
+                                                                         .recentlyReleased,
+                                                                         .recentlyPlayed])
 }
 
 /// An enum used for communicating the sorting property

@@ -104,6 +104,7 @@
 				"Data/Data-Models/Tracks/TrackExtensions.swift",
 				Data/Defaults/Defaults.Serializable.swift,
 				Data/Defaults/DefaultsDeclaration.swift,
+				Data/Defaults/HomeSections.swift,
 				Data/Logger.swift,
 				Data/Managers/DataManager.swift,
 				Extensions/Extensions.swift,

@@ -28,7 +28,8 @@ struct SearchQueryView: View {
     /// An Observable Class responsible for data
     @Environment(DataManagerClass.self) var dataManager
     
-    @State private var multiSelection: Set<PersistentIdentifier> = []
+    /// The multi selection of items
+    @Binding private var multiSelection: Set<PersistentIdentifier>
     
     @Environment(\.editMode) var editMode
     
@@ -55,85 +56,37 @@ struct SearchQueryView: View {
                         }
                     }
                     .animation(nil, value: editMode?.wrappedValue)
-                    .toolbar {
-                        ToolbarItem(placement: .topBarLeading) {
-                            Button {
-                                editMode?.wrappedValue = editMode?.wrappedValue.isEditing == true ? .inactive : .active
-                            } label: {
-                                Label("Auswählen", systemImage: "checklist")
-                            }
-                        }
-                        
-                        ToolbarItem(placement: .topBarLeading) {
-                            if editMode?.wrappedValue.isEditing == true {
-                                Menu {
-                                    Button("Als gespielt markieren", systemImage: "rectangle.badge.checkmark") {
-                                        updateAll(keypath: \.played, to: true)
-                                    }
-                                    Button("Als ungespielt markieren", systemImage: "rectangle.badge.minus") {
-                                        updateAll(keypath: \.played, to: false)
-                                    }
-                                    Button("Zu als Nächstes hinzufügen", systemImage: "plus.circle") {
-                                        updateAll(keypath: \.showInUpNext, to: true)
-                                        updateAll(keypath: \.addedToUpNext, to: Date.now)
-                                    }
-                                    Button("Von als Nächstes entfernen", systemImage: "minus.circle") {
-                                        updateAll(keypath: \.showInUpNext, to: false)
-                                    }
-                                    Button("Bookmark zum Anfang", systemImage: "arrow.uturn.left") {
-                                        updateAll(keypath: \.playedUpTo, to: 0)
-                                    }
-                                } label: {
-                                    Label("Menü", systemImage: "ellipsis.circle")
-                                }
-                                
-                            }
-                        }
-                    }
                     .listStyle(.plain)
                 } else {
                     ContentUnavailableView.search(text: navigation.searchText)
                 }
             }
             .searchable(text: Bindable(navigation).searchText, isPresented: Bindable(navigation).searchPresented)
-            .navigationTitle("Suche")
+            .navigationTitle("Hörspiele")
             .onDisappear {
                 editMode?.wrappedValue = .inactive
                 navigation.searchPresented = false
-            }
-            .onAppear {
-                
-            }
-        }
-    }
-    
-    func updateAll<T: Hashable>(
-        keypath: ReferenceWritableKeyPath<Hoerspiel, T>,
-        to value: T
-    ) {
-        Task {
-            for identifier in multiSelection {
-                try? await dataManager.manager.update(identifier,
-                                                      keypath: keypath,
-                                                      to: value)
             }
         }
     }
     
     /// Initializer for ``SearchQueryView``
     /// - Parameters:
-    ///   - displayedArtists: The artists marked by the user as shown
+    ///   - displayedSeries: The series marked by the user as shown
     ///   - onlyUnplayed: Indicates if only unplayed `Hoerspiele` should be returned
     ///   - sortBy: A sortDescriptor to sort all visible `Hoerspiele`
     ///   - removeFilters: A closure to remove all filters if applicable
     ///   - searchText: The search text
+    ///   - fetchLimit: The fetch limit
+    ///   - multiSelection: The multi selection of items
     init(
         displayedSeries: [SendableSeries],
         onlyUnplayed: Bool,
         sortBy: SortDescriptor<Hoerspiel>,
         removeFilters: @escaping @MainActor () -> Void,
         searchText: String,
-        fetchLimit: Int?
+        fetchLimit: Int?,
+        multiSelection: Binding<Set<PersistentIdentifier>>
     ) {
         let displayedSeriesIDs = displayedSeries.map { $0.musicItemID }
         var descriptor = FetchDescriptor<Hoerspiel>(predicate: #Predicate<Hoerspiel> { hoerspiel in
@@ -157,5 +110,6 @@ struct SearchQueryView: View {
         descriptor.fetchLimit = fetchLimit
         _hoerspiele = Query(descriptor)
         self.removeFilters = removeFilters
+        _multiSelection = multiSelection
     }
 }

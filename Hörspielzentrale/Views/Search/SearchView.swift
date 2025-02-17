@@ -46,8 +46,6 @@ struct SearchView: View {
     
     @Environment(\.dismiss) var dismiss
     
-    @State private var disableDice = true
-    
     @State private var allArtists = [SendableSeries]()
     
     @Default(.displayedSortArtists) var displayedArtists
@@ -57,6 +55,9 @@ struct SearchView: View {
     @State private var fetchLimit: Int? = 10
     
     @Environment(\.editMode) var editMode
+    
+    /// The multi selection of items
+    @State private var multiSelection: Set<PersistentIdentifier> = []
     
     // MARK: - View
     var body: some View {
@@ -75,34 +76,41 @@ struct SearchView: View {
                             displayedArtists = allArtists
                             navigation.searchText = ""
                         }, searchText: navigation.searchText,
-                        fetchLimit: fetchLimit
+                        fetchLimit: fetchLimit,
+                        multiSelection: $multiSelection
                     )
                     .safeAreaPadding(.bottom, 60)
                     .toolbar {
                         ToolbarItem(placement: .topBarTrailing) {
-                            Button {
-                                TelemetryDeck.signal("Playback.dice",
-                                                     parameters: [
-                                                        "onlyUnplayed": onlyUnplayed.description,
-                                                        "sortingAscending": sortAscending.description
-                                                     ])
-                                Task {
-                                    disableDice = true
-                                    let displayedArtists = UserDefaults.standard[.displayedSortArtists]
-                                    let seriesNames = displayedArtists.map { $0.name }
-                                    await musicplayer.playRandom(seriesNames: seriesNames)
-                                    disableDice = false
+                            if editMode?.wrappedValue.isEditing == true {
+                                Menu {
+                                    Button("Als gespielt markieren", systemImage: "rectangle.badge.checkmark") {
+                                        updateAll(keypath: \.played, to: true)
+                                    }
+                                    Button("Als ungespielt markieren", systemImage: "rectangle.badge.minus") {
+                                        updateAll(keypath: \.played, to: false)
+                                    }
+                                    Button("Zu als Nächstes hinzufügen", systemImage: "plus.circle") {
+                                        updateAll(keypath: \.showInUpNext, to: true)
+                                        updateAll(keypath: \.addedToUpNext, to: Date.now)
+                                    }
+                                    Button("Von als Nächstes entfernen", systemImage: "minus.circle") {
+                                        updateAll(keypath: \.showInUpNext, to: false)
+                                    }
+                                    Button("Bookmark zum Anfang", systemImage: "arrow.uturn.left") {
+                                        updateAll(keypath: \.playedUpTo, to: 0)
+                                    }
+                                } label: {
+                                    Label("Menü", systemImage: "ellipsis.circle")
                                 }
-                            } label: {
-                                Label("Zufällig", systemImage: "dice")
+                                
                             }
-                            .disabled(disableDice)
-                            .task {
-                                do {
-                                    disableDice = try await !MusicSubscription.current.canPlayCatalogContent
-                                } catch {
-                                    Logger.authorization.fullError(error, sendToTelemetryDeck: true)
-                                }
+                        }
+                        ToolbarItem(placement: .topBarTrailing) {
+                            Button {
+                                editMode?.wrappedValue = editMode?.wrappedValue.isEditing == true ? .inactive : .active
+                            } label: {
+                                Label("Auswählen", systemImage: "checklist")
                             }
                         }
                         ToolbarItem(placement: .topBarTrailing) {
@@ -151,19 +159,6 @@ struct SearchView: View {
                     }
                 }
             }
-            .refreshable {
-                do {
-                    try await seriesManager.checkForNewReleases()
-                    TelemetryDeck.signal("Data.refreshed")
-                } catch {
-                    let hapticGen = UINotificationFeedbackGenerator()
-                    hapticGen.notificationOccurred(.error)
-                    Logger.data.fullError(error, sendToTelemetryDeck: true)
-                }
-                Task {
-                    await seriesManager.fetchUpdatesFromMusicLibrary()
-                }
-            }
             .task {
                 do {
                     allArtists = try await dataManager.manager.fetchAllSeries()
@@ -183,11 +178,24 @@ struct SearchView: View {
             .navigationDestination(for: Hoerspiel.self) { hoerspiel in
                 HoerspielDetailView(SendableHoerspiel(hoerspiel: hoerspiel))
             }
-            .trackNavigation(path: "Search")
+            .trackNavigation(path: "HoerspielList")
         }
     }
     
     enum ViewState {
         case loaded, error
+    }
+    
+    func updateAll<T: Hashable>(
+        keypath: ReferenceWritableKeyPath<Hoerspiel, T>,
+        to value: T
+    ) {
+        Task {
+            for identifier in multiSelection {
+                try? await dataManager.manager.update(identifier,
+                                                      keypath: keypath,
+                                                      to: value)
+            }
+        }
     }
 }

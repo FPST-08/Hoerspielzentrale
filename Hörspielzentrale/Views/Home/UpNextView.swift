@@ -5,6 +5,7 @@
 //  Created by Philipp Steiner on 19.08.24.
 //
 
+import Defaults
 import MusicKit
 import OSLog
 import SwiftData

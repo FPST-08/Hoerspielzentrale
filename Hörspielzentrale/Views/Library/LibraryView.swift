@@ -22,9 +22,15 @@ struct LibraryView: View {
     /// The search string
     @State private var searchString = ""
     
+    /// Referencing an `@Observable` class responsible for managing series
+    @Environment(SeriesManager.self) var seriesManager
+    
     var body: some View {
         NavigationStack(path: Bindable(navigation).libraryPath) {
             ScrollView {
+                LibraryInlineSection(title: "Hörspiele", systemImage: "square.stack") {
+                    SearchView()
+                }
                 LibraryQueryView(searchString: searchString)
             }
             .searchable(text: $searchString, prompt: Text("Suche nach Serien in der Mediathek"))
@@ -48,6 +54,16 @@ struct LibraryView: View {
             }
             .navigationDestination(for: SendableHoerspiel.self) {
                 HoerspielDetailView($0)
+            }
+            .refreshable {
+                do {
+                    try await seriesManager.checkForNewReleases()
+                    TelemetryDeck.signal("Data.refreshed")
+                } catch {
+                    let hapticGen = UINotificationFeedbackGenerator()
+                    hapticGen.notificationOccurred(.error)
+                    Logger.data.fullError(error, sendToTelemetryDeck: true)
+                }
             }
         }
         .trackNavigation(path: "Library")

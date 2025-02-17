@@ -145,11 +145,11 @@ import SwiftUI
 }
 
 /// Enum for currently selected tab
-enum Selection: Int, Codable, Defaults.Serializable {
+enum Selection: Codable, Defaults.Serializable, Hashable {
     case library
     case search
     case home
-    case newSearch
+    case series(id: String)
 }
 
 extension String {

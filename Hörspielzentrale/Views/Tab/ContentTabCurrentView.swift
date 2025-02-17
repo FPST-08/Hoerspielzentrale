@@ -30,29 +30,27 @@ struct ContentTabCurrentView: View {
     let animation: Namespace.ID
     
     var body: some View {
-        TabView {
-            Tab("Startseite", systemImage: "house") {
+        TabView(selection: Bindable(navigation).selection) {
+            Tab("Startseite", systemImage: "house", value: Selection.home) {
                 HomeView()
             }
             .customizationID("Tab.Home")
             .customizationBehavior(.disabled, for: .sidebar, .tabBar)
-            Tab("Mediathek", systemImage: "play.square.stack") {
+            Tab("Mediathek", systemImage: "play.square.stack", value: Selection.library) {
                 LibraryView()
             }
             .customizationID("Tab.Library")
             .customizationBehavior(.disabled, for: .sidebar, .tabBar)
-            Tab(role: .search) {
+            Tab(value: Selection.search, role: .search) {
                 NewSearchView()
             }
             .customizationID("Tab.Search")
-            Tab("Alte Suche", systemImage: "magnifyingglass") {
-                SearchView()
-            }
-            .customizationID("Tab.LegacySearch")
             if UIDevice.isIpad {
                 TabSection("Serien") {
                     ForEach(series) { series in
-                        Tab(series.name, systemImage: "music.microphone") {
+                        Tab(series.name,
+                            systemImage: "music.microphone",
+                            value: Selection.series(id: series.musicItemID)) {
                             SeriesDetailView(series: SendableSeries(series))
                         }
                         .customizationID(series.musicItemID)

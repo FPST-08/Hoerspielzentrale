@@ -6,6 +6,7 @@
 //
 //
 
+import MusicKit
 import OSLog
 import SwiftData
 import SwiftUI
@@ -26,6 +27,12 @@ struct HomeView: View {
     
     /// An Observable Class responsible for data
     @Environment(DataManagerClass.self) var dataManager
+    
+    /// Referencing an `Observable` class responsible for playback
+    @Environment(MusicManager.self) var musicmanager
+    
+    /// A bool to disable the dice
+    @State private var disableDice = true
     
     // MARK: - View
     var body: some View {
@@ -88,12 +95,22 @@ struct HomeView: View {
             .toolbar {
                 ToolbarItem(placement: .topBarTrailing) {
                     Button {
+                        Task {
+                            await musicmanager.playRandom(seriesNames: [])
+                        }
+                    } label: {
+                        Image(systemName: "dice")
+                    }
+                    .disabled(disableDice)
+                }
+                ToolbarItem(placement: .topBarTrailing) {
+                    Button {
                         showSettings = true
                     } label: {
                         Image(systemName: "gear")
                     }
-
                 }
+                
             }
             .sheet(isPresented: $showSettings) {
                 SettingsView()
@@ -102,6 +119,13 @@ struct HomeView: View {
                 HoerspielDetailView($0)
             }
             .safeAreaPadding(.bottom, 60)
+            .task {
+                do {
+                    disableDice = try await !MusicSubscription.current.canPlayCatalogContent
+                } catch {
+                    Logger.authorization.fullError(error, sendToTelemetryDeck: true)
+                }
+            }
         }
         .trackNavigation(path: "Home")
     }

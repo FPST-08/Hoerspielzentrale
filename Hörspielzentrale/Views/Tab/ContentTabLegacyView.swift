@@ -33,11 +33,6 @@ struct ContentTabLegacyView: View {
                                      animation: animation)
             NewSearchView()
                 .tabItem { Label("Suche", systemImage: "magnifyingglass") }
-                .tag(Selection.newSearch)
-                .playbackBottomSheet(animateContent: $animateContent,
-                                     animation: animation)
-            SearchView()
-                .tabItem { Label("Alte Suche", systemImage: "magnifyingglass") }
                 .tag(Selection.search)
                 .playbackBottomSheet(animateContent: $animateContent,
                                      animation: animation)

@@ -22,9 +22,6 @@ struct SearchView: View {
     @Environment(DataManagerClass.self) var dataManager
     @Environment(SeriesManager.self) var seriesManager
     
-    /// An Observable Class handling Maintenance
-    @Environment(Maintenance.self) var maintenanceManager
-    
     @Default(.sortFilter) var sortType
     
     @AppStorage("sortAscending") private var sortAscending = false

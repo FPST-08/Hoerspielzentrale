@@ -19,7 +19,6 @@ struct DebugView: View {
     @Environment(ImageCache.self) var imagecache
     @Environment(\.modelContext) var modelContext
     @Environment(DataManagerClass.self) var dataManager
-    @Environment(Maintenance.self) var maintenanceManager
     @Environment(BackgroundActivities.self) var backgroundActivities
     @Environment(SeriesManager.self) var seriesManager
     @Environment(NavigationManager.self) var navigation
@@ -28,10 +27,6 @@ struct DebugView: View {
         List {
             // MARK: - Data
             Section {
-                Button("Check for required maintenance") {
-                    maintenanceManager.checkForRequiredMaintenance()
-                }
-                
                 Button("Check for changes on library albums") {
                     Task {
                         await seriesManager.fetchUpdatesFromMusicLibrary()

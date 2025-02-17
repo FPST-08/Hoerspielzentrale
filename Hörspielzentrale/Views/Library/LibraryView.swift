@@ -59,6 +59,9 @@ struct LibraryView: View {
                 do {
                     try await seriesManager.checkForNewReleases()
                     TelemetryDeck.signal("Data.refreshed")
+                    Task(priority: .background) {
+                        await seriesManager.fetchUpdatesFromMusicLibrary()
+                    }
                 } catch {
                     let hapticGen = UINotificationFeedbackGenerator()
                     hapticGen.notificationOccurred(.error)

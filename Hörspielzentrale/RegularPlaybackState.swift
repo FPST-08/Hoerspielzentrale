@@ -41,9 +41,11 @@ struct ManualPlaybackChangeModifier: ViewModifier {
     /// The current playback state
     @ObservedObject var state = ApplicationMusicPlayer.shared.state
     
+    let pollingInterval: TimeInterval = 10
+    
     func body(content: Content) -> some View {
         content
-            .run(everyTimeInterval: 1) {
+            .run(everyTimeInterval: pollingInterval) {
                 if musicmanager.lastProgrammaticChange?.advanced(by: 2).isFuture() == true {
                     return
                 }
@@ -53,13 +55,13 @@ struct ManualPlaybackChangeModifier: ViewModifier {
                     if newIndex < oldIndex {
                         Logger.playback.info("Detected skipping back a track")
                         block()
-                    } else if (oldValue + 1.1) >= oldDuration && oldIndex + 1 == newIndex {
+                    } else if (oldValue + pollingInterval + 0.1) >= oldDuration && oldIndex + 1 == newIndex {
                         Logger.playback.info("Detected ending of a track")
                         block()
-                    } else if (oldValue + 1.1) < oldDuration && oldIndex < newIndex {
+                    } else if (oldValue + pollingInterval + 0.1) < oldDuration && oldIndex < newIndex {
                         Logger.playback.info("Detected skipping forward")
                         block()
-                    } else if (oldValue + 1.1) <= newValue || oldValue > newValue {
+                    } else if (oldValue + pollingInterval + 0.1) <= newValue || oldValue > newValue {
                         Logger.playback.info("Detected scrubbing")
                         block()
                     }

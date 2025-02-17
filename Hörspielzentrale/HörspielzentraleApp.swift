@@ -35,9 +35,6 @@ struct Hörspielzentrale: App {
 
     /// Creating of dataHandlerClass
     @State var dataManagerClass: DataManagerClass
-
-    /// Creation of ``maintenanceManager``
-    @State var maintenanceManager: Maintenance
     
     /// Creation of ``seriesManager``
     @State  var seriesManager: SeriesManager
@@ -66,13 +63,11 @@ struct Hörspielzentrale: App {
                 .welcomeSheet()
                 .onboarding()
                 .whatsNewSheet()
-                .maintenance()
                 .modelContainer(modelContainer)
                 .environment(musicmanager)
                 .environment(navigationManager)
                 .environment(dataManagerClass)
                 .environment(imageCache)
-                .environment(maintenanceManager)
                 .environment(seriesManager)
                 .environment(backgroundActivities)
                 .environment(networkHelper)
@@ -242,8 +237,6 @@ struct Hörspielzentrale: App {
         
         let seriesManager = SeriesManager(dataManager: dataManager)
         self.seriesManager = seriesManager
-        
-        self.maintenanceManager = Maintenance(manager: dataManager, seriesManager: seriesManager)
         
         self.backgroundActivities = BackgroundActivities(seriesManager: seriesManager,
                                                          dataManager: dataManager,

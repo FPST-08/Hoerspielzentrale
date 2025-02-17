@@ -105,7 +105,7 @@ class SeriesManager {
             do {
                 let albums = try await fetchAlbumsFor(artist)
                 print(albums.count)
-                let codables = await createCodableHoerspiel(from: albums).compactMap { $0 }
+                let codables = await createInsertableHoerspiels(from: albums).compactMap { $0 }
                 currentProgressLabel = "Speichern von \(codables.count) Hörspielen"
                 currentProgressValue = 0.95
                 print(codables.count)
@@ -196,19 +196,19 @@ Fetching batch of \(currentBadge.first?.title ?? "N/A") by \(currentBadge.first?
                         
                         albums = await self.fetchTracksForAlbums(albums)
                         
-                        var codables = [CodableHoerspiel]()
+                        var insertables = [InsertableHoerspiel]()
                         
                         for album in albums {
                             Logger.seriesManager.info("Enriching \(album.title)")
                             if let enriched = await self.enrichFromLibrary(album) {
                                 Logger.seriesManager.info("Retrieved data from \(enriched.title)")
-                                codables.append(enriched)
+                                insertables.append(enriched)
                             }
                         }
-                        for codable in codables {
-                            Logger.seriesManager.info("Updating \(codable.title) with upc \(codable.upc)")
+                        for insertable in insertables {
+                            Logger.seriesManager.info("Updating \(insertable.title) with upc \(insertable.upc)")
                             do {
-                                try await self.dataManager.updateHoerspielWhenSuitable(codable)
+                                try await self.dataManager.updateHoerspielWhenSuitable(insertable)
                             } catch {
                                 Logger.maintenance.fullError(error, sendToTelemetryDeck: false)
                             }
@@ -249,7 +249,7 @@ Fetching batch of \(currentBadge.first?.title ?? "N/A") by \(currentBadge.first?
                     }
                     Logger.seriesManager.info("Found new Hoerspiel: \(withTracks.title)")
                     
-                    let hoerspiel = await createCodableHoerspiel(from: [withTracks])
+                    let hoerspiel = await createInsertableHoerspiels(from: [withTracks])
                     _ = try await dataManager.insert(hoerspiel, artist: artist)
                     
                     try await dataManager.save()
@@ -308,7 +308,7 @@ Fetching batch of \(currentBadge.first?.title ?? "N/A") by \(currentBadge.first?
         let hoerspiels = try await dataManager.fetchHoerspiels(of: artist)
         let diff = albums.filter { !hoerspiels.map { $0.upc }.contains($0.upc) }
         Logger.data.info("Found \(diff.count) albums that are not in the hoerspiel database")
-        let codables = await createCodableHoerspiel(from: diff)
+        let codables = await createInsertableHoerspiels(from: diff)
         return try await dataManager.insert(codables, artist: artist)
     }
     
@@ -317,9 +317,9 @@ Fetching batch of \(currentBadge.first?.title ?? "N/A") by \(currentBadge.first?
     /// - Returns: Returns an array of ``CodableHoerspiel`` to add to the
     ///
     /// The albums do not need to have the tracks prefetched. This function will fetch them
-    public func createCodableHoerspiel(
+    public func createInsertableHoerspiels(
         from albumsWithoutTracks: [Album]
-    ) async -> [CodableHoerspiel] {
+    ) async -> [InsertableHoerspiel] {
         
         var albums = [Album]()
         
@@ -365,7 +365,7 @@ weitere wurde geladen
     /// - Returns: A codable album with all properties set from either the album or the music library
     ///
     /// The tracks of the album have to be loaded beforehand. Otherwise this function returns nil
-    nonisolated private func enrichFromLibrary(_ album: Album) async -> CodableHoerspiel? {
+    nonisolated private func enrichFromLibrary(_ album: Album) async -> InsertableHoerspiel? {
         // swiftlint:disable:previous function_body_length
         guard let upc = album.upc else {
             assertionFailure()
@@ -401,16 +401,16 @@ weitere wurde geladen
         // Not all tracks are available in the music library.
         // Therefore return the
         if tracksWithDate.count != tracks.count {
-            return CodableHoerspiel(title: album.title,
-                                    albumID: album.id.rawValue,
-                                    duration: duration,
-                                    releaseDate: releaseDate,
-                                    artist: album.artistName,
-                                    upc: upc,
-                                    lastPlayed: Date.distantPast,
-                                    playedUpTo: 0,
-                                    played: false
-            )
+            return InsertableHoerspiel(title: album.title,
+                                       albumID: album.id.rawValue,
+                                       duration: duration,
+                                       releaseDate: releaseDate,
+                                       artist: album.artistName,
+                                       upc: upc,
+                                       lastPlayed: Date.distantPast,
+                                       playedUpTo: 0,
+                                       played: false,
+                                       tracks: tracks.asStoredTracks())
         }
         var currentIndex = 0
         
@@ -430,7 +430,7 @@ weitere wurde geladen
         let lastPlayedDate = tracksWithDate.map { $0.lastPlayedDate ?? Date.distantPast }.max() ?? Date.distantPast
         let played = tracksWithDate.last?.lastPlayedDate != nil
         
-        return CodableHoerspiel(title: album.title,
+        return InsertableHoerspiel(title: album.title,
                                 albumID: album.id.rawValue,
                                 duration: duration,
                                 releaseDate: releaseDate,
@@ -438,7 +438,8 @@ weitere wurde geladen
                                 upc: upc,
                                 lastPlayed: lastPlayedDate,
                                 playedUpTo: Int(playedUpTo),
-                                played: played
+                                played: played,
+                                   tracks: tracks.asStoredTracks()
         )
     }
 }

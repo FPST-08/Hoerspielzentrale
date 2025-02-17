@@ -124,6 +124,23 @@ final class Hoerspiel: Hashable, Identifiable {
         self.upc = codableHoerspiel.upc
         self.tracks = []
     }
+    
+    /// Creates a ``Hoerspiel`` from a ``CodableHoerspiel``
+    /// - Parameter codableHoerspiel: The original ``CodableHoerspiel``
+    init(_ insertableHoerspiel: InsertableHoerspiel) {
+        self.title = insertableHoerspiel.title
+        self.albumID = insertableHoerspiel.albumID
+        self.played = insertableHoerspiel.played
+        self.lastPlayed = insertableHoerspiel.lastPlayed
+        self.playedUpTo = insertableHoerspiel.playedUpTo
+        self.showInUpNext = false
+        self.addedToUpNext = Date.distantPast
+        self.duration = insertableHoerspiel.duration
+        self.releaseDate = insertableHoerspiel.releaseDate
+        self.artist = insertableHoerspiel.artist
+        self.upc = insertableHoerspiel.upc
+        self.tracks = insertableHoerspiel.tracks.map { StoredTrack($0) }
+    }
 }
 
 extension Hoerspiel {

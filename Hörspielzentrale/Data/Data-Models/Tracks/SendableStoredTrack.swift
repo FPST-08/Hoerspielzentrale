@@ -79,3 +79,18 @@ struct SendableStoredTrack: Sendable, Identifiable, Codable, Hashable {
         self.isrc = track.isrc ?? ""
     }
 }
+
+
+extension MusicItemCollection<Track> {
+    /// Converts tracks into ``SendableStoredTrack``
+    /// - Returns: The converted array
+    func asStoredTracks() -> [SendableStoredTrack] {
+        self.compactMap {
+            guard let index = self.firstIndex(of: $0) else {
+                return nil
+            }
+            let storedTrack = SendableStoredTrack($0, index: index)
+            return storedTrack
+        }
+    }
+}

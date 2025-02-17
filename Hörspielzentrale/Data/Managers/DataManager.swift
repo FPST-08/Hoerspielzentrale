@@ -120,14 +120,14 @@ actor DataManager {
     /// - Parameter artist: The artist of all the codables
     /// - Returns: Returns the ``SendableHoerspiel`` that were added to disk
     @discardableResult
-    public func insert(_ codables: [CodableHoerspiel], artist: Artist) throws -> [SendableHoerspiel] {
+    public func insert(_ insertables: [InsertableHoerspiel], artist: Artist) throws -> [SendableHoerspiel] {
         var addedEntities = [SendableHoerspiel]()
         try modelContext.transaction {
             if let series = try modelContext.fetch(FetchDescriptor<Series>(predicate: #Predicate { series in
                 series.musicItemID == artist.id.rawValue
             })).first {
                 Logger.data.debug("Series currently has a count of \(series.hoerspiels?.count ?? 0)")
-                let hoerspiele = codables.map { Hoerspiel($0) }
+                let hoerspiele = insertables.map { Hoerspiel($0) }
                 for hoerspiel in hoerspiele {
                     modelContext.insert(hoerspiel)
                 }
@@ -136,7 +136,7 @@ actor DataManager {
                 try modelContext.save()
             } else {
                 let series = Series(name: artist.name, musicItemID: artist.id.rawValue)
-                let hoerspiele = codables.map { Hoerspiel($0) }
+                let hoerspiele = insertables.map { Hoerspiel($0) }
                 series.hoerspiels = hoerspiele
                 modelContext.insert(series)
                 try modelContext.save()
@@ -352,26 +352,28 @@ actor DataManager {
     /// Updates a ``Hoerspiel`` when the provided ``CodableHoerspiel`` has more recent values
     /// - Parameter codable: The ``CodableHoerspiel`` with possible more dates
     public func updateHoerspielWhenSuitable(
-        _ codable: CodableHoerspiel
+        _ insertable: InsertableHoerspiel
     ) async throws {
+        let upc = insertable.upc
         let descriptor = FetchDescriptor<Hoerspiel>(predicate: #Predicate { hoerspiel in
-            hoerspiel.upc == codable.upc
+            hoerspiel.upc == upc
         })
         
         guard let model = try modelContext.fetch(descriptor).first else {
             throw DataBaseError.noEntityMatchingDescriptor
         }
         
-        if model.lastPlayed.timeIntervalSince1970 < codable.lastPlayed.timeIntervalSince1970 {
+        if model.lastPlayed.timeIntervalSince1970 < insertable.lastPlayed.timeIntervalSince1970 {
             // If date from model is older than the codable date
-            model.lastPlayed = codable.lastPlayed
+            model.lastPlayed = insertable.lastPlayed
             if model.playedUpTo == 0 {
-                model.playedUpTo = codable.playedUpTo
+                model.playedUpTo = insertable.playedUpTo
             }
             if !model.played {
-                model.played = codable.played
+                model.played = insertable.played
             }
         }
+        model.tracks = insertable.tracks.map { StoredTrack($0) }
         try save()
     }
     

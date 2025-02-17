@@ -177,7 +177,8 @@ struct DetailChapterView: View {
                             return
                         }
                         source = ChapterSource(name: "dreimetadaten.de", url: sourceURL)
-                    } else {
+                    }
+                    if chapters.isEmpty {
                         var passedDuration: TimeInterval = 0.0
                         chapters = tracks.map {
                             let chapter = Chapter(name: $0.title,
@@ -192,6 +193,7 @@ struct DetailChapterView: View {
                         }
                         source = ChapterSource(name: "Apple Music", url: sourceURL)
                     }
+                    
                 }
             } catch {
                 Logger.metadata.fullError(error, sendToTelemetryDeck: true)

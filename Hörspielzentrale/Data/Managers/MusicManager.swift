@@ -123,7 +123,7 @@ import WidgetKit
                 remainingTime = endDate - Date.now
             }
             currentlyPlayingHoerspiel = hoerspiel
-            await currentlyPlayingHoerspielCover = imageCache.uiimage(for: hoerspiel)
+            await currentlyPlayingHoerspielCover = imageCache.uiimage(for: hoerspiel, size: .fullResolution)
         } catch {
             Logger.playback.fullError(error, sendToTelemetryDeck: true)
         }

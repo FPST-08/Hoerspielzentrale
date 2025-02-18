@@ -92,7 +92,7 @@ final class Hoerspiel: Hashable, Identifiable {
     }
     
     /// Creates a ``Hoerspiel`` from a ``SendableHoerspiel``
-    init(from sendable: SendableHoerspiel, series: Series?) {
+    init(from sendable: SendableHoerspielWithTracks, series: Series?) {
         self.title = sendable.title
         self.albumID = sendable.albumID
         self.upc = sendable.upc

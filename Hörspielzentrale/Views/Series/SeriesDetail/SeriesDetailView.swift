@@ -122,12 +122,8 @@ struct SeriesDetailView: View {
                         }
                         if let artist, series == nil {
                             ArtistAddView(artist: artist)
-                                .onChange(of: seriesManager.currentProgressValue) { _, _ in
-                                    // swiftlint:disable:next line_length
-                                    let currentlyNotDownloadingArtist = seriesManager.currentlyDownloadingArtist != artist
-                                    let isPartOfSelectedArtists = seriesManager.selectedArtists.contains(where: { $0.id == artist.id })
-                                    // swiftlint:disable:previous line_length
-                                    if  currentlyNotDownloadingArtist && isPartOfSelectedArtists {
+                                .onChange(of: seriesManager.currentlyDownloadingArtist) { oldValue, _ in
+                                    if oldValue == artist && oldValue != nil {
                                         Task {
                                             series = await fetchSeries(artist: artist)
                                         }

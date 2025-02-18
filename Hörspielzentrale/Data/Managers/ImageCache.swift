@@ -55,51 +55,56 @@ import SwiftUI
         for hoerspiel: SendableHoerspiel,
         size: SizeOptions = .small
     ) async -> UIImage? {
-        if hoerspiel.upc == "" {
-            return nil
-        }
-#if DEBUG
-        if hoerspiel.upc == "DEBUG" {
-            return UIImage(color: UIColor.random)
-        }
-#endif
-        let upc = hoerspiel.upc
-        switch size {
-        case .fullResolution:
-            let fileURL = documentsDirectoryPath.appendingPathComponent("\(upc).jpg")
-            if let image = UIImage(contentsOfFile: fileURL.path()) {
-                let coverSize = Defaults[.coversize].width
-                deleteImageWithWrongSize(upc: upc, size: coverSize)
-                return image
+        let task = Task {
+            if hoerspiel.upc == "" {
+                assertionFailure()
             }
-        case .small, .regular:
-            let cache = size == .small ? smallImageCache : regularImageCache
-            let size = size == .small ? 80 : 192
-            if let uiimage = cache.object(forKey: upc as NSString) {
-                Logger.data.info("Image for \(upc) was read from Cache  with size \(uiimage.size.width)")
-                return uiimage
-            } else {
+    #if DEBUG
+            if hoerspiel.upc == "DEBUG" {
+                return UIImage(color: UIColor.random)
+            }
+    #endif
+            let upc = hoerspiel.upc
+            switch size {
+            case .fullResolution:
                 let fileURL = documentsDirectoryPath.appendingPathComponent("\(upc).jpg")
-                let image = resizedImage(at: fileURL, for: CGSize(width: size, height: size))
-                if let image {
-                    cache.setObject(image, forKey: "\(upc)" as NSString)
+                if let image = UIImage(contentsOfFile: fileURL.path()) {
+                    let coverSize = Defaults[.coversize].width
+                    deleteImageWithWrongSize(upc: upc, size: coverSize)
                     return image
                 }
+            case .small, .regular:
+                let cache = size == .small ? smallImageCache : regularImageCache
+                let size = size == .small ? 80 : 192
+                if let uiimage = cache.object(forKey: upc as NSString) {
+                    Logger.data.info("Image for \(upc) was read from Cache  with size \(uiimage.size.width)")
+                    return uiimage
+                } else {
+                    let fileURL = documentsDirectoryPath.appendingPathComponent("\(upc).jpg")
+                    let image = resizedImage(at: fileURL, for: CGSize(width: size, height: size))
+                    if let image {
+                        cache.setObject(image, forKey: "\(upc)" as NSString)
+                        return image
+                    }
+                }
+            }
+            
+            guard let image = await loadImageFromRemote(for: hoerspiel) else {
+                return nil
+            }
+            switch size {
+            case .fullResolution:
+                let coverSize = Defaults[.coversize].width
+                return resizedImage(image, for: CGSize(width: coverSize, height: coverSize))
+            case .small:
+                return resizedImage(image, for: CGSize(width: 80, height: 80))
+            case .regular:
+                return resizedImage(image, for: CGSize(width: 192, height: 192))
             }
         }
-        
-        guard let image = await loadImageFromRemote(for: hoerspiel) else {
-            return nil
-        }
-        switch size {
-        case .fullResolution:
-            let coverSize = Defaults[.coversize].width
-            return resizedImage(image, for: CGSize(width: coverSize, height: coverSize))
-        case .small:
-            return resizedImage(image, for: CGSize(width: 80, height: 80))
-        case .regular:
-            return resizedImage(image, for: CGSize(width: 192, height: 192))
-        }
+        let result = await task.value
+        return result
+
     }
     
     func loadImageFromRemote(for hoerspiel: SendableHoerspiel) async -> UIImage? {
@@ -175,35 +180,40 @@ Deleting image with upc \(upc) since its size of \(size) is not equal to the sto
     /// - Parameter sendableSeries: The sendableseries
     /// - Returns: Returns the `UIImage` if possible, otherwise nil
     func uiimage(for sendableSeries: SendableSeries) async -> UIImage? {
-        do {
-            if sendableSeries.musicItemID == "" {
-                return nil
-            }
-            #if DEBUG
-            if sendableSeries.musicItemID == "DEBUG" {
-                return UIImage(color: UIColor.random)
-            }
-            #endif
-            let musicItemID = sendableSeries.musicItemID
-            if let uiimage = seriesImageCache.object(forKey: musicItemID as NSString) {
-                Logger.data.info("Image for \(musicItemID) was read from Cache")
-                return uiimage
-            } else {
-                let fileURL = documentsDirectoryPath.appendingPathComponent("\(musicItemID).jpg")
-                
-                if let imageData = try? Data(contentsOf: fileURL) {
-                    guard let uiimage = UIImage(data: imageData) else {
-                        return nil
-                    }
-                    seriesImageCache.setObject(uiimage, forKey: musicItemID as NSString)
-                    Logger.data.info("Image for \(musicItemID) was read from disk")
+        let task = Task {
+            do {
+                if sendableSeries.musicItemID == "" {
+                    assertionFailure()
+                    throw LoadingCoverError.identifierNotAvailable
+                }
+#if DEBUG
+                if sendableSeries.musicItemID == "DEBUG" {
+                    return UIImage(color: UIColor.random)
+                }
+#endif
+                let musicItemID = sendableSeries.musicItemID
+                if let uiimage = seriesImageCache.object(forKey: musicItemID as NSString) {
+                    Logger.data.info("Image for \(musicItemID) was read from Cache")
                     return uiimage
                 } else {
-                    Logger.data.info("Image for \(musicItemID) is not locally available")
-                    return await loadImageFromRemote(for: sendableSeries)
+                    let fileURL = documentsDirectoryPath.appendingPathComponent("\(musicItemID).jpg")
+                    
+                    if let imageData = try? Data(contentsOf: fileURL) {
+                        guard let uiimage = UIImage(data: imageData) else {
+                            throw LoadingCoverError.unableToCreateImage
+                        }
+                        seriesImageCache.setObject(uiimage, forKey: musicItemID as NSString)
+                        Logger.data.info("Image for \(musicItemID) was read from disk")
+                        return uiimage
+                    } else {
+                        Logger.data.info("Image for \(musicItemID) is not locally available")
+                        return await loadImageFromRemote(for: sendableSeries)
+                    }
                 }
             }
         }
+        let value = try? await task.value
+        return value
     }
     
     /// Loads the artist image from Apple Music
@@ -277,6 +287,11 @@ Deleting image with upc \(upc) since its size of \(size) is not equal to the sto
         case fullResolution
         case small
         case regular
+    }
+    
+    enum LoadingCoverError: Error {
+        case identifierNotAvailable
+        case unableToCreateImage
     }
 }
 

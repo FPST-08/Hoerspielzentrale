@@ -181,10 +181,14 @@ struct HoerspielDisplayView: View {
                                                          size: displaymode == .big ? .fullResolution : .small) else {
                 return
             }
-            guard let uicolor = uiimage.averageColor else {
-                return
+            Task.detached {
+                guard let uicolor = uiimage.averageColor else {
+                    return
+                }
+                await MainActor.run {
+                    dominantColor = Color(uiColor: uicolor)
+                }
             }
-            dominantColor = Color(uiColor: uicolor)
             image = Image(uiImage: uiimage)
 
             if sendableHoerspiel.releaseDate.isFuture() {

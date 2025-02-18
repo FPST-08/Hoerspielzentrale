@@ -1,15 +1,15 @@
 //
-//  SendableHoerspiel.swift
+//  SendableHoerspielWithTracks.swift
 //  Hörspielzentrale
 //
-//  Created by Philipp Steiner on 04.09.24.
+//  Created by Philipp Steiner on 18.02.25.
 //
 
 import Foundation
 import SwiftData
 
-/// A struct that is used to safely pass around a ``Hoerspiel``
-struct SendableHoerspiel: Sendable, Hashable, Codable, Identifiable {
+/// A struct that is used to safely pass around a ``Hoerspiel`` with its tracks
+struct SendableHoerspielWithTracks: Sendable, Hashable, Codable, Identifiable {
     /// The title of the hoerspiel
     var title: String
     
@@ -63,6 +63,9 @@ struct SendableHoerspiel: Sendable, Hashable, Codable, Identifiable {
     /// The Universal Product Code for the Hoerspiel
     var upc: String
     
+    /// The tracks for the Hoerspiel
+    var tracks: [SendableStoredTrack]
+    
     var series: SendableSeries?
     
     /// Creates a ``SendableHoerspiel``manually using standard data types and a `persistentIdentifier`
@@ -79,6 +82,7 @@ struct SendableHoerspiel: Sendable, Hashable, Codable, Identifiable {
     ///   - persistentModelID: A `persistentIdentifier` that represents
     ///   the `persistentModelID` of the corresponding hoerspiel
     ///   - upc: The Universal Product Code for the Hoerspiel
+    ///   - tracks: The stored tracks of the ``SendableHoerspiel``
     ///   - series: The series of the ``SendableHoerspiel``
     /// - Note: A `persistentIdentifier` can not be created from other data types or decoded
     init(title: String,
@@ -93,6 +97,7 @@ struct SendableHoerspiel: Sendable, Hashable, Codable, Identifiable {
          artist: String,
          persistentModelID: PersistentIdentifier,
          upc: String,
+         tracks: [SendableStoredTrack],
          series: SendableSeries?
     ) {
         self.title = title
@@ -107,6 +112,7 @@ struct SendableHoerspiel: Sendable, Hashable, Codable, Identifiable {
         self.artist = artist
         self.persistentModelID = persistentModelID
         self.upc = upc
+        self.tracks = tracks
         self.series = series
     }
     
@@ -125,6 +131,7 @@ struct SendableHoerspiel: Sendable, Hashable, Codable, Identifiable {
         self.artist = hoerspiel.artist
         self.persistentModelID = hoerspiel.persistentModelID
         self.upc = hoerspiel.upc
+        self.tracks = hoerspiel.tracks?.compactMap( { SendableStoredTrack($0)}) ?? []
         if let series = hoerspiel.series {
             self.series = SendableSeries(series)
         } else {
@@ -137,7 +144,7 @@ struct SendableHoerspiel: Sendable, Hashable, Codable, Identifiable {
     /// - Parameter hoerspiel: The original source of truth that gets copied
     init?(_ hoerspiel: Hoerspiel?) {
         if let hoerspiel {
-            self = SendableHoerspiel(hoerspiel: hoerspiel)
+            self = SendableHoerspielWithTracks(hoerspiel: hoerspiel)
         } else {
             return nil
         }
@@ -147,12 +154,12 @@ struct SendableHoerspiel: Sendable, Hashable, Codable, Identifiable {
         hasher.combine(id)
     }
     
-    static func == (lhs: SendableHoerspiel, rhs: SendableHoerspiel) -> Bool {
+    static func == (lhs: SendableHoerspielWithTracks, rhs: SendableHoerspielWithTracks) -> Bool {
         lhs.id == rhs.id
     }
     
 }
 
-extension SendableHoerspiel {
-    static var example = SendableHoerspiel(hoerspiel: Hoerspiel.example)
+extension SendableHoerspielWithTracks {
+    static var example = SendableHoerspielWithTracks(hoerspiel: Hoerspiel.example)
 }

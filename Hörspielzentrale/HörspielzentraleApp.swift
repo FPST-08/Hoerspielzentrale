@@ -180,9 +180,9 @@ struct Hörspielzentrale: App {
                                                              configurations:
                                                                 ModelConfiguration(cloudKitDatabase: .none))
                 let fetchedLocals = try localModelContainer.mainContext.fetch(FetchDescriptor<Hoerspiel>())
-                var jsonLocal = [SendableHoerspiel]()
+                var jsonLocal = [SendableHoerspielWithTracks]()
                 for fetchedLocal in fetchedLocals {
-                    jsonLocal.append(SendableHoerspiel(hoerspiel: fetchedLocal))
+                    jsonLocal.append(SendableHoerspielWithTracks(hoerspiel: fetchedLocal))
                 }
                 let cloudModelContainer = try ModelContainer(for: Hoerspiel.self,
                                                              configurations: ModelConfiguration(

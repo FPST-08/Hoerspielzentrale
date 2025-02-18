@@ -80,7 +80,6 @@ struct SendableStoredTrack: Sendable, Identifiable, Codable, Hashable {
     }
 }
 
-
 extension MusicItemCollection<Track> {
     /// Converts tracks into ``SendableStoredTrack``
     /// - Returns: The converted array

@@ -482,6 +482,23 @@ actor DataManager {
         return result[keyPath: keypath]
     }
     
+    /// Outputs a specific property of an `Entity`
+    /// - Parameters:
+    ///   - fetchDescriptor: The `fetchDescriptor` to find the entity
+    ///   - keypath: The keypath of the entity
+    /// - Returns: Returns the value at the specified keypath
+    public func read<T: PersistentModel, V>(
+        _ fetchDescriptor: @Sendable () -> FetchDescriptor<T>,
+        keypath: ReferenceWritableKeyPath<T, V>
+    ) throws -> V {
+        var descriptor = fetchDescriptor()
+        descriptor.fetchLimit = 1
+        guard let model = try modelContext.fetch(descriptor).first else {
+            throw DataBaseError.noModelForPersistentIdentifierFound
+        }
+        return model[keyPath: keypath]
+    }
+    
     /// Returns the ``SendableHoerspiel`` for a `persistentIdentifier`
     /// - Parameter persistentIdentifier: The `persistentIdentifier` for the ``SendableHoerspiel``
     /// - Returns: The ``SendableHoerspiel`` matching the `persistentIdentifier`

@@ -32,32 +32,27 @@ struct SeriesInfoView: View {
                                value: "\(firstReleaseDate?.formatted(date: .abbreviated, time: .omitted) ?? "N/A")"),
             DetailsInfoDisplay(title: "Zuletzt veröffentlicht",
                                value: "\(lastReleaseDate?.formatted(date: .abbreviated, time: .omitted) ?? "N/A")"),
-            DetailsInfoDisplay(title: "Anzahl Hörspiele", value: "\(overallCount?.formatted() ?? "N/A")"),
-            DetailsInfoDisplay(title: "Gesamte Dauer", value: overallDurationString)
+            DetailsInfoDisplay(title: "Anzahl Hörspiele", value: "\(overallCount?.formatted() ?? "N/A")")
         ])
         .task {
-            firstReleaseDate = try? await dataManager.manager.fetch({
+            firstReleaseDate = try? await dataManager.manager.read({
                 let id = series.musicItemID
                 let date = Date.distantPast
                 var descriptor = FetchDescriptor<Hoerspiel>(predicate: #Predicate<Hoerspiel> { hoerspiel in
                     hoerspiel.series?.musicItemID == id && hoerspiel.releaseDate != date
                 })
-                descriptor.fetchLimit = 1
-                descriptor.propertiesToFetch = [\Hoerspiel.releaseDate]
                 descriptor.sortBy = [SortDescriptor(\Hoerspiel.releaseDate, order: .forward)]
                 return descriptor
-            }).first?.releaseDate
-            lastReleaseDate = try? await dataManager.manager.fetch({
+            }, keypath: \.releaseDate)
+            lastReleaseDate = try? await dataManager.manager.read({
                 let id = series.musicItemID
                 let now = Date.now
                 var descriptor = FetchDescriptor<Hoerspiel>(predicate: #Predicate<Hoerspiel> { hoerspiel in
                     hoerspiel.series?.musicItemID == id && hoerspiel.releaseDate < now
                 })
-                descriptor.fetchLimit = 1
-                descriptor.propertiesToFetch = [\Hoerspiel.releaseDate]
                 descriptor.sortBy = [SortDescriptor(\Hoerspiel.releaseDate, order: .reverse)]
                 return descriptor
-            }).first?.releaseDate
+            }, keypath: \.releaseDate)
             overallCount = try? await dataManager.manager.fetchCount({
                 let id = series.musicItemID
                 let descriptor = FetchDescriptor<Hoerspiel>(predicate: #Predicate<Hoerspiel> { hoerspiel in
@@ -65,17 +60,6 @@ struct SeriesInfoView: View {
                 })
                 return descriptor
             })
-            let overallDuration = try? await dataManager.manager.fetch({
-                let id = series.musicItemID
-                let now = Date.now
-                var descriptor = FetchDescriptor<Hoerspiel>(predicate: #Predicate<Hoerspiel> { hoerspiel in
-                    hoerspiel.series?.musicItemID == id && hoerspiel.releaseDate < now
-                })
-                descriptor.propertiesToFetch = [\Hoerspiel.duration]
-                descriptor.sortBy = [SortDescriptor(\Hoerspiel.releaseDate, order: .reverse)]
-                return descriptor
-            }).reduce(0, { $0 + $1.duration })
-            overallDurationString = overallDuration?.formattedDuration() ?? "N/A"
         }
     }
 }

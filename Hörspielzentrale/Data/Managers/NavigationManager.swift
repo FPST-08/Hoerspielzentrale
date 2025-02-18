@@ -46,9 +46,6 @@ import SwiftUI
     /// The primary path of navigation in the library tab
     var libraryPath = NavigationPath()
     
-    /// A bool to toggle the appearance of the ``SeriesSelectionView`` sheet
-    var showSeriesAddingSheet = false
-    
     /// A boolean that indicates if the alert is shown
     ///
     /// This value can only be set using ``presentAlert(title:description:)``

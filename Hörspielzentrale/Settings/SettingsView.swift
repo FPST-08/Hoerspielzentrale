@@ -26,8 +26,6 @@ struct SettingsView: View {
         allowSearching: false
     )
     
-    @State private var showSeriesCover = false
-    
     @Environment(\.dismiss) var dismiss
     
     // MARK: - View
@@ -53,28 +51,9 @@ struct SettingsView: View {
                 
                 Section {
                     NavigationLink {
-                        //                        showSeriesCover.toggle()
-                        SeriesSelectionView {
-                            dismiss()
-                            showSeriesCover = false
-                        }
-                        .interactiveDismissDisabled()
-                    } label: {
-                        CuteLabel(title: "Serien auswählen",
-                                  systemName: "plus.square.fill.on.square.fill",
-                                  backgroundColor: Color.indigo)
-                    }
-                    NavigationLink {
                         NotificationView()
                     } label: {
                         CuteLabel(title: "Benachrichtigungen", systemName: "bell.badge", backgroundColor: .red)
-                    }
-                }
-                .fullScreenCover(isPresented: $showSeriesCover) {
-                    NavigationStack {
-                        SeriesSelectionView {
-                            showSeriesCover = false
-                        }
                     }
                 }
                 

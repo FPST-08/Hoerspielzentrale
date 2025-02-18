@@ -46,13 +46,6 @@ struct ContentView: View {
         } message: {
             Text(navigation.alertDescription ?? "")
         }
-        .sheet(isPresented: Bindable(navigation).showSeriesAddingSheet) {
-            NavigationStack {
-                SeriesSelectionView {
-                    navigation.showSeriesAddingSheet = false
-                }
-            }
-        }
         .musicSubscriptionSheet(isPresented: Bindable(navigation).musicSubscriptionSheetPresented,
                                 itemID: navigation.musicItemID)
         .onScrubbing {

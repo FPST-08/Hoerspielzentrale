@@ -44,13 +44,6 @@ struct LibraryView: View {
                         Image(systemName: displayMode.imageSystemName)
                     }
                 }
-                ToolbarItem {
-                    Button {
-                        navigation.showSeriesAddingSheet = true
-                    } label: {
-                        Image(systemName: "plus.square.fill.on.square.fill")
-                    }
-                }
             }
             .navigationDestination(for: SendableHoerspiel.self) {
                 HoerspielDetailView($0)

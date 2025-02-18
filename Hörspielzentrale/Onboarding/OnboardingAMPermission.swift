@@ -111,6 +111,9 @@ Dabei werden keine Daten aus deiner Mediathek verändert
         }
     }
     
+    /// A boolean used to indicate if onboarding is completed
+    @AppStorage("onboarding") var onboarding = true
+    
     // MARK: - View
     public var body: some View {
         VStack(spacing: 0) {
@@ -197,11 +200,11 @@ Dabei werden keine Daten aus deiner Mediathek verändert
                                 if MusicAuthorization.currentStatus == .authorized {
                                     do {
                                         _ = try await MusicSubscription.current.canPlayCatalogContent
-                                        navpath.append(OnboardingNavigation.seriesPicker)
+                                        onboarding = false
                                     } catch {
 #if targetEnvironment(simulator)
                                         musicAuthorizationStatus = .authorized
-                                        navpath.append(OnboardingNavigation.seriesPicker)
+                                        onboarding = false
 #else
                                     musicAuthorizationStatus = .privacyAcknowRequired
 #endif
@@ -210,11 +213,11 @@ Dabei werden keine Daten aus deiner Mediathek verändert
                             } else if musicAuthorizationStatus == .authorized {
                                 do {
                                     _ = try await MusicSubscription.current.canPlayCatalogContent
-                                    navpath.append(OnboardingNavigation.seriesPicker)
+                                    onboarding = false
                                 } catch {
 #if targetEnvironment(simulator)
                                     musicAuthorizationStatus = .authorized
-                                    navpath.append(OnboardingNavigation.seriesPicker)
+                                    onboarding = false
 #else
                                     musicAuthorizationStatus = .privacyAcknowRequired
 #endif

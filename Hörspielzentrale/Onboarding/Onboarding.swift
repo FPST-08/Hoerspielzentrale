@@ -38,10 +38,6 @@ struct OnboardingModifier: ViewModifier {
                         switch value {
                         case .musicPermission:
                             MusicPermissionView(onboarding: $onboarding, navpath: $navPath)
-                        case .seriesPicker:
-                            SeriesSelectionView {
-                                onboarding = false
-                            }
                         default: ContentUnavailableView(
                             "Ein Fehler ist aufgetreten",
                             systemImage: "exclamationmark.triangle",
@@ -73,5 +69,4 @@ extension View {
 enum OnboardingNavigation: Hashable {
     case musicPermission
     case features
-    case seriesPicker
 }

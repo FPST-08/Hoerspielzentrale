@@ -116,8 +116,8 @@ struct DetailChapterView: View {
                                 
                             }
                             .foregroundStyle(currentlyPlayingChapter == chapter
-                                             ? Color.primary
-                                             : Color.accentColor)
+                                             ? Color.accentColor
+                                             : Color.primary)
                             .lineLimit(1)
                         }
                         Divider()

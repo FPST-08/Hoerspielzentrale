@@ -431,16 +431,14 @@ Stelle eine Verbindung über Wifi oder Mobilfunk her, um dieses Hörspiel abspie
                 let isAtBeginningOfTrack = self.musicplayer.currentPlaybackTime == 0
                 // Current track is the same track as the first track of the previously set queue
                 let isFirstTrackOfQueue = self.startedTrackID == MusicItemID(nowPlayingItem.playbackStoreID)
-                // Current track is the Intro, used for Prerelease-Checking
-                let isFirstTrack = nowPlayingItem.title == tracks.first?.title
                 // Releasedate is in the future, therefore must be a prerelase
                 let isPreRelease = try await dataManager.read(persistentIdentifier,
                                                               keypath: \.releaseDate).isFuture()
                 
                 // If either condition for Prelease or finished Hoerspiel are met
-                let isFinished = (isAtBeginningOfTrack && isFirstTrackOfQueue) || (isFirstTrack && isPreRelease)
+                let isFinished = (isAtBeginningOfTrack && isFirstTrackOfQueue)
                 
-                if isFinished {
+                if isFinished && !isPreRelease {
                     // Set played property to true if Hoerspiel is finished
                     if isAtBeginningOfTrack && isFirstTrackOfQueue {
                         try await dataManager.update(persistentIdentifier,
@@ -480,7 +478,7 @@ Stelle eine Verbindung über Wifi oder Mobilfunk her, um dieses Hörspiel abspie
                     }
                     
                     // Hoerspiel is almost finished
-                    if currentPlayBackTime + 60 >= currentlyPlayingHoerspiel.duration {
+                    if currentPlayBackTime + 60 >= currentlyPlayingHoerspiel.duration && !isPreRelease {
                         try await dataManager.update(persistentIdentifier,
                                                      keypath: \.played,
                                                      to: true)

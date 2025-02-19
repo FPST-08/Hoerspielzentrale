@@ -35,7 +35,7 @@ extension Defaults.Keys {
     
     static let coversize = Key<CoverSize>("coversize", default: CoverSize.normal)
     
-    static let tabSelection = Key<Selection>("tabSelection", default: .home)
+    static let tabSelection = Key<Selection>("tabSelection", default: .library)
     
     static let searchMode = Key<SearchMode>("searchMode", default: .local)
     

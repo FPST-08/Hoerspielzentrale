@@ -34,6 +34,7 @@ struct LibraryView: View {
                 LibraryQueryView(searchString: searchString)
             }
             .searchable(text: $searchString, prompt: Text("Suche nach Serien in der Mediathek"))
+            .searchDictationBehavior(.inline(activation: .onSelect))
             .navigationTitle("Mediathek")
             .safeAreaPadding(.bottom, 60)
             .toolbar {

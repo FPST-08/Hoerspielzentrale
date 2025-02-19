@@ -32,6 +32,8 @@ struct NewSearchView: View {
     
     @Default(.recentlySearched) var recentlySearched
     
+    @Query var series: [Series]
+    
     var body: some View {
         NavigationStack {
             List {
@@ -67,7 +69,7 @@ musst du den Flugmodus auschalten oder es mit einem WLAN verbinden.
             .listStyle(PlainListStyle())
             .searchable(text: Bindable(navigation).searchText, isPresented: Bindable(navigation).searchPresented)
             .searchScopes($searchMode, activation: .onSearchPresentation) {
-                if networkHelper.connectionStatus == .working {
+                if networkHelper.connectionStatus == .working && !series.isEmpty {
                     Text("Apple Music").tag(SearchMode.appleMusic)
                     Text("Hörspielzentrale").tag(SearchMode.local)
                 }
@@ -91,7 +93,7 @@ musst du den Flugmodus auschalten oder es mit einem WLAN verbinden.
     func updateSearchResults(_ searchTerm: String) {
         currentTask?.cancel()
         currentTask = Task {
-            if searchMode == .local || networkHelper.connectionStatus != .working {
+            if (searchMode == .local || networkHelper.connectionStatus != .working) && !series.isEmpty {
                 let hoerspielResults = try? await dataManager.manager.fetch {
                     var descriptor = FetchDescriptor<Hoerspiel>(predicate: #Predicate { hoerspiel in
                         hoerspiel.title.localizedStandardContains(searchTerm)

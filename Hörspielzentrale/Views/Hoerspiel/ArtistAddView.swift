@@ -35,7 +35,6 @@ Anschließend wird \(artist.name) geladen
             return """
 Diese Serie ist nicht zur Mediathek hinzugefügt. \
 Um Hörspiele dieser Serie abspielen zu können, füge die Serie zur Mediathek hinzu. 
-
 """
         }
     }

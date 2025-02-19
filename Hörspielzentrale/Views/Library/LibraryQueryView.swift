@@ -14,12 +14,35 @@ struct LibraryQueryView: View {
     
     @Default(.libraryCoverDisplayMode) var displayMode
     
+    @Default(.searchMode) var searchMode
+    
     /// All series that are part of the library
     @Query var allSeries: [Series]
     
+    let searchString: String
+    
+    /// An Observable Class responsible for navigation
+    @Environment(NavigationManager.self) var navigation
+    
     var body: some View {
-        if allSeries.isEmpty {
+        if allSeries.isEmpty && searchString != "" {
             ContentUnavailableView.search
+        } else if searchString == ""  && allSeries.isEmpty {
+            ContentUnavailableView {
+                Label("Keine Serien", systemImage: "music.microphone")
+            } description: {
+                Text("Hinzugefügte Serien erscheinen hier")
+            } actions: {
+                Button {
+                    navigation.selection = .search
+                    searchMode = .appleMusic
+                    navigation.searchPresented = true
+                } label: {
+                    Label("Füge deine erste Serie hinzu", systemImage: "arrow.right")
+                }
+                .buttonStyle(BorderedProminentButtonStyle())
+            }
+
         } else {
             switch displayMode {
             case .inline:
@@ -49,6 +72,7 @@ struct LibraryQueryView: View {
         })
         descriptor.sortBy = [SortDescriptor(\Series.name, order: .forward)]
         _allSeries = Query(descriptor)
+        self.searchString = searchString
     }
     
 }

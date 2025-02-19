@@ -160,6 +160,8 @@ struct SeriesDetailView: View {
             if let series {
                 Logger.data.info("Fetching image for series")
                 seriesImage = await imageCache.uiimage(for: series)
+                artist = await fetchArtist(series: series)
+                
             } else {
                 Logger.data.info("Loading url for artist artwork")
                 guard let artworkURL = artist?.artwork?.url(width: 512, height: 512) else {
@@ -187,18 +189,23 @@ struct SeriesDetailView: View {
             } catch {
                 Logger.data.fullError(error, sendToTelemetryDeck: true)
             }
+            
         }
         .trackNavigation(path: "SeriesDetailView")
         .alert("Bist du sicher?", isPresented: $showDeleteAlert) {
             Button("Löschen", role: .destructive) {
                 if let persistentModelID = series?.persistentModelID {
-                    Task {
+                    Task.detached {
                         do {
                             try await dataManager.manager.delete(persistentModelID)
-                            series = nil
+                            await MainActor.run {
+                                series = nil
+                            }
                         } catch {
-                            navigation.presentAlert(title: "Es ist ein Fehler aufgetreten",
-                                                    description: "Die Serie konnte nicht gelöscht werden")
+                            await MainActor.run {
+                                navigation.presentAlert(title: "Es ist ein Fehler aufgetreten",
+                                                        description: "Die Serie konnte nicht gelöscht werden")
+                            }
                             Logger.data.fullError(error, sendToTelemetryDeck: true)
                         }
                     }
@@ -223,6 +230,16 @@ struct SeriesDetailView: View {
             return fetchDescriptor
         }).first
         return series
+    }
+    
+    /// Fetches the artist corresponding to a series
+    /// - Parameter series: Te initial series
+    /// - Returns: The corresponding artist
+    func fetchArtist(series: SendableSeries) async -> Artist? {
+        let request = MusicCatalogResourceRequest<Artist>(matching: \.id, equalTo: MusicItemID(series.musicItemID))
+        let response = try? await request.response()
+        let artist = response?.items.first
+        return artist
     }
     
     /// Plays the most recent hoerspiel if the series is available

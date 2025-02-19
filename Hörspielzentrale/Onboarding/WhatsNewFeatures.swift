@@ -432,6 +432,52 @@ Die Hörspielzentrale erscheint mit einem neuen App-Icon
                             ), migration: {
                                 try? await dataManagerClass.manager.deleteAllTracks()
                             }
+            ),
+            WhatsNew(
+                version: "1.4.0",
+                title: .init(
+                    text: .init(
+                        "Was ist neu in der "
+                        + AttributedString(
+                            "Hörspielzentrale",
+                            attributes: .foregroundColor(.accent)
+                        )
+                    )
+                ),
+                features: [
+                    WhatsNew.Feature(
+                        image: .init(systemName: "wifi.slash", foregroundColor: .red),
+                        title: "Offline-Modus",
+                        subtitle: """
+Hörspiele können nun auch ohne eine Internetverbindung abgespielt werden. \ 
+Dafür müssen Diese nur in der Apple-Music-App heruntergeladen werden
+"""
+                    ),
+                    WhatsNew.Feature(
+                        image: .init(
+                            systemName: "magnifyingglass",
+                            foregroundColor: .blue
+                        ),
+                        title: "Verbesserung der Suche",
+                        subtitle: """
+Über die Suche kann nun auch der Apple Music Katalog durchsucht \ 
+werden und dort können weitere Serien hinzugefügt werden
+"""
+                    ),
+                    WhatsNew.Feature(
+                        image: .init(
+                            systemName: "ladybug",
+                            foregroundColor: .green
+                        ),
+                        title: "Performance-Verbesserungen",
+                        subtitle: "Einige Crashes wurden behoben und die generelle Performance der App verbessert"
+                    )
+                ],
+                primaryAction: .init(
+                    title: .init("Weiter"),
+                    backgroundColor: Color.accent,
+                    hapticFeedback: .notification(.success)
+                )
             )
             
         ]
